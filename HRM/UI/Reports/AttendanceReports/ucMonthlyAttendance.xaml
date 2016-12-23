@@ -1,0 +1,194 @@
+﻿<UserControl x:Class="HRM.UI.Reports.AttendanceReports.ucMonthlyAttendance"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cc="clr-namespace:HRM.Library.CustomControls"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:Lib="clr-namespace:HRM.Library.AppScopeClasses"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1024">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="SummaryText">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="SummaryValue" BasedOn="{StaticResource SummaryText}">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>        
+       
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+        <Border Style="{StaticResource PlainBackground}" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="500"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" IsEnabled="{Binding ElementName=chkAllEmp,Path=IsChecked,Converter={StaticResource InvertBool}}">
+                    <TextBlock  Text="Employee" Style="{StaticResource Label}" Width ="120" />
+                    <Grid Grid.Column="1" Style="{StaticResource WatermarkGrid}" Width="350">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="ENO" Style="{StaticResource Watermark}" Visibility="{Binding ElementName=txtENO, Path=Text, Converter={StaticResource WatermarkVisibility}}"/>
+                        <TextBox x:Name="txtENO" Width="60" Text="{Binding SelectedEmployee.ENO, ValidatesOnDataErrors=True, Converter={StaticResource HideZero}}" Background="Transparent">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <DockPanel>
+                                        <Grid DockPanel.Dock="Right" Width="16" Height="16" VerticalAlignment="Center" Margin="353 0 0 0">
+                                            <Ellipse Width="16" Height="16" Fill="Red"/>
+                                            <Ellipse Width="3" Height="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 2 0 0" Fill="White"/>
+                                            <Ellipse Width="2" Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 2" Fill="White"/>
+                                        </Grid>
+                                        <AdornedElementPlaceholder/>
+                                    </DockPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                        </TextBox>
+
+                        <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" 
+                                                      Watermark="Employee Name" IsEditable="True"
+                                                      DisplayMemberPath="FULLNAME" SelectedValuePath="FULLNAME"
+                                          SelectedValue="{Binding SelectedEmployee.FULLNAME}" />
+
+
+                        <Button Grid.Column="2" Height="26" Style="{x:Null}" Command="{Binding LoadData}" Margin="20 0 0 0">
+                            <Button.Content>
+                                <Image Source="pack://application:,,,/Images/add.png"/>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Month" Style="{StaticResource Label}" Width="100"/>
+                    <ComboBox ItemsSource="{Binding MonthList}" DisplayMemberPath="MNAME" SelectedItem="{Binding SelectedMonth}" Width="150"/>
+                    <toolkit:ShortUpDown Maximum="2100" Minimum="2000" Value="{Binding CurYear}" Width="100"/>
+                </StackPanel>
+                <Button Grid.Column="2" Width="70" Content="Load" Command="{Binding LoadData}"/>
+            </Grid>
+        </Border>
+
+        <syncfusion:SfDataGrid Name="sfgrid" Grid.Row="1"
+                                FontSize="11" RowHeight="20"
+                                AutoGenerateColumns="False"
+                                ShowColumnWhenGrouped="False"
+                                RowStyleSelector="{StaticResource mass}"
+                                AutoExpandGroups="True"
+                                AllowDraggingColumns="False"                                       
+                                AllowFiltering="False"
+                                AllowResizingColumns="True"
+                                AllowSorting="False"
+                                AllowGrouping="True"                                   
+                                ItemsSource="{Binding ReportSource}"
+                               QueryCoveredRange="sfgrid_QueryCoveredRange"
+                               ResizingColumns="sfgrid_ResizingColumns"
+                               SelectionUnit="Cell"                  
+                               
+                                ShowGroupDropArea="True" >
+            <syncfusion:SfDataGrid.PrintSettings>
+                <syncfusion:PrintSettings PrintPageHeaderHeight="80"                                           
+                                          AllowColumnWidthFitToPrintPage="False"
+                                          PrintPageMargin="20" PrintPageOrientation="Landscape" >                    
+                </syncfusion:PrintSettings>
+            </syncfusion:SfDataGrid.PrintSettings>
+            <syncfusion:SfDataGrid.RecordContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Leave Application" Command="{Binding Path=DataContext.LeaveCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    <MenuItem Header="Manual Attendance"/>
+                </ContextMenu>
+            </syncfusion:SfDataGrid.RecordContextMenu>
+            <!--<syncfusion:SfDataGrid.GroupColumnDescriptions>
+                <syncfusion:GroupColumnDescription ColumnName="LNAME" />
+            </syncfusion:SfDataGrid.GroupColumnDescriptions>-->
+            <syncfusion:SfDataGrid.Columns>
+                <syncfusion:GridTextColumn HeaderText="Date" MappingName="TDATE" Width="150"/>
+                <syncfusion:GridTextColumn HeaderText="Day" DisplayBinding="{Binding ATT_DATE, Converter={StaticResource DateToDay}}" Width="80"/>
+                <syncfusion:GridTextColumn HeaderText="Status" MappingName="ATT_REMARKS" Width="0.1"/>
+                <syncfusion:GridTextColumn HeaderText="Check In" DisplayBinding="{Binding CHECKIN, StringFormat={}{0:hh:mm tt}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Mode" MappingName="CHECKINMODE" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Remarks" MappingName="CHECKINREMARKS" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Check Out" DisplayBinding="{Binding CHECKOUT, StringFormat={}{0:hh:mm tt}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Mode" MappingName="CHECKOUTMODE" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Remarks" MappingName="CHECKOUTREMARKS" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="T. Duration" DisplayBinding="{Binding TotalDuration, Converter={StaticResource MinuteToTime}}" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="A. Duration" DisplayBinding="{Binding ActualDuration, Converter={StaticResource MinuteToTime}}" Width="100"/>
+
+                <!--<syncfusion:GridTextColumn HeaderText="Lunch Out" DisplayBinding="{Binding LUNCHOUT, StringFormat={}{0:hh:mm tt}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Mode" MappingName="LUNCHOUTMODE" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Mode" MappingName="LUNCHOUTREMARKS" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Lunch In" DisplayBinding="{Binding LUNCHIN, StringFormat={}{0:hh:mm tt}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Mode" MappingName="LUNCHINMODE" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Mode" MappingName="LUNCHINREMARKS" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="L. Time" DisplayBinding="{Binding LunchTime, Converter={StaticResource MinuteToTime}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="ELT" DisplayBinding="{Binding ExcessLunchTime, Converter={StaticResource MinuteToTime}}" Width="70"/>-->
+            </syncfusion:SfDataGrid.Columns>
+
+        </syncfusion:SfDataGrid>
+        
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource PlainBackground}" Padding="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Summary"  Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                <TextBlock Text="Total Days" Grid.Row="1" Style="{StaticResource SummaryText}" />
+                <TextBlock Text="Weekend" Grid.Row="2" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Holidays" Grid.Row="3" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Working Days" Grid.Row="4" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Present Days" Grid.Row="5" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Paid Leaves" Grid.Row="6" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Unpaid Leaves" Grid.Row="7" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Absent Days" Grid.Row="8" Style="{StaticResource SummaryText}"/>
+                <TextBlock Text="Hours Worked" Grid.Row="9" Style="{StaticResource SummaryText}"/>
+                
+                <TextBlock Text="{Binding TotalDays}" Grid.Row="1" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding Weekend}" Grid.Row="2" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding Holidays}" Grid.Row="3" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding WorkingDays}" Grid.Row="4" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding PresentDays}" Grid.Row="5" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding PaidLeaveDays, StringFormat={}{0:#0.00}}" Grid.Row="6" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding UnpaidLeaveDays, StringFormat={}{0:#0.00}}" Grid.Row="7" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding AbsentDays}" Grid.Row="8" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <TextBlock Text="{Binding HoursWorked,Converter={StaticResource MinuteToTime}}" Grid.Row="9" Grid.Column="1" Style="{StaticResource SummaryValue}"/>
+                <!--<TextBlock Text="{Binding }" Grid.Row="" Grid.Column="2" Style="{StaticResource SummaryText}" " HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding }" Grid.Row="" Grid.Column="2" Style="{StaticResource Label}" " HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding }" Grid.Row="" Grid.Column="2" Style="{StaticResource Label}" " HorizontalAlignment="Right"/>-->
+            </Grid>
+            
+        </Border>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,160 @@
+﻿<UserControl x:Class="HRM.UI.User.ucUserManagement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:behavior="clr-namespace:HRM.Library.Behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1024">
+    <Border Style="{StaticResource PlainBackground}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="400"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource PlainBackground}" IsEnabled="{Binding EntryPanelEnabled}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource Label}" Grid.Row="0" Text="User Name"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBox  Text="{Binding User.UNAME, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Left"/>
+                        <CheckBox VerticalAlignment="Center" Content="Inactive" IsChecked="{Binding User.INACTIVE}"/>
+                    </StackPanel>
+
+                    <TextBlock Style="{StaticResource Label}" Grid.Row="1" Text="Description"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding User.DESCRIPTION,UpdateSourceTrigger=PropertyChanged}" Width="450" HorizontalAlignment="Left"/>
+
+                    <TextBlock Style="{StaticResource Label}" Grid.Row="2" Text="Category"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1" Width="200" HorizontalAlignment="Left" SelectedValuePath="Content" SelectedValue="{Binding User.CATEGORY}">
+                        <ComboBox.Items>
+                            <ComboBoxItem>Administrator</ComboBoxItem>
+                            <ComboBoxItem>Supervisor</ComboBoxItem>
+                            <ComboBoxItem>Operator</ComboBoxItem>
+                        </ComboBox.Items>
+                    </ComboBox>
+
+                    <!--<TextBlock Style="{StaticResource Label}" Grid.Row="3" Text="Password"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Width="150" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding User.PWD, UpdateSourceTrigger=PropertyChanged}" Width="150" HorizontalAlignment="Left"/>
+
+                    <TextBlock Style="{StaticResource Label}" Grid.Row="4" Text="Confirm Password"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding User.CPWD, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToPassword}}" Width="150" HorizontalAlignment="Left"/>-->
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource PlainBackground}" >
+                <TabControl>
+                    <TabItem Header="User">
+                        <StackPanel IsEnabled="{Binding EntryPanelEnabled}">
+                            <CheckBox Grid.Row="1" Content="User Management" IsChecked="{Binding User.USERMANAGEMENT}"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Master">
+                        <StackPanel IsEnabled="{Binding EntryPanelEnabled}">
+                            <CheckBox Grid.Row="3" Content="Branch Setup" IsChecked="{Binding User.BRANCH}"/>
+                            <CheckBox Grid.Row="4" Content="Departments" IsChecked="{Binding User.DEPARTMENT}"/>
+                            <CheckBox Grid.Row="5" Content="Designation" IsChecked="{Binding User.DESIGNATION}"/>
+                            <CheckBox Grid.Row="6" Content="Holiday Setup" IsChecked="{Binding User.HOLIDAY}"/>
+                            <CheckBox Grid.Row="7" Content="Leave Setup" IsChecked="{Binding User.LEAVE}"/>
+                            <CheckBox Grid.Row="8" Content="Work Hour" IsChecked="{Binding User.WORKHOUR}"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Tasks">
+                        <StackPanel IsEnabled="{Binding EntryPanelEnabled}">
+                            <CheckBox Content="Employee Registration" IsChecked="{Binding User.EMPLOYEE_REGISTRATION}"/>
+                            <CheckBox Content="Manual Attendance" IsChecked="{Binding User.MANUAL_ATTENDANCE}"/>
+                            <CheckBox Content="Monthly Leave" IsChecked="{Binding User.MONTHLY_LEAVE}"/>
+                            <CheckBox Content="Add Leave"  IsChecked="{Binding User.ADD_LEAVE}"/>
+                            <CheckBox Content="Leave Application"  IsChecked="{Binding User.LEAVE_APPLICATION}"/>
+                            <CheckBox Content="Assign Workhour"  IsChecked="{Binding User.ASSIGN_WORKHOUR}"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Reports">
+                        <StackPanel IsEnabled="{Binding EntryPanelEnabled}">
+                            <CheckBox Content="Attendance Report" IsChecked="{Binding User.ATTENDANCE_REPORTS}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Monthly Attendance - Detail" IsChecked="{Binding User.MONTHLY_ATTENDANCE_DETAIL}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Monthly Attendance - Summary" IsChecked="{Binding User.MONTHLY_ATTENDANCE_SUMMARY}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Attendance Book Report"  IsChecked="{Binding User.ATTENDANCE_BOOK}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Daily Attendance Report" IsChecked="{Binding User.DAILY_ATTENDANCE}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Annual Attendance Report" IsChecked="{Binding User.ANNUAL_ATTENDANCE}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Daily Absent Report" IsChecked="{Binding User.DAILY_ABSENT}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Manual Attendance Report" IsChecked="{Binding User.MANUAL_ATTENDANCE_REPORT}"/>
+                            <CheckBox Content="Leave Reports" IsChecked="{Binding User.LEAVE_REPORTS}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Leave Status Report" IsChecked="{Binding User.LEAVE_STATUS}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Leave Statement" IsChecked="{Binding User.LEAVE_STATEMENT}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Annual Leave Report" IsChecked="{Binding User.ANNUAL_LEAVE}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Monthly Leave Report" IsChecked="{Binding User.MONTHLY_LEAVE_REPORT}"/>
+                            <CheckBox Content="Employee List" IsChecked="{Binding User.EMPLOYEE_LIST}"/>
+                            <CheckBox Content="Employee Detail" IsChecked="{Binding User.EMPLOYEE_DETAIL}"/>
+                            <CheckBox Content="Monthly Late Report" IsChecked="{Binding User.MONTHLY_LATE_REPORT}"/>
+                            <CheckBox Content="Annual Holiday List" IsChecked="{Binding User.ANNUAL_HOLIDAY_LIST}"/>
+                            <CheckBox Content="Attendance Log" IsChecked="{Binding User.ATTENDANCE_LOG}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Daily Attendance Log" IsChecked="{Binding User.DAILY_ATTENDANCE_LOG}"/>
+                            <CheckBox Margin="15 0 0 0" Content="Monthly Attendance Log" IsChecked="{Binding User.MONTHLY_ATTENDANCE_LOG}"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="Utilities">
+                        <StackPanel IsEnabled="{Binding EntryPanelEnabled}">
+                            <CheckBox Content="Company Info" IsChecked="{Binding User.COMPANY_INFO}"/>
+                            <CheckBox Content="Download Attendance Data" IsChecked="{Binding User.DOWNLOAD_ATTENDANCE_DATA}"/>
+                            <CheckBox Content="Data Backup" IsChecked="{Binding User.DATA_BACKUP}"/>
+                            <CheckBox Content="Data Restore" IsChecked="{Binding User.DATA_RESTORE}"/>
+                            <CheckBox Content="Device Setting" IsChecked="{Binding User.DEVICE_SETTING}"/>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+                <!--<Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Content="User"/>
+                    
+                    
+                    <CheckBox Grid.Row="2" Content="Master"/>
+                    <CheckBox Grid.Row="3" Margin="15 0 0 0" Content="Branch Setup"/>
+                    <CheckBox Grid.Row="4" Margin="15 0 0 0" Content="Departments"/>
+                    <CheckBox Grid.Row="5" Margin="15 0 0 0" Content="Designation"/>
+                    <CheckBox Grid.Row="6" Margin="15 0 0 0" Content="Holiday Setup"/>
+                    <CheckBox Grid.Row="7" Margin="15 0 0 0" Content="Leave Setup"/>
+                    <CheckBox Grid.Row="8" Margin="15 0 0 0" Content="Work Hour"/>
+                </Grid>-->
+            </Border>
+            <DataGrid ItemsSource="{Binding UserList}" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="1" Grid.ColumnSpan="2" behavior:CommandBehavior.Event="MouseDoubleClick" behavior:CommandBehavior.Command="{Binding LoadData}" behavior:CommandBehavior.CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Self}}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="User Name" Binding="{Binding UNAME}" Width="150"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding DESCRIPTION}" Width="350"/>
+                    <DataGridTextColumn Header="Category" Binding="{Binding CATEGORY}" Width="150"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Border>
+</UserControl>
+
+    

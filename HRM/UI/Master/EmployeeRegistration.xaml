@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="HRM.UI.Master.EmployeeRegistration"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:uc="clr-namespace:HRM.UI.Master.EmpRegistration"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <Border Style="{StaticResource PlainBackground}" Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style = "{StaticResource Label}" Text="Employee No"/>
+            <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding emp.ENO, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}">
+                <Button.Content>
+                    <Image Source="pack://application:,,,/Images/add.png"/>
+                </Button.Content>
+            </Button>
+            <TextBlock Style = "{StaticResource Label}" Grid.Column="4" Text="Employee Code"/>
+            <TextBox Grid.Column="5" Text="{Binding emp.ECODE, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding EntryPanelEnabled}"/>
+
+            <TextBlock Style="{StaticResource Label}" Grid.Column="7" Text="Calender Type"/>
+            <RadioButton VerticalAlignment="Center" IsEnabled="False" Grid.Column="8" GroupName="Calendar" Content="AD" IsChecked="{Binding IsDate}" />
+            <RadioButton VerticalAlignment="Center" IsEnabled="False" Grid.Column="9" GroupName="Calendar" Content="BS" IsChecked="{Binding IsDate, Converter={StaticResource InvertBool}}" />
+            
+            <Grid Grid.Row="1" Grid.ColumnSpan="15" IsEnabled="{Binding EntryPanelEnabled}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="0" Text="Employee Name"/>
+                <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox ItemsSource="{Binding TitleList}" SelectedValue="{Binding emp.TITLE}" Height="26"/>
+                    <TextBox Grid.Column="1" Text="{Binding emp.FULLNAME, UpdateSourceTrigger=PropertyChanged}" />
+
+                </Grid>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Branch"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding BranchList}" DisplayMemberPath="BRANCH_NAME" SelectedValuePath="BRANCH_ID" SelectedValue="{Binding empDetail.BRANCH_ID, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Grid.Column="3" Text="Department"/>
+                <ComboBox Grid.Row="1" Grid.Column="4" ItemsSource="{Binding DepartmentList}" DisplayMemberPath="DEPARTMENT" SelectedValuePath="DEPARTMENT_ID" SelectedValue="{Binding empDetail.DEPARTMENT_ID, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Designation"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DesignationList}" DisplayMemberPath="DESIGNATION" SelectedValuePath="DESIGNATION_ID" SelectedValue="{Binding empDetail.DESIGNATION_ID, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Grid.Column="3" Text="Contract Mode"/>
+                <ComboBox Grid.Row="2" Grid.Column="4" ItemsSource="{Binding ModeList}" SelectedValue="{Binding empDetail.CMODE, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="3" Text="Status"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding StatusList}" SelectedValue="{Binding empDetail.STATUS, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="3" Grid.Column="3" Text="Marital Status"/>
+                <ComboBox Grid.Row="3" Grid.Column="4" ItemsSource="{Binding MaritalStatusList}" SelectedValue="{Binding empDetail.MARITAL_STATUS, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Grid Grid.Column="6" Grid.RowSpan="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="15"/>
+                    </Grid.RowDefinitions>
+                    <Border  BorderBrush="Black" BorderThickness="2">
+                        <Grid>
+                            <TextBlock Style = "{StaticResource Label}" Text="Photo" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.7"/>
+                            <Image Source="{Binding Photo}"/>
+                        </Grid>
+                    </Border>
+                    <TextBlock Style = "{StaticResource Label}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Blue" FontWeight="SemiBold" TextDecorations="Underline" Text="Browse">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseDown" >
+                                <i:InvokeCommandAction Command="{Binding BrowseImageCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBlock>
+                </Grid>
+
+                <TabControl Grid.Row="5" Grid.ColumnSpan="8">
+                    <TabItem Header="Personal Info.">
+                        <uc:ucPInfo/>
+                    </TabItem>
+                    <TabItem Header="Academic Qualification">
+                        <uc:ucAcademics/>
+                    </TabItem>
+                    <TabItem Header="Training">
+                        <uc:ucTraining/>
+                    </TabItem>
+                    <TabItem Header="Professional Experience">
+                        <uc:ucExperience/>
+                    </TabItem>
+                    <TabItem Header="Leave">
+                        <Border Style="{StaticResource PlainBackground}" Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="..." Command="{Binding RefreshLeaveCommand}" Margin="2" />
+                                <TextBlock Text="Leave Name" Grid.Column="1" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <TextBlock Text="Allowed Days" Grid.Column="2" FontWeight="SemiBold" VerticalAlignment="Center"/>
+
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.ColumnSpan="4">
+                                    <ItemsControl ItemsSource="{Binding LeaveList}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="32"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30"/>
+                                                        <ColumnDefinition Width="150"/>
+                                                        <ColumnDefinition Width="100"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding LEAVE_NAME}" Grid.Column="1" VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Column="2" Text="{Binding AllowedDays, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" IsEnabled="{Binding IsSelected}" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </TabItem>
+                    <TabItem Header="Weekend">
+                        <uc:ucWeekend/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="HRM.UI.Tasks.ucMonthlyLeave"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:behav="clr-namespace:HRM.Library.Behaviors"
+             xmlns:cc="clr-namespace:HRM.Library.CustomControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1024">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Style="{StaticResource PlainBackground}" Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Style = "{StaticResource Label}" Text="Transaction Id"/>
+                <TextBox Grid.Column="1" Text="{Binding LLedger.TRANID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}">
+                    <Button.Content>
+                        <Image Source="pack://application:,,,/Images/add.png"/>
+                    </Button.Content>
+                </Button>
+                <Grid Grid.Row="1" Grid.ColumnSpan="4" IsEnabled="{Binding EntryPanelEnabled}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="350" />
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.ColumnSpan="4">
+                        <GroupBox.Header>
+                            <CheckBox x:Name="chkAllEmp" Content="All Employee" IsChecked="{Binding IsAllEmployee}"/>
+                        </GroupBox.Header>
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding ElementName=chkAllEmp,Path=IsChecked,Converter={StaticResource InvertBool}}">
+                            <TextBlock  Text="Employee" Style="{StaticResource Label}" Width ="120" />
+                            <Grid Grid.Column="1" Style="{StaticResource WatermarkGrid}" Width="460">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="350"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="ENO" Style="{StaticResource Watermark}" Visibility="{Binding ElementName=txtENO, Path=Text, Converter={StaticResource WatermarkVisibility}}"/>
+                                <TextBox x:Name="txtENO" Width="60" Text="{Binding LLedger.ENO, ValidatesOnDataErrors=True, Converter={StaticResource HideZero}}" Background="Transparent">
+                                    <Validation.ErrorTemplate>
+                                        <ControlTemplate>
+                                            <DockPanel>
+                                                <Grid DockPanel.Dock="Right" Width="16" Height="16" VerticalAlignment="Center" Margin="353 0 0 0">
+                                                    <Ellipse Width="16" Height="16" Fill="Red"/>
+                                                    <Ellipse Width="3" Height="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 2 0 0" Fill="White"/>
+                                                    <Ellipse Width="2" Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 2" Fill="White"/>
+                                                </Grid>
+                                                <AdornedElementPlaceholder/>
+                                            </DockPanel>
+                                        </ControlTemplate>
+                                    </Validation.ErrorTemplate>
+                                </TextBox>
+
+                                <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" 
+                                                      Watermark="Employee Name" IsEditable="True"
+                                                      DisplayMemberPath="FULLNAME" SelectedValuePath="FULLNAME"
+                                          SelectedValue="{Binding LLedger.ENAME}" />
+
+
+                                <Button Grid.Column="2" Height="26" Style="{x:Null}" Command="{Binding LoadData}" Margin="20 0 0 0">
+                                    <Button.Content>
+                                        <Image Source="pack://application:,,,/Images/add.png"/>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <TextBlock Style="{StaticResource Label}" Text="Month" Grid.Row ="1"/>
+                    <ComboBox Grid.Row ="1" Grid.Column="1"  ItemsSource="{Binding MonthList}" IsEnabled="{Binding MonthEnabled}" DisplayMemberPath="MNAME" SelectedValuePath="MID" SelectedValue ="{Binding LLedger.MID}" Width="350" HorizontalAlignment="Left"/>
+                    <Button Grid.Row="1" Grid.Column="2" Content ="Load" Height="26" Width="60" Command="{Binding LoadLeaveCommand}"/>
+                </Grid>
+            </Grid>
+        </Border>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding EmployeeLeaveList}" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="40">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Employee" Binding="{Binding ENAME}" Width="*"/>
+                <DataGridTextColumn Header="Leave" Binding="{Binding LNAME}" Width="*"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Dr, StringFormat=#0.00}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

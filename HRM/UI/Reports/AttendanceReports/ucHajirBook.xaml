@@ -1,0 +1,105 @@
+﻿<UserControl x:Class="HRM.UI.Reports.AttendanceReports.ucHajirBook"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             mc:Ignorable="d" 
+           d:DesignHeight="768" d:DesignWidth="1024">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Style="{StaticResource PlainBackground}" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <GroupBox>
+                    <GroupBox.Header>
+                        <CheckBox Content="All Department" IsChecked="{Binding AllDepartments}"/>
+                    </GroupBox.Header>
+                    <ComboBox ItemsSource="{Binding DepartmentList}" DisplayMemberPath="DEPARTMENT" SelectedItem="{Binding SelectedDepartment}" IsEnabled="{Binding AllDepartments, Converter={StaticResource InvertBool}}"/>
+                </GroupBox>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Month" Style="{StaticResource Label}" Width="100" Margin="50 0 0 0"/>
+                    <ComboBox ItemsSource="{Binding MonthList}" DisplayMemberPath="MNAME" SelectedItem="{Binding SelectedMonth}" Width="150"/>
+                    <toolkit:ShortUpDown Maximum="2100" Minimum="2000" Value="{Binding CurYear}" Width="100"/>
+                </StackPanel>
+                <Button Grid.Column="2" Width="70" Content="Load" Command="{Binding LoadData}"/>
+            </Grid>
+        </Border>
+
+        <syncfusion:SfDataGrid Name="sfgrid" Grid.Row="1"
+                                FontSize="11" RowHeight="20"
+                                AutoGenerateColumns="False"
+                                ShowColumnWhenGrouped="False"
+                                AutoExpandGroups="True"
+                                AllowDraggingColumns="False"                                       
+                                AllowFiltering="False"
+                                AllowResizingColumns="True"
+                                AllowSorting="False"
+                                AllowGrouping="True"                                   
+                                ItemsSource="{Binding ReportSource}"                              
+                               SelectionUnit="Cell"                  
+                               
+                                ShowGroupDropArea="True" >
+            <syncfusion:SfDataGrid.PrintSettings>
+                <syncfusion:PrintSettings PrintPageHeaderHeight="80"                                           
+                                          AllowColumnWidthFitToPrintPage="False"
+                                          PrintPageMargin="20" PrintPageOrientation="Landscape" >
+                </syncfusion:PrintSettings>
+            </syncfusion:SfDataGrid.PrintSettings>
+
+            <syncfusion:SfDataGrid.GroupColumnDescriptions>
+                <syncfusion:GroupColumnDescription ColumnName="DEPARTMENT" />
+            </syncfusion:SfDataGrid.GroupColumnDescriptions>
+            <syncfusion:SfDataGrid.Columns>
+                <syncfusion:GridTextColumn HeaderText="ENO" MappingName="ENO" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Employee Name" MappingName="ENAME" Width="200"/>
+                <syncfusion:GridTextColumn HeaderText="Department" MappingName="DEPARTMENT" Width="150"/>
+                <syncfusion:GridTextColumn HeaderText="1" MappingName="1" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="2" MappingName="2" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="3" MappingName="3" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="4" MappingName="4" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="5" MappingName="5" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="6" MappingName="6" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="7" MappingName="7" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="8" MappingName="8" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="9" MappingName="9" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="10" MappingName="10" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="11" MappingName="11" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="12" MappingName="12" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="13" MappingName="13" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="14" MappingName="14" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="15" MappingName="15" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="16" MappingName="16" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="17" MappingName="17" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="18" MappingName="18" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="19" MappingName="19" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="20" MappingName="20" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="21" MappingName="21" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="22" MappingName="22" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="23" MappingName="23" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="24" MappingName="24" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="25" MappingName="25" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="26" MappingName="26" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="27" MappingName="27" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="28" MappingName="28" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="29" MappingName="29" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="30" MappingName="30" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="31" MappingName="31" Width="30"/>
+                <syncfusion:GridTextColumn HeaderText="32" MappingName="32" Width="30"/>
+                
+            </syncfusion:SfDataGrid.Columns>
+
+        </syncfusion:SfDataGrid>
+            
+    </Grid>
+</UserControl>

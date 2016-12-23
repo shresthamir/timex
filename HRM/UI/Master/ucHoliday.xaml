@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="HRM.UI.Master.ucHoliday"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="800">
+    <Border Style="{StaticResource PlainBackground}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Style = "{StaticResource Label}" Text="Holiday Id"/>
+                <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding holiday.HOLIDAY_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}">
+                    <Button.Content>
+                        <Image Source="pack://application:,,,/Images/add.png"/>
+                    </Button.Content>
+                </Button>
+                <Grid Grid.Row="1" Grid.ColumnSpan="4" IsEnabled="{Binding EntryPanelEnabled}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="85"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Style = "{StaticResource Label}" Grid.Row="0" Text="Holiday Name"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding holiday.HOLIDAY_NAME, UpdateSourceTrigger=PropertyChanged}" Height="56"/>
+
+                    <GroupBox Grid.Row="1" Header="Dates" Grid.ColumnSpan="2" BorderBrush="Black" Padding="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton x:Name="SingleDay" Content="Single Day" IsChecked="True"/>
+                            <RadioButton Grid.Column="1" x:Name="MultiDays" Content="Multiple Days" IsChecked="{Binding IsMultipleDays}"/>
+
+                            <TextBlock Grid.Row="1">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=SingleDay, Path=IsChecked}" Value="true">
+                                                <Setter Property="Text" Value="Holiday Date"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=MultiDays, Path=IsChecked}" Value="true">
+                                                <Setter Property="Text" Value="Holiday Begin Date"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding FDate}">
+                                <DatePicker.Resources>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Margin" Value="0"/>
+                                    </Style>
+                                </DatePicker.Resources>
+                            </DatePicker>
+                            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding FDate, Converter={StaticResource ToMiti}}"/>
+
+                            <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Grid.Column="4" Text="To Date" Visibility="{Binding ElementName=MultiDays, Path=IsChecked, Converter={StaticResource ToVisibility}}"/>
+                            <DatePicker Grid.Row="1" Grid.Column="5" SelectedDate="{Binding TDate}" Visibility="{Binding ElementName=MultiDays, Path=IsChecked, Converter={StaticResource ToVisibility}}">
+                                <DatePicker.Resources>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Margin" Value="0"/>
+                                    </Style>
+                                </DatePicker.Resources>
+                            </DatePicker>
+                            <TextBox Grid.Row="1" Grid.Column="6" Text="{Binding TDate, Converter={StaticResource ToMiti}}" Visibility="{Binding ElementName=MultiDays, Path=IsChecked, Converter={StaticResource ToVisibility}}"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Header="Holiday Criteria" BorderBrush="Black" Padding="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+
+                            <CheckBox Content="Gender Wise" IsChecked="{Binding IsGenderWise}" />
+                            <ListBox Grid.Row="1" ItemsSource="{Binding GenderList}" IsEnabled="{Binding IsGenderWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Gender}" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"  ></CheckBox>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+
+                            <CheckBox Grid.Row="3" Content="Branch Wise" IsChecked="{Binding IsBranchWise}"/>
+                            <ListBox Grid.Row="4" ItemsSource="{Binding BranchList}" IsEnabled="{Binding IsBranchWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox  Content="{Binding BRANCH_NAME}" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"  ></CheckBox>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <CheckBox Grid.Row ="6" Content="Religion Wise" IsChecked="{Binding IsReligionWise}"/>
+                            <ListBox Grid.Row="7" ItemsSource="{Binding ReligionList}" IsEnabled="{Binding IsReligionWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox  Content="{Binding RELIGION}" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"  ></CheckBox>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                        </Grid>
+                    </GroupBox>
+
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

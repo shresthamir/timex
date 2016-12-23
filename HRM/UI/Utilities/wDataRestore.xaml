@@ -1,0 +1,21 @@
+﻿<Window x:Class="HRM.UI.Utilities.wDataRestore"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ResizeMode="NoResize"
+        Title="Data Restore" Height="150" Width="350">
+    <Border Style="{StaticResource GradientBackground}">
+        <StackPanel>
+            
+            <Border Style="{StaticResource PlainBackground}" Padding="10">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="File Name" Width="80"/>
+                    <TextBox x:Name="txtFile" Width="200"  />
+                    <Button Content="..." Width="30" Height="26" Click="Button_Click"/>
+                </StackPanel>               
+            </Border>
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 10 0">
+                <Button Content="Restore" Height="35" Width="70" Click="Button_Click"/>
+                <Button Content="Cancel"  Height="35" Width="70" Click="Button_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

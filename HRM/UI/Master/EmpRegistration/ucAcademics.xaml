@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="HRM.UI.Master.EmpRegistration.ucAcademics"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+           d:DesignHeight="400" d:DesignWidth="1024">
+    <Border Style="{StaticResource PlainBackground}" Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style = "{StaticResource Label}" Text="Board/University"/>
+            <TextBox Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding empAcademics.BOARD, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Name of Institute"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding empAcademics.INSTITUTE, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Name of Degree"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding empAcademics.DEGREENAME, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Grid.Column="3" Text="Passed Year"/>
+            <TextBox Grid.Row="2" Grid.Column="4" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding empAcademics.PASSEDYEAR, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Row="2" Grid.Column="5" Content="Add" Command="{Binding AddAcademicsCommand}"/>
+
+            <DataGrid Grid.Row="4" Grid.ColumnSpan="7" ItemsSource="{Binding Academics}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Board/University" Binding="{Binding BOARD}" Width="3*"/>
+                    <DataGridTextColumn Header="Institute" Binding="{Binding INSTITUTE}" Width="3*"/>
+                    <DataGridTextColumn Header="Degree" Binding="{Binding DEGREENAME}" Width="3*"/>
+                    <DataGridTextColumn Header="Passed Year" Binding="{Binding PASSEDYEAR}" Width="1*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Border>
+</UserControl>

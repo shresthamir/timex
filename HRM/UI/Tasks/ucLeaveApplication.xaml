@@ -1,0 +1,178 @@
+﻿<UserControl x:Class="HRM.UI.Tasks.ucLeaveApplication"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:behav="clr-namespace:HRM.Library.Behaviors"
+             xmlns:cc="clr-namespace:HRM.Library.CustomControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1024">
+
+    <Border Style="{StaticResource PlainBackground}" Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style = "{StaticResource Label}" Text="Transaction Id"/>
+            <TextBox Grid.Column="1" Text="{Binding LLedger.TRANID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}">
+                <Button.Content>
+                    <Image Source="pack://application:,,,/Images/add.png"/>
+                </Button.Content>
+            </Button>
+            <Grid Grid.Row="1" Grid.ColumnSpan="4" IsEnabled="{Binding EntryPanelEnabled}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock  Text="Employee" Style="{StaticResource Label}" />
+                <Grid Grid.Column="1" Grid.ColumnSpan="6" Style="{StaticResource WatermarkGrid}" Width="460">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="ENO" Style="{StaticResource Watermark}" Visibility="{Binding ElementName=txtENO, Path=Text, Converter={StaticResource WatermarkVisibility}}"/>
+                    <TextBox x:Name="txtENO" Width="60" Text="{Binding LLedger.ENO, ValidatesOnDataErrors=True, Converter={StaticResource HideZero}}" Background="Transparent">
+                        <Validation.ErrorTemplate>
+                            <ControlTemplate>
+                                <DockPanel>
+                                    <Grid DockPanel.Dock="Right" Width="16" Height="16" VerticalAlignment="Center" Margin="353 0 0 0">
+                                        <Ellipse Width="16" Height="16" Fill="Red"/>
+                                        <Ellipse Width="3" Height="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 2 0 0" Fill="White"/>
+                                        <Ellipse Width="2" Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 2" Fill="White"/>
+                                    </Grid>
+                                    <AdornedElementPlaceholder/>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Validation.ErrorTemplate>
+                    </TextBox>
+
+                    <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" 
+                                                      Watermark="Employee Name" IsEditable="True"
+                                                      DisplayMemberPath="FULLNAME" SelectedValuePath="FULLNAME"
+                                          SelectedValue="{Binding LLedger.ENAME}" />
+
+
+                    <Button Grid.Column="2" Height="26" Style="{x:Null}" Command="{Binding LoadData}" Margin="20 0 0 0">
+                        <Button.Content>
+                            <Image Source="pack://application:,,,/Images/add.png"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+
+
+                <TextBlock Grid.Row="1" Text="Leave" Style="{StaticResource Label}"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" ItemsSource="{Binding LeaveList}" SelectedValuePath="LEAVE_ID" DisplayMemberPath="LEAVE_NAME" SelectedValue="{Binding LLedger.LEAVE_ID}"/>
+                <CheckBox Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="2" Content="Half Day Leave" IsChecked="{Binding IsHalfDay}" VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Row="2" Text="Entitled Days" Style="{StaticResource Label}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Entitled,StringFormat={}{0:#0.00}}" IsReadOnly="True" HorizontalContentAlignment="Right" />
+
+
+                <TextBlock Grid.Row="2" Text="Taken Days" Grid.Column="3" Style="{StaticResource Label}"/>
+                <TextBox Grid.Row="2" Grid.Column="4"  Text="{Binding Taken,StringFormat={}{0:#0.00}}" IsReadOnly="True" HorizontalContentAlignment="Right" />
+
+                <TextBlock Grid.Row="2" Grid.Column="6" Text="Remaining Days" Style="{StaticResource Label}"/>
+                <TextBox Grid.Row="2" Grid.Column="7" Text="{Binding Remaining, StringFormat={}{0:#0.00}}" IsReadOnly="True" HorizontalContentAlignment="Right" />
+
+                <TextBlock Grid.Row="3" Text="From Date" Style="{StaticResource Label}"/>
+                <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+                    <DatePicker SelectedDate="{Binding FDate}"/>
+                    <TextBox Text="{Binding FDate, Converter={StaticResource ToMiti}}" Width="100"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="3" Grid.Column="4" Text="To Date" Style="{StaticResource Label}"/>
+                <StackPanel Grid.Row="3" Grid.Column="5" Grid.ColumnSpan="3" Orientation="Horizontal">
+                    <DatePicker Margin="10 0 0 0" SelectedDate="{Binding TDate}"/>
+                    <TextBox Text="{Binding TDate, Converter={StaticResource ToMiti}}" Width="100"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="4" Text="Total Leave Days" Style="{StaticResource Label}"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding TotalDays, Converter={StaticResource HideZero}}" IsReadOnly="True" HorizontalContentAlignment="Right"/>
+
+                <TextBlock Grid.Row="5"  Text="Approved By" Style="{StaticResource Label}" />
+                <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="6" Style="{StaticResource WatermarkGrid}" Width="460">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="ENO" Style="{StaticResource Watermark}" Visibility="{Binding ElementName=txtAppENO, Path=Text, Converter={StaticResource WatermarkVisibility}}"/>
+                    <TextBox x:Name="txtAppENO" Width="60" Text="{Binding LLedger.APPROVEDBY, ValidatesOnDataErrors=True, Converter={StaticResource HideZero}}" Background="Transparent">
+                        <Validation.ErrorTemplate>
+                            <ControlTemplate>
+                                <DockPanel>
+                                    <Grid DockPanel.Dock="Right" Width="16" Height="16" VerticalAlignment="Center" Margin="353 0 0 0">
+                                        <Ellipse Width="16" Height="16" Fill="Red"/>
+                                        <Ellipse Width="3" Height="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 2 0 0" Fill="White"/>
+                                        <Ellipse Width="2" Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 2" Fill="White"/>
+                                    </Grid>
+                                    <AdornedElementPlaceholder/>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Validation.ErrorTemplate>
+                    </TextBox>
+
+                    <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" 
+                                                      Watermark="Employee Name" IsEditable="True"
+                                                      DisplayMemberPath="FULLNAME" SelectedValuePath="FULLNAME"
+                                          SelectedValue="{Binding LLedger.APPROVEDBYNAME}" />
+
+
+                    <Button Grid.Column="2" Height="26" Style="{x:Null}" Command="{Binding LoadData}" Margin="20 0 0 0">
+                        <Button.Content>
+                            <Image Source="pack://application:,,,/Images/add.png"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+
+
+                <TextBlock Grid.Row="6" Style="{StaticResource Label}" Text="Remarks"/>
+                <TextBox  Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="7" Text="{Binding LLedger.REMARKS, ValidatesOnDataErrors=True}"/>
+
+
+
+
+                <!--<TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Address"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding branch.BRANCH_ADDRESS, UpdateSourceTrigger=PropertyChanged}" Height="56"/>
+
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Phone No."/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding branch.BRANCH_PHONENO, UpdateSourceTrigger=PropertyChanged}"/>-->
+            </Grid>
+        </Grid>
+    </Border>
+
+</UserControl>

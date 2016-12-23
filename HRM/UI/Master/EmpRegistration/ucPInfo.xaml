@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="HRM.UI.Master.EmpRegistration.ucPInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="1024">
+    <Border Style="{StaticResource PlainBackground}" Padding="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="32"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Style = "{StaticResource Label}" Text="Permanent Address"/>
+            <TextBox Text="{Binding empPInfo.P_ADDRESS, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.ColumnSpan="7"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Temporary Address"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" Text="{Binding empPInfo.T_ADDRESS, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Gender"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding GenderList}" SelectedValue="{Binding empPInfo.GENDER}"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Grid.Column="3" Text="Phone"/>
+            <TextBox Grid.Row="2" Grid.Column="4" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding empPInfo.PHONE, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Grid.Column="6" Text="MOBILE"/>
+            <TextBox Grid.Row="2" Grid.Column="7" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding empPInfo.MOBILE, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="3" Text="Email"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding empPInfo.EMAIL, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="3" Grid.Column="6" Text="Citizenship No."/>
+            <TextBox Grid.Row="3" Grid.Column="7" Text="{Binding empPInfo.CTZNO, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="4" Text="Date of Birth"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" >
+                <DatePicker  SelectedDate="{Binding empPInfo.DOB}" Width="115" Height="26"/>
+                <TextBox Text="{Binding empPInfo.DOB, Converter={StaticResource ToMiti}, UpdateSourceTrigger=LostFocus}" Width="80"/>
+            </StackPanel>
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="4" Grid.Column="3" Text="Join Date"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="4" >
+                <DatePicker  SelectedDate="{Binding empPInfo.JOINDATE}" Width="115" Height="26"/>
+                <TextBox Text="{Binding empPInfo.JOINDATE, Converter={StaticResource ToMiti}, UpdateSourceTrigger=LostFocus}" Width="80"/>
+            </StackPanel>
+            
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="5" Text="Next Of Kin" ToolTip="Emergency Contact Person"/>
+            <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding empPInfo.CPERSON, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="5" Grid.Column="6" Text="Contact No"/>
+            <TextBox Grid.Row="5" Grid.Column="7" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding empPInfo.CCONTACTNO, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style = "{StaticResource Label}" Grid.Row="6" Text="Relation" ToolTip="Relation between Employee and his/her Emergency Contact Person"/>
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding empPInfo.CRELATION, UpdateSourceTrigger=PropertyChanged}"/>
+            
+
+
+
+
+        </Grid>
+    </Border>
+</UserControl>

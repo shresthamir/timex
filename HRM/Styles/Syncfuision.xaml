@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+                    xmlns:ss="clr-namespace:HRM.Library.Helper"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ss:MonthlyAttendanceStyleSelector x:Key="mass"/>
+    <Style TargetType="syncfusion:VirtualizingCellsControl" x:Key="AbsentRow">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="Red" Opacity="0.6"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style TargetType="syncfusion:VirtualizingCellsControl" x:Key="LeaveRow">
+        <Setter Property="Background" Value="#FF70FCA0"/>
+    </Style>
+
+    <Style TargetType="syncfusion:VirtualizingCellsControl" x:Key="HolidayRow">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#FFFFD356" Opacity="0.7"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="syncfusion:VirtualizingCellsControl" x:Key="WeekendRow">
+        <Setter Property="Background" Value="Orange"/>
+    </Style>
+
+</ResourceDictionary>

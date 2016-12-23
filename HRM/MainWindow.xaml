@@ -1,0 +1,235 @@
+﻿<Window x:Class="HRM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Behavior="clr-namespace:HRM.Library.Behaviors"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:Lib="clr-namespace:HRM.Library.AppScopeClasses"
+         WindowState="Maximized" 
+        >   
+    <Window.InputBindings>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewCommand}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding EditCommand}"/>
+        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding ClearCommand}"/>
+        <KeyBinding Key="P" Modifiers="Control" Command="{Binding PrintCommand}"/>
+        <KeyBinding Key="L" Modifiers="Control" Command="{Binding ExportCommand}"/>
+    </Window.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition />
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>         
+        <Menu x:Name="MainMenu">
+            <Menu.Resources>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Padding" Value="10 3"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="FontSize" Value="13"/>
+                </Style>
+            </Menu.Resources>
+            <MenuItem Header="User">
+                <MenuItem Header="User Management" Visibility="{Binding USERMANAGEMENT, Converter={StaticResource ToVisibility}}" Click="File_Click"></MenuItem>
+                <MenuItem Header="Log Out" Click="File_Click"></MenuItem>
+                <MenuItem Header="Change Password" Click="File_Click"></MenuItem>
+                <MenuItem Header="Exit" Click="File_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Master" Visibility="{Binding MASTER, Converter={StaticResource ToVisibility}}">
+                <MenuItem Header="Branch Setup" Visibility="{Binding BRANCH, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
+                <MenuItem Header="Departments" Visibility="{Binding DEPARTMENT, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
+                <MenuItem Header="Designation" Visibility="{Binding DESIGNATION, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
+                <MenuItem Header="Holiday Setup" Visibility="{Binding HOLIDAY, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
+                <MenuItem Header="Leave Setup" Visibility="{Binding LEAVE, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
+                <MenuItem Header="Working Hour" Visibility="{Binding WORKHOUR, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
+                
+            </MenuItem>
+            <MenuItem Header="Tasks" Visibility="{Binding TASKS, Converter={StaticResource ToVisibility}}">
+                <MenuItem Header="Employee Registration" Visibility="{Binding EMPLOYEE_REGISTRATION, Converter={StaticResource ToVisibility}}" Click="Task_Click" />
+                <MenuItem Header="Manual Attendance" Visibility="{Binding MANUAL_ATTENDANCE, Converter={StaticResource ToVisibility}}" Click="Task_Click" />
+                <MenuItem Header="Monthly Leave" Visibility="{Binding MONTHLY_LEAVE, Converter={StaticResource ToVisibility}}" Click="Task_Click"/>
+                <MenuItem Header="Add Leave" Visibility="{Binding ADD_LEAVE, Converter={StaticResource ToVisibility}}" Click="Task_Click"/>
+                <MenuItem Header="Leave Application" Visibility="{Binding LEAVE_APPLICATION, Converter={StaticResource ToVisibility}}" Click="Task_Click"/>
+                <MenuItem Header="Assign Workhour" Visibility="{Binding ASSIGN_WORKHOUR, Converter={StaticResource ToVisibility}}" Click="Task_Click"/>
+            </MenuItem>
+            <MenuItem Header="Reports" Visibility="{Binding REPORTS, Converter={StaticResource ToVisibility}}">
+                <MenuItem Header="Attendance Reports" Visibility="{Binding ATTENDANCE_REPORTS, Converter={StaticResource ToVisibility}}">
+                    <MenuItem Header="Monthly Attendance - Detail" Visibility="{Binding MONTHLY_ATTENDANCE_DETAIL, Converter={StaticResource ToVisibility}}" Click="Report_Click"/>
+                    <MenuItem Header="Monthly Attendance - Summary" Visibility="{Binding MONTHLY_ATTENDACE_SUMMARY, Converter={StaticResource ToVisibility}}" Click="Report_Click"/>
+                    <MenuItem Header="Attendance Book Report" Visibility="{Binding ATTENDANCE_BOOK, Converter={StaticResource ToVisibility}}" Click="Report_Click"/>
+                    <MenuItem Header="Daily Attendance Report" Click="Report_Click" Visibility="{Binding DAILY_ATTENDANCE, Converter={StaticResource ToVisibility}}"/>
+                    <MenuItem Header="Annual Attendance Report" Visibility="{Binding ANNUAL_ATTENDANCE, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                    <MenuItem Header="Daily Absent Report" Click="Report_Click" Visibility="{Binding DAILY_ABSENT, Converter={StaticResource ToVisibility}}"/>
+                    <MenuItem Header="Manual Attendance Report" Visibility="{Binding MANUAL_ATTENDANCE_REPORT, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                </MenuItem>
+                <MenuItem Header="Leave Reports" Visibility="{Binding LEAVE_REPORTS, Converter={StaticResource ToVisibility}}">
+                    <MenuItem Header="Leave Status Report" Click="Report_Click" Visibility="{Binding LEAVE_STATUS, Converter={StaticResource ToVisibility}}"/>
+                    <MenuItem Header="Leave Statement" Click="Report_Click" Visibility="{Binding LEAVE_STATEMENT, Converter={StaticResource ToVisibility}}"/>
+                    <MenuItem Header="Annual Leave Report" Click="Report_Click" Visibility="{Binding ANNUAL_LEAVE, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                    <MenuItem Header="Monthly Leave Report" Click="Report_Click" Visibility="{Binding MONTHLY_LEAVE_REPORT, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                </MenuItem>
+                <MenuItem Header="Employee List" Click="Report_Click" Visibility="{Binding EMPLOYEE_LIST, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Employee Detail" Visibility="{Binding EMPLOYEE_DETAIL, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                <MenuItem Header="Monthly Late Report" Visibility="{Binding MONTHLY_LATE, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                <MenuItem Header="Annual Holiday List" Visibility="{Binding ANNUAL_HOLIDAY_LIST, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+
+                <MenuItem Header="Attendance Log" Visibility="{Binding ATTENDANCE_LOG, Converter={StaticResource ToVisibility}}" IsEnabled="False">
+                    <MenuItem Header="Daily Attendance Log" Visibility="{Binding DAILY_ATTENDANCE, Converter={StaticResource ToVisibility}}"/>
+                    <MenuItem Header="Monthly Attendance Log" Visibility="{Binding MONTHLY_ATTENDANCE, Converter={StaticResource ToVisibility}}"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Utilities">
+                <MenuItem Header="Company Info" Click="Utilities_Click" Visibility="{Binding USERMANAGEMENT, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Download Attendance Data" Click="Utilities_Click" Visibility="{Binding USERMANAGEMENT, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Database Backup" Click="Utilities_Click" Visibility="{Binding USERMANAGEMENT, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Database Restore" Click="Utilities_Click" Visibility="{Binding USERMANAGEMENT, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Device Setting" IsEnabled="False" Visibility="{Binding USERMANAGEMENT, Converter={StaticResource ToVisibility}}"/>                
+            </MenuItem>
+            <MenuItem Header="Windows">
+                
+            </MenuItem>
+            <MenuItem Header="Help"></MenuItem>
+            
+        </Menu>
+        <ToolBar Grid.Row="1">
+            <!--<Button ToolTip="New Action (Ctrl + N)"  Tag="NEW" Command="{Binding NewCommand}" IsEnabled="{Binding NewEnabled}">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="New Department"/>
+                        <MenuItem Header="New Sub-Department"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <Button.Content>
+                    <Image Source="Images\New.png" />
+                </Button.Content>
+            </Button>-->
+
+
+            <Button ToolTip="New Action (Ctrl + N)"  Tag="NEW" IsEnabled="{Binding NewEnabled}">
+                <i:Interaction.Behaviors>
+                    <Behavior:DropDownButtonBehavior/>
+                </i:Interaction.Behaviors>
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Images/New.png" SnapsToDevicePixels="True"  />
+                        <Separator Margin="0">
+                            <Separator.LayoutTransform>
+                                <TransformGroup>
+                                    <TransformGroup.Children>
+                                        <TransformCollection>
+                                            <RotateTransform Angle="90"/>
+                                        </TransformCollection>
+                                    </TransformGroup.Children>
+                                </TransformGroup>
+                            </Separator.LayoutTransform>
+                        </Separator>
+                        <Path Margin="2" VerticalAlignment="Center" Width="6" Fill="#FF527DB5" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+                    </StackPanel>
+                </Button.Content>
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="New Department" Command="{Binding NewCommand}" CommandParameter="G"/>
+                        <MenuItem Header="New Sub-Department" Command="{Binding NewCommand}" CommandParameter="I"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <Button.Resources>
+                    <Style TargetType="Path">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasGroup}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="Separator">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasGroup}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>                   
+                </Button.Resources>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasGroup}" Value="false">
+                                <Setter Property="Command" Value="{Binding NewCommand}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button ToolTip="Edit Action (Ctrl + E)" Tag="EDIT" Command="{Binding EditCommand}" IsEnabled="{Binding EditEnabled}">                
+                <Button.Content>
+                    <Image Source="Images\Edit.png" />
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Delete Action (Del)"  Tag="DELETE" Command="{Binding DeleteCommand}" IsEnabled="{Binding DeleteEnabled}">
+                <Button.Content>
+                    <Image Source="Images\Delete.png" />
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Save Action (Ctrl + S)"  Tag="SAVE" Command="{Binding SaveCommand}" IsEnabled="{Binding SaveEnabled}">
+                <Button.Content>
+                    <Image Source="Images\Save.png" />
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Undo Action (Ctrl + Z)"  Tag="CLEAR" Command="{Binding ClearCommand}">
+                <Button.Content>
+                    <Image Source="Images\undo32.png" />
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Print Action (Ctrl + P)"  Tag="PRINT" Command="{Binding PrintCommand}" IsEnabled="{Binding PrintEnabled}">
+                <Button.Content>
+                    <Image Source="Images\Print.png" />
+                </Button.Content>
+            </Button>
+            <Button ToolTip="Export Action (Ctrl + L)"  Tag="EXPORT" Command="{Binding ExportCommand}" IsEnabled="{Binding ExportEnabled}">
+                <Button.Content>
+                    <Image Source="Images\Export.png" />
+                </Button.Content>
+            </Button>
+        </ToolBar>
+        <xcad:DockingManager  x:Name="DMan" Grid.Column="1" Grid.Row="2" >
+            <xcad:DockingManager.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <GradientStop Color="White" Offset="0.8"/>
+                    <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}"/>
+                </LinearGradientBrush>
+            </xcad:DockingManager.Background>
+            <xcad:LayoutRoot x:Name="LayRoot">
+                <xcad:LayoutPanel  x:Name="LayPanel"  Orientation="Horizontal"  >
+                    <xcad:LayoutDocumentPaneGroup x:Name="LayDocPaneGroup" >
+                        <xcad:LayoutDocumentPane x:Name="LayDocPane"  ChildrenCollectionChanged="LayDocPane_ChildrenCollectionChanged"  />
+                    </xcad:LayoutDocumentPaneGroup>
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
+        </xcad:DockingManager>
+        <Border Grid.Row="3" BorderBrush="Black" BorderThickness="0 1 0 0">
+            <Grid>                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="0 0 1 0">
+                    <StackPanel Margin="10 0 20 0" Orientation="Horizontal" DataContext="{x:Static Lib:AppVariables.CompanyInfo}">
+                        <TextBlock FontSize="11">Licensed To:</TextBlock>
+                        <TextBlock FontSize="11" Text="{Binding COMPANY_NAME}"/>
+                        <TextBlock FontSize="11">, </TextBlock>
+                        <TextBlock FontSize="11" Text="{Binding COMPANY_ADDRESS}"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="0 0 1 0">
+                    <TextBlock Margin="10 0 20 0" FontSize="11" >© National IT Service. , Tel: 9851155543, Email: suraj.nits@outlook.com</TextBlock>
+                </Border>
+                <TextBlock Grid.Column="2" Margin="10 0 0 0" FontSize="11" Text="User :"/>
+                <TextBlock Grid.Column="3" Margin="0 0 20 0" FontSize="11" Text="{x:Static Lib:AppVariables.LoggedUser}" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

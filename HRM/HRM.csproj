@@ -1,0 +1,581 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8449AF45-988B-4518-905B-E5BD0141198E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HRM</RootNamespace>
+    <AssemblyName>TimeX</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Windows.Shell">
+      <HintPath>C:\Users\harami baba\Downloads\ModernUI.1.0.8\net40\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="RawPrintFunctions">
+      <HintPath>..\..\ParkingManagement\RawPrintFunctions\bin\Debug\RawPrintFunctions.dll</HintPath>
+    </Reference>
+    <Reference Include="SKGL">
+      <HintPath>..\..\SKGL.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Data.WPF, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.Pdf.Base, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.PdfViewer.WPF, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.SfGrid.WPF, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.SfGridConverter.WPF, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Syncfusion.Shared.WPF, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\..\EMS\TicketBox\TicketBox\bin\x86\Debug\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\EMS\TicketBox\TicketBox\bin\x86\Debug\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Controls\ucDateMiti.xaml.cs">
+      <DependentUpon>ucDateMiti.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Library\AppScopeClasses\AppVariables.cs" />
+    <Compile Include="Library\AppScopeClasses\KeyHandler.cs" />
+    <Compile Include="Library\AppScopeClasses\LeaveFunctions.cs" />
+    <Compile Include="Library\AppScopeClasses\TimeXLicense.cs" />
+    <Compile Include="Library\BaseClasses\RootViewModel.cs" />
+    <Compile Include="Library\BaseClasses\ITreeItem.cs" />
+    <Compile Include="Library\Behaviors\BehaviorBinding.cs" />
+    <Compile Include="Library\Behaviors\Command.cs" />
+    <Compile Include="Library\Behaviors\CommandAndMessage.cs" />
+    <Compile Include="Library\Behaviors\CommandBehavior.cs" />
+    <Compile Include="Library\Behaviors\CommandBehaviorBinding.cs" />
+    <Compile Include="Library\Behaviors\CommandBehaviorCollection.cs" />
+    <Compile Include="Library\Behaviors\DropDownButtonBehavior.cs" />
+    <Compile Include="Library\Behaviors\EventCommand.cs" />
+    <Compile Include="Library\Behaviors\EventHandlerGenerator.cs" />
+    <Compile Include="Library\Behaviors\ExecutionStrategy.cs" />
+    <Compile Include="Library\Behaviors\SimpleCommand.cs" />
+    <Compile Include="Library\CustomControls\WatermarkComboBox.cs" />
+    <Compile Include="Library\Helper\RelayCommand.cs" />
+    <Compile Include="Library\Helper\StyleSelectors.cs" />
+    <Compile Include="Library\ValueConverter\HideZeroConverter.cs" />
+    <Compile Include="Library\ValueConverter\InvertBooleanValueConverter.cs" />
+    <Compile Include="Library\ValueConverter\MinuteToTimeConverter.cs" />
+    <Compile Include="Library\ValueConverter\MitiConverter.cs" />
+    <Compile Include="Library\ValueConverter\StringToBoolConverter.cs" />
+    <Compile Include="Library\ValueConverter\VisibilityConverter.cs" />
+    <Compile Include="Library\ValueConverter\WatermarkVisibilityConverter.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\AttDevice.cs" />
+    <Compile Include="Models\Attendance.cs" />
+    <Compile Include="Models\Branch.cs" />
+    <Compile Include="Models\EmployeeDetail.cs" />
+    <Compile Include="Models\ManualAttendance.cs" />
+    <Compile Include="Models\Month.cs" />
+    <Compile Include="Models\Religion.cs" />
+    <Compile Include="Models\UserManagement.cs" />
+    <Compile Include="Models\Weekend.cs" />
+    <Compile Include="UI\Master\EmpRegistration\ucWeekend.xaml.cs">
+      <DependentUpon>ucWeekend.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucWorkHour.xaml.cs">
+      <DependentUpon>ucWorkHour.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\EmployeeRegistration.xaml.cs">
+      <DependentUpon>EmployeeRegistration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\EmpRegistration\ucExperience.xaml.cs">
+      <DependentUpon>ucExperience.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\EmpRegistration\ucTraining.xaml.cs">
+      <DependentUpon>ucTraining.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\EmpRegistration\ucAcademics.xaml.cs">
+      <DependentUpon>ucAcademics.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\EmpRegistration\ucPInfo.xaml.cs">
+      <DependentUpon>ucPInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucDesignation.xaml.cs">
+      <DependentUpon>ucDesignation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucBranch.xaml.cs">
+      <DependentUpon>ucBranch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucCompany.xaml.cs">
+      <DependentUpon>ucCompany.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucDepartment.xaml.cs">
+      <DependentUpon>ucDepartment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucHoliday.xaml.cs">
+      <DependentUpon>ucHoliday.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Master\ucLeave.xaml.cs">
+      <DependentUpon>ucLeave.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Misc\About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Misc\Browse.xaml.cs">
+      <DependentUpon>Browse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Misc\Register.xaml.cs">
+      <DependentUpon>Register.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Misc\Splash.xaml.cs">
+      <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\AttendanceReports\ucDailyAbsent.xaml.cs">
+      <DependentUpon>ucDailyAbsent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\AttendanceReports\ucDailyAttendance.xaml.cs">
+      <DependentUpon>ucDailyAttendance.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\AttendanceReports\ucHajirBook.xaml.cs">
+      <DependentUpon>ucHajirBook.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\AttendanceReports\ucMonthlyAttendance.xaml.cs">
+      <DependentUpon>ucMonthlyAttendance.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\AttendanceReports\ucMonthlyAttendanceSummary.xaml.cs">
+      <DependentUpon>ucMonthlyAttendanceSummary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\LeaveReports\ucLeaveLedger.xaml.cs">
+      <DependentUpon>ucLeaveLedger.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\LeaveReports\ucLeaveStatus.xaml.cs">
+      <DependentUpon>ucLeaveStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\PdfViewer.xaml.cs">
+      <DependentUpon>PdfViewer.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Reports\ucEmployeeList.xaml.cs">
+      <DependentUpon>ucEmployeeList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Tasks\ucForceAttendance.xaml.cs">
+      <DependentUpon>ucForceAttendance.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Tasks\ucAddLeave.xaml.cs">
+      <DependentUpon>ucAddLeave.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Tasks\ucLeaveApplication.xaml.cs">
+      <DependentUpon>ucLeaveApplication.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Tasks\ucMonthlyLeave.xaml.cs">
+      <DependentUpon>ucMonthlyLeave.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Tasks\ucWorkhourAssign.xaml.cs">
+      <DependentUpon>ucWorkhourAssign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\User\ChangePassword.xaml.cs">
+      <DependentUpon>ChangePassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\User\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\User\ucUserManagement.xaml.cs">
+      <DependentUpon>ucUserManagement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Utilities\wDataBackup.xaml.cs">
+      <DependentUpon>wDataBackup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Utilities\wDataDownload.xaml.cs">
+      <DependentUpon>wDataDownload.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Utilities\wDataRestore.xaml.cs">
+      <DependentUpon>wDataRestore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\CompanyViewModel.cs" />
+    <Compile Include="ViewModels\BranchViewModel.cs" />
+    <Compile Include="ViewModels\AddLeaveViewModel.cs" />
+    <Compile Include="ViewModels\Reports\HajirBookViewModel.cs" />
+    <Compile Include="ViewModels\Reports\MonthlyAttSummaryViewModel.cs" />
+    <Compile Include="ViewModels\Reports\EmployeeListViewModel.cs" />
+    <Compile Include="ViewModels\UserManagementViewModel.cs" />
+    <Compile Include="ViewModels\LeaveApplicationViewModel.cs" />
+    <Compile Include="ViewModels\DataDownloadViewModel.cs" />
+    <Compile Include="ViewModels\ManualAttendanceViewModel.cs" />
+    <Compile Include="ViewModels\Reports\DailyAttandanceViewModel.cs" />
+    <Compile Include="ViewModels\Reports\MonthlyAttandanceViewModel.cs" />
+    <Compile Include="ViewModels\MonthlyLeaveViewModel.cs" />
+    <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
+    <Compile Include="ViewModels\WorkHourAssignViewModel.cs" />
+    <Compile Include="ViewModels\WorkHourViewModel.cs" />
+    <Compile Include="ViewModels\DesignationViewModel.cs" />
+    <Compile Include="ViewModels\EmployeeViewModel.cs" />
+    <Compile Include="ViewModels\LeaveViewModel.cs" />
+    <Compile Include="ViewModels\DepartmentViewModel.cs" />
+    <Compile Include="ViewModels\HolidayViewModel.cs" />
+    <Page Include="Controls\ucDateMiti.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Library\BaseClasses\RootModel.cs" />
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Style.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Syncfuision.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\ValueConverter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\WatermarkComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\EmpRegistration\ucWeekend.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\ucWorkHour.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Master\EmployeeRegistration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\EmpRegistration\ucExperience.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Master\EmpRegistration\ucTraining.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Master\EmpRegistration\ucAcademics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\EmpRegistration\ucPInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\ucDesignation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Master\ucBranch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Master\ucCompany.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\ucDepartment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\ucHoliday.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Master\ucLeave.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Misc\About.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Misc\Browse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Misc\Register.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Misc\Splash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\AttendanceReports\ucDailyAbsent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Reports\AttendanceReports\ucDailyAttendance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Reports\AttendanceReports\ucHajirBook.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\AttendanceReports\ucMonthlyAttendance.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Reports\AttendanceReports\ucMonthlyAttendanceSummary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\LeaveReports\ucLeaveLedger.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Reports\LeaveReports\ucLeaveStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\PdfViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\ucEmployeeList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Tasks\ucForceAttendance.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Tasks\ucAddLeave.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Tasks\ucLeaveApplication.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Tasks\ucMonthlyLeave.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Tasks\ucWorkhourAssign.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\User\ChangePassword.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\User\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\User\ucUserManagement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Utilities\wDataBackup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Utilities\wDataDownload.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Utilities\wDataRestore.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Designation.cs" />
+    <Compile Include="Models\EmpLeave.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\EmpTravelEntry.cs" />
+    <Compile Include="Models\FiscalYear.cs" />
+    <Compile Include="Models\Holiday.cs" />
+    <Compile Include="Models\Leaves.cs" />
+    <Compile Include="Models\WorkHour.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\Cancel.png" />
+    <Resource Include="Images\copy24.png" />
+    <Resource Include="Images\copy32.png" />
+    <Resource Include="Images\Edit24.png" />
+    <Resource Include="Images\Edit32.png" />
+    <Resource Include="Images\go-next.png" />
+    <Resource Include="Images\go-previous.png" />
+    <Resource Include="Images\Redo24.png" />
+    <Resource Include="Images\undo32.png" />
+    <Resource Include="Images\Yes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ArrowDown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="zkemkeeper">
+      <Guid>{FE9DED34-E159-408E-8490-B720A5E632C7}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Green.png" />
+    <Resource Include="Images\Red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TimeX Logo.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Print.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Login.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LoginButton.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

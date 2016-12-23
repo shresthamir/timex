@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:vc="clr-namespace:HRM.Library.ValueConverter"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <vc:InvertBooleanValueConverter x:Key="InvertBool"/>
+    <vc:HideZeroConverter x:Key="HideZero"/>
+    <vc:VisibilityConverter x:Key="ToVisibility"/>
+    <vc:MitiConverter x:Key="ToMiti"/>
+    <vc:WatermarkVisibilityConverter x:Key="WatermarkVisibility"/>
+    <vc:StringToBoolConverter x:Key="ToBool"/>
+    <vc:DateToDayConverter x:Key="DateToDay"/>
+    <vc:MinuteToTimeConverter x:Key="MinuteToTime"/>
+    <vc:TextboxToPasswordConverter x:Key="ToPassword"/>
+</ResourceDictionary>

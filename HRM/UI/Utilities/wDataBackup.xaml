@@ -1,0 +1,27 @@
+﻿<Window x:Class="HRM.UI.Utilities.wDataBackup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" ResizeMode="NoResize"
+        Title="Data Backup" Height="200" Width="350">
+    <Border Style="{StaticResource GradientBackground}">
+        <StackPanel>            
+            <Border Style="{StaticResource PlainBackground}" Padding="10">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Backup Location" Width="100"/>
+                        <TextBox x:Name="txtDirectory" Width="180"  />
+                        <Button Content="..." Width="30" Height="26" Click="Button_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 5">
+                        <Label Content="Backup File" Width="100"/>
+                        <TextBox x:Name="txtFile" Width="180" Text="sdafasdf" VerticalContentAlignment="Bottom"  />
+                        <TextBox x:Name="txtExt" Text=".Bak" IsEnabled="False" VerticalContentAlignment="Bottom" Width="35" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 10 0">
+                <Button Content="Backup" Height="35" Width="70" Click="Button_Click"/>
+                <Button Content="Cancel" Height="35" Width="70" Click="Button_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
