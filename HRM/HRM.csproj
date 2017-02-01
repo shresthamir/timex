@@ -64,6 +64,14 @@
     <Reference Include="Microsoft.Windows.Shell">
       <HintPath>C:\Users\harami baba\Downloads\ModernUI.1.0.8\net40\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="RawPrintFunctions">
       <HintPath>..\..\ParkingManagement\RawPrintFunctions\bin\Debug\RawPrintFunctions.dll</HintPath>
@@ -140,6 +148,8 @@
     <Compile Include="Library\CustomControls\WatermarkComboBox.cs" />
     <Compile Include="Library\Helper\RelayCommand.cs" />
     <Compile Include="Library\Helper\StyleSelectors.cs" />
+    <Compile Include="Library\Helper\TemplateSelectors.cs" />
+    <Compile Include="Library\ValueConverter\AttendanceColorIndicator.cs" />
     <Compile Include="Library\ValueConverter\HideZeroConverter.cs" />
     <Compile Include="Library\ValueConverter\InvertBooleanValueConverter.cs" />
     <Compile Include="Library\ValueConverter\MinuteToTimeConverter.cs" />
@@ -272,9 +282,13 @@
     <Compile Include="UI\Utilities\wDataRestore.xaml.cs">
       <DependentUpon>wDataRestore.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Utilities\wDeviceSetting.xaml.cs">
+      <DependentUpon>wDeviceSetting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\CompanyViewModel.cs" />
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\AddLeaveViewModel.cs" />
+    <Compile Include="ViewModels\DeviceSettingViewModel.cs" />
     <Compile Include="ViewModels\Reports\HajirBookViewModel.cs" />
     <Compile Include="ViewModels\Reports\MonthlyAttSummaryViewModel.cs" />
     <Compile Include="ViewModels\Reports\EmployeeListViewModel.cs" />
@@ -303,6 +317,10 @@
     </Compile>
     <Compile Include="Library\BaseClasses\RootModel.cs" />
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -470,6 +488,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Utilities\wDeviceSetting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Company.cs" />
@@ -532,17 +554,6 @@
     <Resource Include="Images\ArrowDown.png" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="zkemkeeper">
-      <Guid>{FE9DED34-E159-408E-8490-B720A5E632C7}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Green.png" />
     <Resource Include="Images\Red.png" />
   </ItemGroup>
@@ -569,6 +580,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\LoginButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="zkemkeeper">
+      <Guid>{FE9DED34-E159-408E-8490-B720A5E632C7}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -16,7 +16,7 @@ using HRM.Library.Helpers;
 namespace HRM.ViewModels
 {
     class DataDownloadViewModel : RootViewModel
-    {        
+    {
         IEnumerable<Employee> EmpList;
         static zkemkeeper.CZKEM zkem;
         private ObservableCollection<AttDevice> _DeviceList;
@@ -35,10 +35,10 @@ namespace HRM.ViewModels
                     EmpList = conn.Query<Employee>("SELECT * FROM EMPLOYEE");
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        RefreshAllData(tran);                       
+                        RefreshAllData(tran);
                         tran.Commit();
                     }
-
+                    ShowInformation("Attendance data updated successfully");
                 }
             }
             catch (Exception Ex)
@@ -49,6 +49,31 @@ namespace HRM.ViewModels
         }
 
         private void DownloadData(object obj)
+        {
+            BackgroundWorker DownloadWorker = new BackgroundWorker();
+            DownloadWorker.WorkerReportsProgress = true;
+            DownloadWorker.DoWork += DownloadWorker_DoWork;
+            DownloadWorker.ProgressChanged += DownloadWorker_ProgressChanged;
+            DownloadWorker.RunWorkerAsync();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    conn.Open();
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+            }
+        }
+
+        private void DownloadWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            DeviceList.First().Counter = e.ProgressPercentage;
+        }
+
+        private void DownloadWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             List<AttLog> AttData = new List<AttLog>();
             try
@@ -61,8 +86,8 @@ namespace HRM.ViewModels
                     {
                         if (!ad.IsSelected || ad.STATUS != 1)
                             continue;
+                        ad.STATUS = 100;
                         zkem.Connect_Net(ad.DEVICE_IP, 4370);
-
                         using (SqlTransaction tran = conn.BeginTransaction())
                         {
                             if (zkem.ReadGeneralLogData(zkem.MachineNumber))
@@ -79,10 +104,13 @@ namespace HRM.ViewModels
                                         InOutMode = Convert.ToByte(ld.dwInOutMode)
                                     };
                                     al.Save(tran);
+                                    //System.Threading.Thread.Sleep(1000);
+                                    ad.Counter++;
                                 }
                             }
-                            tran.Commit();
-                         //   zkem.ClearGLog(zkem.MachineNumber);
+                            tran.Commit();                            
+                            if (SETTING.CLEAR_DEVICE_DATA_AFTER_DOWNLOAD)
+                                zkem.ClearGLog(zkem.MachineNumber);
                             zkem.Disconnect();
                         }
                         EmpList = conn.Query<Employee>("SELECT * FROM EMPLOYEE");
@@ -91,15 +119,15 @@ namespace HRM.ViewModels
                             RefreshAllData(tran);
                             tran.Commit();
                         }
+                        ShowInformation("Attendance Data Downloaded successfully.");
+                        ad.STATUS = 1;
+                        ad.Counter = 0;
+                        ad.LogCount = 0;
                     }
-
-                    
                 }
-                ShowInformation("Attendance Data Downloaded successfully.");
             }
-            catch (Exception ex)
+            catch
             {
-                ShowError(ex.Message);
             }
         }
 
@@ -107,7 +135,7 @@ namespace HRM.ViewModels
         {
             MessageBoxCaption = "Data Download";
             RefreshDeviceList();
-        }        
+        }
 
         void RefreshDeviceList()
         {
@@ -127,6 +155,15 @@ namespace HRM.ViewModels
             catch (Exception Ex)
             {
                 ShowError(Ex.Message);
+            }
+        }
+
+        public bool AllDevice
+        {
+            set
+            {
+                foreach (AttDevice ad in DeviceList)
+                    ad.IsSelected = value;
             }
         }
 
@@ -158,11 +195,22 @@ namespace HRM.ViewModels
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
 
-            zkem = new zkemkeeper.CZKEM();
-            AttDevice ad = e.Argument as AttDevice;
-            ad.STATUS = 2;
-            ad.STATUS = (byte)(zkem.Connect_Net(ad.DEVICE_IP, 4370) ? 1 : 0);
-            zkem.Disconnect();
+            try
+            {
+                int LogCount = 0;
+                zkem = new zkemkeeper.CZKEM();
+                AttDevice ad = e.Argument as AttDevice;
+                ad.STATUS = 2;
+                ad.STATUS = (byte)(zkem.Connect_Net(ad.DEVICE_IP, 4370) ? 1 : 0);
+                zkem.GetDeviceStatus(zkem.MachineNumber, 6, ref LogCount);
+                ad.LogCount = LogCount;
+                zkem.Disconnect();
+
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+            }
 
             //System.Threading.Thread.Sleep(5000);
             //ad.STATUS = 1;
@@ -188,7 +236,7 @@ namespace HRM.ViewModels
 
             EmpHolidaySettingList = tran.Connection.Query
                 (
-@"SELECT E.ENO, ISNULL(EP.GENDER, 'Male') GENDER, ISNULL(EP.RELIGION, 'Hindu') RELIGION , ED.BRANCH_ID, EP.JOINDATE FROM EMPLOYEE E
+        @"SELECT E.ENO, ISNULL(EP.GENDER, 'Male') GENDER, ISNULL(EP.RELIGION, 'Hindu') RELIGION , ED.BRANCH_ID, EP.JOINDATE FROM EMPLOYEE E
 JOIN 
 (
 	EMPLOYEE_DETAIL ED JOIN
@@ -201,7 +249,7 @@ LEFT JOIN EMPLOYEE_PERSONAL_INFO EP ON E.ENO = EP.ENO", transaction: tran
 
             HolidayList = tran.Connection.Query
                 (
-@"SELECT HD.HOLIDAY_ID, HOLIDAY_DATE, ISNULL(BRANCH_ID, 0) BRANCHID, ISNULL(GENDER,'') GENDER, ISNULL(RELIGION,'') RELIGION FROM HOLIDAY_DATE HD 
+        @"SELECT HD.HOLIDAY_ID, HOLIDAY_DATE, ISNULL(BRANCH_ID, 0) BRANCHID, ISNULL(GENDER,'') GENDER, ISNULL(RELIGION,'') RELIGION FROM HOLIDAY_DATE HD 
 LEFT JOIN HOLIDAY_BRANCH HB ON HD.HOLIDAY_ID = HB.HOLIDAY_ID
 LEFT JOIN HOLIDAY_GENDER HG ON HD.HOLIDAY_ID = HB.HOLIDAY_ID
 LEFT JOIN HOLIDAY_RELIGION HR ON HD.HOLIDAY_ID = HB.HOLIDAY_ID
@@ -270,7 +318,7 @@ WHERE FYID = " + AppVariables.FYID + " ORDER BY HOLIDAY_DATE", transaction: tran
             try
             {
                 RefreshLeaveData(tran);
-                RefreshHolidayData(tran,EmpList);
+                RefreshHolidayData(tran, EmpList);
                 RefreshWeekendData(tran);
                 RefreshAttendanceData(tran, EmpList);
             }
@@ -289,13 +337,15 @@ WHERE FYID = " + AppVariables.FYID + " ORDER BY HOLIDAY_DATE", transaction: tran
 
             CheckInOutData = tran.Connection.Query<Attendance>
                 (
-@"SELECT [IN].*, dbo.GetEmpWorkHour([IN].ENO,[IN].ATT_DATE) WORKHOUR_ID, InMode.MODE CHECKINMODE, InMode.REMARKS CHECKINREMARKS,  [OUT].CHECKOUT, OutMode.MODE CHECKOUTMODE, OutMode.REMARKS CHECKINREMARKS FROM
+        @"SELECT [IN].*, dbo.GetEmpWorkHour([IN].ENO,[IN].ATT_DATE) WORKHOUR_ID, InMode.MODE CHECKINMODE, InMode.REMARKS CHECKINREMARKS,  [OUT].CHECKOUT, OutMode.MODE CHECKOUTMODE, OutMode.REMARKS CHECKINREMARKS FROM
 (
 	SELECT L.ENO, L.ATT_DATE, 
 	CASE WHEN A.CHECKIN IS NULL THEN MIN(ATT_TIME) 
 	WHEN A.CHECKIN>MIN(ATT_TIME) THEN MIN(ATT_TIME) 
 	ELSE A.CHECKIN END CHECKIN  
-	FROM vwAttLogDetail L LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
+	FROM vwAttLogDetail L 
+    JOIN EMPLOYEE E ON L.ENO = E.ENO
+    LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
 	WHERE ISNULL(FLAG,0) = 0  GROUP BY L.ENO, L.ATT_DATE, A.CHECKIN
 ) [IN] 
 JOIN vwAttLogDetail INMODE ON [IN].ENO = INMODE.ENO AND [IN].ATT_DATE = INMODE.ATT_DATE AND [IN].CHECKIN = INMODE.ATT_TIME
@@ -306,7 +356,9 @@ LEFT JOIN
 		CASE WHEN A.CHECKOUT IS NULL THEN MAX(ATT_TIME)  
 		WHEN A.CHECKOUT<MAX(ATT_TIME) THEN MAX(ATT_TIME) 
 		ELSE A.CHECKOUT END CHECKOUT 
-		FROM vwAttLogDetail L LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
+		FROM vwAttLogDetail L 
+        JOIN EMPLOYEE E ON L.ENO = E.ENO
+        LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
 		WHERE ISNULL(FLAG,0) = 0 GROUP BY L.ENO, L.ATT_DATE, A.CHECKOUT
 	) [OUT] 
 	JOIN vwAttLogDetail OUTMODE ON [OUT].ENO = OUTMODE.ENO AND [OUT].ATT_DATE = OUTMODE.ATT_DATE AND [OUT].CHECKOUT = OUTMODE.ATT_TIME
@@ -319,7 +371,7 @@ LEFT JOIN
                 if (ExistingAttData == null)
                 {
                     if (EmpList.Any(x => x.ENO == att.ENO))
-                    {                        
+                    {
                         att.FYID = AppVariables.FYID;
                         tran.Connection.Execute("INSERT INTO ATTENDANCE(ENO, FYID, WORKHOUR_ID, ATT_DATE, CHECKIN, CHECKINMODE, CHECKINREMARKS, CHECKOUT, CHECKOUTMODE, CHECKOUTREMARKS) VALUES (@ENO, @FYID, @WORKHOUR_ID, @ATT_DATE, @CHECKIN, @CHECKINMODE, @CHECKINREMARKS, @CHECKOUT, @CHECKOUTMODE, @CHECKOUTREMARKS)",
                                 att, tran);
@@ -335,13 +387,15 @@ LEFT JOIN
 
             LunchOutInData = tran.Connection.Query<Attendance>
                 (
-@"SELECT [OUT].*, OUTMODE.MODE LUNCHOUTMODE, OUTMODE.REMARKS LUNCHOUTREMARKS, [IN].LUNCHIN, INMODE.MODE LUNCHINMODE, INMODE.REMARKS LUNCHINREMARKS FROM
+        @"SELECT [OUT].*, OUTMODE.MODE LUNCHOUTMODE, OUTMODE.REMARKS LUNCHOUTREMARKS, [IN].LUNCHIN, INMODE.MODE LUNCHINMODE, INMODE.REMARKS LUNCHINREMARKS FROM
 (
     SELECT L.ENO, L.ATT_DATE, 
 	CASE WHEN A.LUNCHOUT IS NULL THEN MIN(ATT_TIME) 
 	WHEN A.LUNCHOUT>MIN(ATT_TIME) THEN MIN(ATT_TIME) 
 	ELSE A.LUNCHOUT END LUNCHOUT  
-	FROM vwAttLogDetail L LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
+	FROM vwAttLogDetail L 
+    JOIN EMPLOYEE E ON L.ENO = E.ENO
+    LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
 	WHERE InOut = 'Lunch Out' AND ISNULL(FLAG,0) = 0  GROUP BY L.ENO, L.ATT_DATE, A.LUNCHOUT
 ) [OUT] 
 JOIN vwAttLogDetail OUTMODE ON [OUT].ENO = OUTMODE.ENO AND [OUT].ATT_DATE = OUTMODE.ATT_DATE AND [OUT].LUNCHOUT = OUTMODE.ATT_TIME
@@ -352,7 +406,9 @@ LEFT JOIN
 		CASE WHEN A.LUNCHIN IS NULL THEN MAX(ATT_TIME)  
 		WHEN A.LUNCHIN<MAX(ATT_TIME) THEN MAX(ATT_TIME) 
 		ELSE A.LUNCHIN END LUNCHIN 
-		FROM vwAttLogDetail L LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
+		FROM vwAttLogDetail L 
+        JOIN EMPLOYEE E ON L.ENO = E.ENO
+        LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
 		WHERE InOut = 'Lunch In' AND ISNULL(FLAG,0) = 0 GROUP BY L.ENO, L.ATT_DATE, A.LUNCHIN
 	) [IN] 
 	JOIN vwAttLogDetail INMODE ON [IN].ENO = INMODE.ENO AND [IN].ATT_DATE = INMODE.ATT_DATE AND [IN].LUNCHIN = INMODE.ATT_TIME
@@ -370,13 +426,15 @@ LEFT JOIN
 
             BreakOutInData = tran.Connection.Query<Attendance>
                 (
-@"SELECT [OUT].*, OUTMODE.MODE BREAKOUTMODE, OUTMODE.REMARKS BREAKOUTREMARKS, [IN].BREAKIN, INMODE.MODE BREAKINMODE, INMODE.REMARKS BREAKINREMARKS FROM
+        @"SELECT [OUT].*, OUTMODE.MODE BREAKOUTMODE, OUTMODE.REMARKS BREAKOUTREMARKS, [IN].BREAKIN, INMODE.MODE BREAKINMODE, INMODE.REMARKS BREAKINREMARKS FROM
 (
 	 SELECT L.ENO, L.ATT_DATE, 
 	CASE WHEN A.BREAKOUT IS NULL THEN MIN(ATT_TIME) 
 	WHEN A.BREAKOUT>MIN(ATT_TIME) THEN MIN(ATT_TIME) 
 	ELSE A.BREAKOUT END BREAKOUT  
-	FROM vwAttLogDetail L LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
+	FROM vwAttLogDetail L 
+    JOIN EMPLOYEE E ON L.ENO = E.ENO
+    LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
 	WHERE InOut = 'Break Out' AND ISNULL(FLAG,0) = 0  GROUP BY L.ENO, L.ATT_DATE, A.BREAKOUT
 ) [OUT] 
 JOIN vwAttLogDetail OUTMODE ON [OUT].ENO = OUTMODE.ENO AND [OUT].ATT_DATE = OUTMODE.ATT_DATE AND [OUT].BREAKOUT = OUTMODE.ATT_TIME
@@ -387,7 +445,9 @@ LEFT JOIN
 		CASE WHEN A.BREAKIN IS NULL THEN MAX(ATT_TIME)  
 		WHEN A.BREAKIN<MAX(ATT_TIME) THEN MAX(ATT_TIME) 
 		ELSE A.BREAKIN END BREAKIN 
-		FROM vwAttLogDetail L LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
+		FROM vwAttLogDetail L 
+        JOIN EMPLOYEE E ON L.ENO = E.ENO
+        LEFT JOIN ATTENDANCE A ON A.ENO = L.ENO AND A.ATT_DATE = L.ATT_DATE  
 		WHERE InOut = 'BREAK In' AND ISNULL(FLAG,0) = 0 GROUP BY L.ENO, L.ATT_DATE, A.BREAKIN
 	) [IN] 
 	JOIN vwAttLogDetail INMODE ON [IN].ENO = INMODE.ENO AND [IN].ATT_DATE = INMODE.ATT_DATE AND [IN].BREAKIN = INMODE.ATT_TIME

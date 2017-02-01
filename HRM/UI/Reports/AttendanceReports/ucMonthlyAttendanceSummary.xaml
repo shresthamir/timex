@@ -61,17 +61,17 @@
                 <syncfusion:GroupColumnDescription ColumnName="DEPARTMENT" />
             </syncfusion:SfDataGrid.GroupColumnDescriptions>
             <syncfusion:SfDataGrid.Columns>
-                <syncfusion:GridTextColumn HeaderText="ENO" MappingName="ENO" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="ENO" MappingName="ENO" Width="35"/>
                 <syncfusion:GridTextColumn HeaderText="Employee Name" MappingName="ENAME" Width="200"/>
-                <syncfusion:GridTextColumn HeaderText="Department" MappingName="DEPARTMENT" Width="150"/>
-                <syncfusion:GridTextColumn HeaderText="Total Days" MappingName="TotalDays" Width="100"/>
-                <syncfusion:GridTextColumn HeaderText="Weekends" MappingName="Weekends" Width="80"/>
-                <syncfusion:GridTextColumn HeaderText="Holidays" MappingName="Holidays" Width="80"/>
-                <syncfusion:GridTextColumn HeaderText="Working Days" MappingName="WorkingDays" Width="100"/>
-                <syncfusion:GridTextColumn HeaderText="Paid Leaves" DisplayBinding="{Binding PaidLeaves, StringFormat={}{0:#0.00}}" Width="100"/>
-                <syncfusion:GridTextColumn HeaderText="Unpaid Leaves" DisplayBinding="{Binding UnPaidLeaves, StringFormat={}{0:#0.00}}" Width="100"/>
-                <syncfusion:GridTextColumn HeaderText="Present Days" MappingName="PresentDays" Width="100"/>
-                <syncfusion:GridTextColumn HeaderText="Absent Days" MappingName="AbsentDays" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Department" MappingName="DEPARTMENT" Width="140"/>
+                <syncfusion:GridTextColumn HeaderText="T. Days"  MappingName="TotalDays" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Weekends" MappingName="Weekends" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="Holidays" MappingName="Holidays" Width="65"/>
+                <syncfusion:GridTextColumn HeaderText="W. Days" MappingName="WorkingDays" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="P. Leaves" DisplayBinding="{Binding PaidLeaves, StringFormat={}{0:#0.00}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="U. Leaves" DisplayBinding="{Binding UnPaidLeaves, StringFormat={}{0:#0.00}}" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="P. Days" MappingName="PresentDays" Width="70"/>
+                <syncfusion:GridTextColumn HeaderText="A. Days" MappingName="AbsentDays" Width="70"/>
                 <syncfusion:GridTextColumn HeaderText="T. Duration" DisplayBinding="{Binding TotalDuration, Converter={StaticResource MinuteToTime}}" Width="100"/>
             </syncfusion:SfDataGrid.Columns>
 

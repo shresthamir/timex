@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SKGL;
+
 namespace HRM.Library.AppScopeClasses
 {
     static class TimeXLicense
@@ -69,6 +70,8 @@ namespace HRM.Library.AppScopeClasses
             }
             catch (Exception ex)
             {
+                if (ex.Message == "Requested registry access is not allowed.")
+                    System.Windows.MessageBox.Show("TimeX activation failed. Please run the program as administrator.", "TimeX Activation", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Exclamation);
                 return false;
             }
         }

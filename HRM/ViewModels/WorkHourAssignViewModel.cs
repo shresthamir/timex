@@ -111,12 +111,56 @@ namespace HRM.ViewModels
                     DepartmentList = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT FROM DEPARTMENT");
                 }
                 NewCommand = new Library.Helpers.RelayCommand(ExecuteNew);
+                SaveCommand = new Library.Helpers.RelayCommand(ExecuteSave);
+                ClearCommand = new Library.Helpers.RelayCommand(ClearAll);
                 EWList = new List<DBEmployeeWorkhour>();
                 EmployeeWorkhourList = new ObservableCollection<EmployeeWorkhour>();
             }
             catch (Exception Ex)
             {
                 MessageBox.Show(Ex.Message, MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ClearAll(object obj)
+        {
+            EWList.Clear();
+            EmployeeWorkhourList.Clear();
+            foreach (Day d in Days)
+                d.IsChecked = false;
+            EffectiveDate = DateTime.Today;
+            SelectedEmployee = null;
+            SelectedBranch = null;
+            SelectedDepartment = null;
+            SelectedWorkhour = null;
+            SetAction(ButtonAction.Init);
+        }
+
+        private void ExecuteSave(object obj)
+        {
+            try
+            {
+                if (ShowConfirmation("You are going to save current operations. Do you want to Continue?"))
+                {
+                    using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                    {
+                        conn.Open();
+                        using (SqlTransaction tran = conn.BeginTransaction())
+                        {
+                            foreach (DBEmployeeWorkhour EW in EWList)
+                            {
+                                EW.Save(tran);
+                            }
+                            tran.Commit();
+                            ShowInformation("Data successfully saved");
+                            ClearAll(null);
+                        }
+                    }
+                }
+            }
+            catch (Exception Ex)
+            {
+                ShowError(Ex.Message);
             }
         }
 
@@ -131,7 +175,7 @@ namespace HRM.ViewModels
             {
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
-                    if (BranchWise || DepartmentWise)
+                    if (BranchWise || DepartmentWise || EmployeeWise)
                     {
                         string strEmpQry =
 @"SELECT ENO, ENAME FROM
@@ -142,16 +186,18 @@ namespace HRM.ViewModels
 	(
 		SELECT ENO,  MAX(EMP_TRANID) EMP_TRANID FROM EMPLOYEE_DETAIL GROUP BY ENO
 	) ED1 ON ED.ENO = ED1.ENO AND ED.EMP_TRANID = ED1.EMP_TRANID	
-) A WHERE DEPARTMENT_ID LIKE '" + (DepartmentWise ? SelectedDepartment.DEPARTMENT_ID.ToString() : "%") + "' AND BRANCH_ID LIKE '" + (BranchWise ? SelectedBranch.BRANCH_ID.ToString() : "%") + "'";
+) A WHERE ENO LIKE '" + (EmployeeWise ? SelectedEmployee.ENO.ToString() : "%") + "' AND DEPARTMENT_ID LIKE '" + (DepartmentWise ? SelectedDepartment.DEPARTMENT_ID.ToString() : "%") + "' AND BRANCH_ID LIKE '" + (BranchWise ? SelectedBranch.BRANCH_ID.ToString() : "%") + "'";
 
                         foreach (var Emp in conn.Query<dynamic>(strEmpQry))
                         {
+                            if (EmployeeWorkhourList.Any(x => x.ENO == Emp.ENO && x.Days.Split(';', ' ').Intersect(Days.Where(y => y.IsChecked).Select(y => y.DayName)).Count() > 0))
+                                continue;
                             EmployeeWorkhour ew = new EmployeeWorkhour()
                             {
                                 ENO = Emp.ENO,
                                 WORKHOUR_ID = SelectedWorkhour.WORKHOUR_ID,
                                 EFFECTIVE_DATE = EffectiveDate,
-                                Days =string.Empty,
+                                Days = string.Empty,
                                 ENAME = Emp.ENAME,
                                 WHName = SelectedWorkhour.DESCRIPTION
                             };
@@ -164,18 +210,20 @@ namespace HRM.ViewModels
                                     WORKHOUR_ID = SelectedWorkhour.WORKHOUR_ID,
                                     EFFECTIVE_DATE = EffectiveDate
                                 });
-                                ew.Days+=d.DayName + ";";
+                                ew.Days += d.DayName + "; ";
                             }
-                            EmployeeWorkhourList.Add(ew);
+                            if (EmployeeWorkhourList.Any(x => x.ENO == ew.ENO && x.WORKHOUR_ID == ew.WORKHOUR_ID))
+                                EmployeeWorkhourList.First(x => x.ENO == ew.ENO && x.WORKHOUR_ID == ew.WORKHOUR_ID).Days += ew.Days;
+                            else
+                                EmployeeWorkhourList.Add(ew);
                         }
                     }
 
                 }
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-
-                
+                ShowError(Ex.Message);
             }
         }
     }

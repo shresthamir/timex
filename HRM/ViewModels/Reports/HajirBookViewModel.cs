@@ -90,15 +90,14 @@ namespace HRM.ViewModels
         }
 
         private void LoadReport(object obj)
-        {            
+        {
             IEnumerable<dynamic> PreReport;
             try
-            {                
+            {
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
-
-                    string strSql =string.Format(
- @"SELECT ED.ENO, ED.FULLNAME ENAME, ED.DEPARTMENT, [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], 
+                    string strSql = string.Format(
+  @"SELECT ED.ENO, ED.FULLNAME ENAME, ED.DEPARTMENT, [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], 
     [11], [12], [13], [14], [15], [16], [17], [18], [19], [20], [21], [22], [23], [24], [25], [26], 
     [27], [28], [29], [30], [31], [32] FROM
     (
@@ -116,12 +115,12 @@ namespace HRM.ViewModels
     ( 
         MIN(ASTATUS) FOR ATTDATE IN ( [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12], [13], [14],
         [15], [16], [17], [18], [19], [20], [21], [22], [23], [24], [25], [26], [27], [28], [29], [30], [31], [32])) AS PVT
-    JOIN vwEmpDetail ED ON PVT.ENO = ED.ENO WHERE 0 = 0 " + 
-(AllDepartments ? string.Empty : " AND ED.DEPARTMENT_ID = @DEPARTMENT_ID"), "DATEPART(d,AD)");
+    JOIN vwEmpDetail ED ON PVT.ENO = ED.ENO WHERE 0 = 0 " +
+ (AllDepartments ? string.Empty : " AND ED.DEPARTMENT_ID = @DEPARTMENT_ID"), ((SETTING.DEFAULT_CALENDAR == "AD") ? "DATEPART(d,AD)" : "CAST(SUBSTRING(BS,1,2) AS INT)"));
                     DateFunctions.GetFirstAndLastDayOfMonth(SelectedMonth, CurYear, ref _FDate, ref _TDate);
-                    PreReport = conn.Query<dynamic>(strSql, 
-                        new 
-                        { 
+                    PreReport = conn.Query<dynamic>(strSql,
+                        new
+                        {
                             DEPARTMENT_ID = AllDepartments ? 0 : SelectedDepartment.DEPARTMENT_ID,
                             FDATE = FDate,
                             TDate = TDate

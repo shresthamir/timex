@@ -103,6 +103,8 @@ namespace HRM.ViewModels
 
         private void DeleteUser(object obj)
         {
+            if (User.UNAME == "admin")
+                ShowWarning("User cannot be deleted");
             if (ShowConfirmation("You are going to delete selected User. Do you want to continue?"))
             {
                 try

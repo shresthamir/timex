@@ -12,9 +12,9 @@ namespace HRM.Library.AppScopeClasses
         public static void NumericOnly(KeyEventArgs e)
         {
             int key = KeyInterop.VirtualKeyFromKey(e.Key);
-            if (key == 8 || key == 46 || key==13 || (key >= 37 && key<=40))
+            if (key == 8 || key == 46 || key == 13 || (key >= 37 && key <= 40))
                 return;
-            if ((int)key < 48 || (int)key > 57)
+            if (!((key >= 48 && key <= 57) || (key>=96 && key<=105)))
                 e.Handled = true;
         }
     }

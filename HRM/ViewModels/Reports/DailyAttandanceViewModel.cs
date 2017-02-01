@@ -59,9 +59,14 @@ namespace HRM.ViewModels
         </DataTemplate>
 </ResourceDictionary>
 ";
-
+            sfGrid.PrintSettings = new Syncfusion.UI.Xaml.Grid.PrintSettings();
+            sfGrid.PrintSettings.PrintPageHeaderHeight = 80;            
             sfGrid.PrintSettings.PrintPageHeaderTemplate = (XamlReader.Parse(HeaderTemplate) as ResourceDictionary)["HeaderTemplate"] as DataTemplate;
-            sfGrid.Print();
+            sfGrid.PrintSettings.AllowColumnWidthFitToPrintPage = false;
+            sfGrid.PrintSettings.PrintPageOrientation = Syncfusion.UI.Xaml.Grid.PrintOrientation.Landscape;
+            sfGrid.PrintSettings.PrintPageMargin = new Thickness(50);
+            //sfGrid.Print();         
+            sfGrid.ShowPrintPreview();
 
             //System.IO.Stream st = new System.IO.MemoryStream();
             //PdfExportingOptions options = new PdfExportingOptions();

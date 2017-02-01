@@ -22,10 +22,11 @@ namespace HRM.Library.AppScopeClasses
         {
             if (System.IO.File.Exists(Environment.CurrentDirectory + "\\conn.txt"))
                 ConnectionString = System.IO.File.ReadAllText(Environment.CurrentDirectory + "\\conn.txt");
-            
-            FYID = 1;            
+            if (!System.IO.Directory.Exists("Export Documents"))
+                System.IO.Directory.CreateDirectory("Export Documents");
+            FYID = 1;
             DefaultWeekend = SETTING.DEFAULT_WEEKEND.Split(';');
-            using(SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 CompanyInfo = conn.Query<Company>("SELECT * FROM COMPANY").First();
             }
@@ -41,7 +42,10 @@ namespace HRM.Library.AppScopeClasses
         }
         public static string DEFAULT_CALENDAR { get; set; }
         public static bool USE_MULTI_CALENDAR { get; set; }
+        public static bool ABSENT_IF_NO_CHECK_OUT { get; set; }
         public static string DEFAULT_WEEKEND { get; set; }
+        public static bool CLEAR_DEVICE_DATA_AFTER_DOWNLOAD { get; set; }
+
         static SETTING()
         {
             Type t = typeof(SETTING);

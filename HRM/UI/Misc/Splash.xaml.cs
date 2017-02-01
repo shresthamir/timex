@@ -62,9 +62,16 @@ namespace HRM.UI.Misc
             t.Stop();
             if (!TimeXLicense.ValidateLicense())
             {
-                System.Windows.MessageBox.Show("Your License for TimeX Attendance Software has Expired. Please contact your software vendor for more information.", "TimeX", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show("Your License for TimeX Attendance Software is not valid. Please contact your software vendor for more information.", "TimeX", MessageBoxButton.OK, MessageBoxImage.Information);
                 new About().Show();
                 this.Close();                
+                return;
+            }
+            else if (TimeXLicense.IsLicenseExpired())
+            {
+                System.Windows.MessageBox.Show("Your License for TimeX Attendance Software has Expired. Please contact your software vendor for more information.", "TimeX", MessageBoxButton.OK, MessageBoxImage.Information);
+                new About().Show();
+                this.Close();
                 return;
             }
             if (CheckConnection())

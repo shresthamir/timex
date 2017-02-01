@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using System.Reflection;
+using System.Data.SqlClient;
+
 namespace HRM.Models
 {
     class WorkHour : RootModel, IDataErrorInfo
@@ -60,7 +62,7 @@ namespace HRM.Models
         {
             return tran.Connection.Execute(@"UPDATE WorkHour SET DESCRIPTION = @DESCRIPTION, ISDEFAULT = @ISDEFAULT,
 							                        INTIME = @INTIME, INGRACETIME = @INGRACETIME, OUTTIME = @OUTTIME, OUTGRACETIME = @OUTGRACETIME,
-							                        LUNCHDURATION = @LUNCHDURATION, BREAKDURATION = @BREAKDURATION, TOTALDURATION = @TOTALDURATION WHERE WORKHOUR_ID = @WORKHOUR_ID",this, tran) == 1;
+							                        LUNCHDURATION = @LUNCHDURATION, BREAKDURATION = @BREAKDURATION, TOTALDURATION = @TOTALDURATION WHERE WORKHOUR_ID = @WORKHOUR_ID", this, tran) == 1;
         }
 
         public override bool Delete(System.Data.SqlClient.SqlTransaction tran)
@@ -148,14 +150,20 @@ namespace HRM.Models
         private int _WORKHOUR_ID;
         private DateTime _EFFECTIVE_DATE;
         private DateTime _LAST_DATE;
-        
+
 
         public int ENO { get { return _ENO; } set { _ENO = value; OnPropertyChanged("ENO"); } }
         public int DAY_ID { get { return _DAY_ID; } set { _DAY_ID = value; OnPropertyChanged("DAY_ID"); } }
         public int WORKHOUR_ID { get { return _WORKHOUR_ID; } set { _WORKHOUR_ID = value; OnPropertyChanged("WORKHOUR_ID"); } }
         public DateTime EFFECTIVE_DATE { get { return _EFFECTIVE_DATE; } set { _EFFECTIVE_DATE = value; OnPropertyChanged("EFFECTIVE_DATE"); } }
         public DateTime LAST_DATE { get { return _LAST_DATE; } set { _LAST_DATE = value; OnPropertyChanged("LAST_DATE"); } }
-       
+
+        public override bool Save(SqlTransaction tran)
+        {
+            tran.Connection.Execute("UPDATE EMPLOYEE_WORKHOUR SET LAST_DATE = '" + EFFECTIVE_DATE.Subtract(TimeSpan.FromDays(1)).ToString("MM/dd/yyyy") + "' WHERE ENO = @ENO AND DAY_ID = @DAY_ID", this,tran);
+            return tran.Connection.Execute("INSERT INTO EMPLOYEE_WORKHOUR(ENO, DAY_ID, WORKHOUR_ID, EFFECTIVE_DATE) VALUES (@ENO, @DAY_ID, @WORKHOUR_ID, @EFFECTIVE_DATE)", this,tran) == 1;
+        }
+
     }
 
     class EmployeeWorkhour : DBEmployeeWorkhour

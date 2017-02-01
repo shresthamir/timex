@@ -90,7 +90,7 @@
                     <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding LeaveList}" SelectedValuePath="LEAVE_ID" DisplayMemberPath="LEAVE_NAME" SelectedValue="{Binding LLedger.LEAVE_ID}"/>
 
                     <TextBlock Grid.Row="2" Text="Quantity" Style="{StaticResource Label}"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding LLedger.Dr}" Width="150" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding LLedger.Dr, Converter={StaticResource HideZero}}" Width="150" HorizontalAlignment="Left"/>
 
                     <TextBlock Grid.Row="3" Style="{StaticResource Label}" Text="Remarks"/>
                     <TextBox  Grid.Row="3" Grid.Column="1" Text="{Binding LLedger.REMARKS, ValidatesOnDataErrors=True}"/>

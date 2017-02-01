@@ -200,6 +200,9 @@ namespace HRM
                     if (IsAppRunningInServer)
                         new wDataRestore().Show();
                     return;
+                case "Device Setting":
+                    new wDeviceSetting().Show();
+                    return;
 
             }
             //b.Converter = new Library.Converters.LanguageConverter();

@@ -57,17 +57,17 @@ namespace HRM.ViewModels
 @"<ResourceDictionary xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
                     xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
         <DataTemplate x:Key=""HeaderTemplate"">
-            <Grid HorizontalAlignment=""Center"">
+            <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height=""25""/>
                     <RowDefinition Height=""25""/>
                     <RowDefinition Height=""20""/>
                 </Grid.RowDefinitions>
-                <TextBlock FontWeight=""SemiBold"" FontSize=""14""  Text=""" + AppVariables.CompanyInfo.COMPANY_NAME + @"""/>
-                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Daily Attendance Report""/>                
-                <StackPanel Orientation=""Horizontal"" Grid.Row=""2"">
-                    <TextBlock Width=""70"" Text=""Date :""/>
-                    <TextBlock Text=""" + TDate.ToString("MM/dd/yyyy") + @"""/>                    
+                <TextBlock HorizontalAlignment=""Center"" FontWeight=""SemiBold"" FontSize=""14""  Text=""" + AppVariables.CompanyInfo.COMPANY_NAME + @"""/>
+                <TextBlock HorizontalAlignment=""Center"" Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Monthly Attendance Summary Report""/>                
+                <StackPanel HorizontalAlignment=""Center"" Orientation=""Horizontal"" Grid.Row=""2"">
+                    <TextBlock Width=""70"" Text=""Month :""/>
+                    <TextBlock Text=""" + SelectedMonth.MNAME + @"""/>                    
                     <TextBlock Width=""70"" Margin=""20 0 0 0"" Text=""Department :""/>
                     <TextBlock Text=""" + ((AllDepartments) ? "All" : SelectedDepartment.DEPARTMENT) + @"""/>                    
                 </StackPanel>
@@ -77,6 +77,8 @@ namespace HRM.ViewModels
 ";
 
             sfGrid.PrintSettings.PrintPageHeaderTemplate = (XamlReader.Parse(HeaderTemplate) as ResourceDictionary)["HeaderTemplate"] as DataTemplate;
+            //sfGrid.ShowPrintPreview();
+            sfGrid.PrintSettings.PrintPageOrientation = Syncfusion.UI.Xaml.Grid.PrintOrientation.Landscape;
             sfGrid.Print();
 
             //System.IO.Stream st = new System.IO.MemoryStream();
@@ -107,7 +109,7 @@ TotalDays - (Weekends + Holidays + FLOOR(PaidLeaves) + PresentDays - PresentOnNo
 		(
 			IsWeekend IS NOT NULL OR LEAVE_ID IS NOT NULL OR HOLIDAY_ID IS NOT NULL
 		)
-	) PresentOnNonWorkingDay, DATEDIFF(d,@FDATE,@TDATE) + 1 TotalDays, COUNT(CheckIn) PresentDays, COUNT(IsWeekend) Weekends, Count(Holiday_ID) Holidays, 
+	) PresentOnNonWorkingDay, DATEDIFF(d,@FDATE,@TDATE) + 1 TotalDays, COUNT(CheckIn) PresentDays, ISNULL(SUM(CAST(IsWeekend AS INT)), 0) Weekends, Count(Holiday_ID) Holidays, 
 	ISNULL(AVG(PaidLeaves),0) PaidLeaves, ISNULL(AVG(UnPaidLeaves),0) UnPaidLeaves, 
     SUM(CASE WHEN CHECKIN IS NOT NULL AND CHECKOUT IS NOT NULL THEN DATEDIFF(MI,CHECKIN,CHECKOUT) ELSE 0 END) TotalDuration FROM ATTENDANCE A 
 	LEFT JOIN 

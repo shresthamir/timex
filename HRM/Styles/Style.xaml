@@ -262,6 +262,7 @@
 
     <Style TargetType="TextBlock" x:Key="Label">
         <Setter Property="Padding" Value="5 2 0 0"/>
+        <Setter Property="FontSize" Value="13"/>
         <Setter Property="Height" Value="26"/>
     </Style>
 

@@ -77,8 +77,8 @@ namespace HRM.ViewModels
         public ReportViewModel()
         {
             SelectedEmployee = new Employee();
-            SelectedEmployee.PropertyChanged += SelectedEmployee_PropertyChanged;
-
+            SelectedEmployee.PropertyChanged += SelectedEmployee_PropertyChanged;            
+            CurYear = (SETTING.DEFAULT_CALENDAR == "AD") ? DateTime.Today.Year : DateFunctions.GetBsYear(DateTime.Today);
         }
 
 
@@ -101,7 +101,7 @@ namespace HRM.ViewModels
             }
             if (e.PropertyName == "ENO" || e.PropertyName == "FULLNAME")
             {
-                Employee E = EmpList.First(y => y.ENO == SelectedEmployee.ENO);
+                Employee E = EmpList.FirstOrDefault(y => y.ENO == SelectedEmployee.ENO);
                 if (_All_Months != null && E != null)
                 {
                     MonthList = _All_Months.Where(x => x.MTYPE == E.CALENDAR_TYPE);

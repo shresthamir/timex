@@ -53,9 +53,11 @@ namespace HRM.UI.Misc
         {
             if (TimeXLicense.ValidateLicense(LicenseKey, txtDeviceSerial.Text))
             {
-                TimeXLicense.UpdateLicense(LicenseKey, txtDeviceSerial.Text);
-                MessageBox.Show("License successfully update", "Activation", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.Close();
+                if (TimeXLicense.UpdateLicense(LicenseKey, txtDeviceSerial.Text))
+                {
+                    MessageBox.Show("License successfully update", "Activation", MessageBoxButton.OK, MessageBoxImage.Information);
+                    this.Close();
+                }
             }
         }
 

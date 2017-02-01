@@ -34,7 +34,7 @@
                 <TextBlock Grid.Row="2" Grid.Column="2" Text="Developed By:"/>
                 <TextBlock Grid.Row="3" Grid.Column="2" Text="National IT Service Pvt. Ltd."/>
                 <TextBlock Grid.Row="4" Grid.Column="2" Text="Baluwatar - 4, Kathmandu"/>
-                <TextBlock Grid.Row="5" Grid.Column="2" Text="Phone : 9851155543"/>
+                <TextBlock Grid.Row="5" Grid.Column="2" Text="Phone : 977-01-4785979 / 977-9851155543"/>
                 <TextBlock Grid.Row="6" Grid.Column="2" Text="http://www.timex.com.np"/>
                 <TextBlock Grid.Row="7" Grid.Column="2" Text="timex@outlook.com"/>                
             </Grid>

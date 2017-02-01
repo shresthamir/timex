@@ -84,7 +84,7 @@
                             <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" 
                                                       Watermark="Employee Name" IsEditable="True"
                                                       DisplayMemberPath="FULLNAME" SelectedValuePath="FULLNAME"
-                                          SelectedValue="{Binding SelectedEmployee.FULLNAME}" />
+                                          SelectedItem="{Binding SelectedEmployee}" />
 
 
                             <Button Grid.Column="2" Height="26" Style="{x:Null}" Command="{Binding LoadData}">
@@ -149,6 +149,7 @@
                 <DataGridTextColumn Width="300" Header="Employee Name" Binding="{Binding ENAME}"/>
                 <DataGridTextColumn Width="200" Header="Working Hour" Binding="{Binding WHName}"/>
                 <DataGridTextColumn Width="100" Header="Effective Date" Binding="{Binding EFFECTIVE_DATE, StringFormat={}{0:MM/dd/yyyy}}"/>
+                <DataGridTextColumn Header="Days" Binding="{Binding Days}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

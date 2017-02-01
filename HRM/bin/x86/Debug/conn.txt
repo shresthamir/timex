@@ -1,0 +1,1 @@
+server=DELL-PC;Database=SS;uid=sa;pwd=tebahal

@@ -12,6 +12,12 @@ using System.Windows.Markup;
 using System.Windows;
 using System.Drawing.Printing;
 using HRM.Library.Helpers;
+using HRM.Library.ValueConverter;
+using PdfSharp.Pdf;
+using PdfSharp;
+using PdfSharp.Drawing;
+using System.Windows.Forms;
+
 namespace HRM.ViewModels
 {
     class MonthlyAttandanceViewModel : ReportViewModel
@@ -52,13 +58,15 @@ namespace HRM.ViewModels
                 {
                     EmpList = conn.Query<Employee>("SELECT ENO, FULLNAME, CALENDAR_TYPE FROM EMPLOYEE");
                     _All_Months = conn.Query<Month>("SELECT MID, MTYPE, MNAME FROM tblMonthNames");
-                    
+
                 }
                 LoadData = new Library.Helpers.RelayCommand(LoadReport);
                 PrintCommand = new Library.Helpers.RelayCommand(PrintReport);
+                ExportCommand = new RelayCommand(ExportToPDF);
                 PD = new PrintDocument();
                 PD.PrinterSettings.DefaultPageSettings.Landscape = true;
-                PD.PrintPage += PD_PrintPage;
+                PD.PrintPage += PD_PrintPage;             
+                
             }
             catch (Exception Ex)
             {
@@ -66,10 +74,83 @@ namespace HRM.ViewModels
             }
         }
 
+        void ExportToPDF(object obj)
+        {            
+            PdfDocument document = new PdfDocument();
+            document.Info.Author = "Rolf Baxter";
+            document.Info.Keywords = "PdfSharp, Examples, C#";
+
+            PdfPage page = document.AddPage();
+            page.Size = PageSize.A4;
+            page.Orientation = PageOrientation.Landscape;
+            
+            XGraphics gfx = XGraphics.FromPdfPage(page);          
+            
+            XFont font = new XFont("Courier New", 10, XFontStyle.Regular);
+            XFont CNameFont = new XFont("Courier New", 16, XFontStyle.Bold);
+            XFont CAddressFont = new XFont("Courier New", 12, XFontStyle.BoldItalic);
+            XFont RptNameFont = new XFont("Courier New", 14, XFontStyle.Bold);
+            XFont Empfont = new XFont("Courier New", 10, XFontStyle.BoldItalic);
+
+
+
+
+            short PrintLen = 125;
+            string strReport = string.Empty;
+            string strLeftMargin = "   ";
+            string ReportName = "Monthly Attendance Report";
+            string EmpInfo = string.Format("Employee : {0} Year : {1} Month : {2}", SelectedEmployee.FULLNAME, CurYear, SelectedMonth.MNAME);
+            
+            gfx.DrawString(AppVariables.CompanyInfo.COMPANY_NAME, CNameFont, XBrushes.Black, new XRect(10, 30, page.Width, 15), XStringFormats.Center);
+            gfx.DrawString(AppVariables.CompanyInfo.COMPANY_ADDRESS, CAddressFont, XBrushes.Black, new XRect(10, 45, page.Width, 15), XStringFormats.Center);
+            gfx.DrawString(ReportName, RptNameFont, XBrushes.Black, new XRect(10, 60, page.Width, 15), XStringFormats.Center);
+            gfx.DrawString(EmpInfo, Empfont, XBrushes.Black, new XRect(10, 75, page.Width, 15), XStringFormats.Center);
+            
+            gfx.DrawString(strLeftMargin + string.Empty.PadLeft(PrintLen, '-'), RptNameFont, XBrushes.Black, new XRect(10, 85, page.Width, 10), XStringFormats.Center);
+            gfx.DrawString(strLeftMargin + "Date".PadRight(10, ' ') + " | " + "Day".PadRight(4, ' ') + " | " + "Check In".PadRight(8, ' ') + " | " + "Mode".PadRight(12, ' ') + " | " + "Remarks".PadRight(16, ' ') +
+                " | " + "Check Out".PadRight(9, ' ') + " | " + "Mode".PadRight(12, ' ') + " | " + "Remarks".PadRight(16, ' ') + " | " + "T. Duration".PadRight(16, ' '), Empfont, XBrushes.Black, new XRect(10, 95, page.Width, 10), XStringFormats.TopLeft);
+
+            gfx.DrawString(strLeftMargin + string.Empty.PadLeft(PrintLen, '-'), RptNameFont, XBrushes.Black, new XRect(10, 105, page.Width, 10), XStringFormats.Center);
+            int y = 115;
+            foreach (MonthlyAttendance ma in ReportSource)
+            {
+                string Day = ma.ATT_DATE.DayOfWeek.ToString().Substring(0, 3);
+                string AttDate = GetDate(ma.TDATE);
+                if (ma.CHECKIN == null && ma.ATT_REMARKS != null)
+                {
+                    gfx.DrawString(strLeftMargin + PaddedString(AttDate, 10) + " | " + PaddedString(Day, 4) + " | " + ma.ATT_REMARKS.PadLeft((PrintLen - 31 + ma.ATT_REMARKS.Length) / 2, ' '), font, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.TopLeft);
+                }
+                else if (ma.CHECKIN == null && ma.ATT_REMARKS == null)
+                {
+                    gfx.DrawString(strLeftMargin + PaddedString(AttDate, 10) + " | " + PaddedString(Day, 4) + " | ", font, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.Default);
+                }
+                else
+                    gfx.DrawString(strLeftMargin + PaddedString(AttDate, 10) + " | " + PaddedString(Day, 4) + " | " + PaddedString(ma.CHECKIN, 8) + " | " +
+                        PaddedString(ma.CHECKINMODE, 12) + " | " + PaddedString(ma.CHECKINREMARKS, 16) + " | " + PaddedString(ma.CHECKOUT, 9) + " | " + PaddedString(ma.CHECKOUTMODE, 12) + " | " +
+                        PaddedString(ma.CHECKOUTREMARKS, 16) + " | " + ToPeriod(ma.TotalDuration).PadRight(16, ' '), font, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.TopLeft);
+                y += 12;
+            }
+            gfx.DrawString(strLeftMargin + string.Empty.PadLeft(PrintLen, '-'), RptNameFont, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.Center);
+            y += 12;
+            gfx.DrawString(string.Empty.PadLeft(20, ' ') + "Total Days".PadRight(15, ' ') + TotalDays.ToString().PadLeft(10, ' ') + " | " + "Weekends".PadRight(15, ' ') + Weekend.ToString().PadLeft(10, ' ') + " | " + "Holidays".PadRight(15, ' ') + Holidays.ToString().PadLeft(10, ' '), font, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.TopLeft);
+            y += 12;
+            gfx.DrawString(string.Empty.PadLeft(20, ' ') + "Working Days".PadRight(15, ' ') + WorkingDays.ToString().PadLeft(10, ' ') + " | " + "Present Days".PadRight(15, ' ') + PresentDays.ToString().PadLeft(10, ' ') + " | " + "Absent Days".PadRight(15, ' ') + AbsentDays.ToString().PadLeft(10, ' '), font, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.TopLeft);
+            y += 12;
+            gfx.DrawString(string.Empty.PadLeft(20, ' ') + "Paid Leaves".PadRight(15, ' ') + PaidLeaveDays.ToString("#0.00").PadLeft(10, ' ') + " | " + "Unpaid Leaves".PadRight(15, ' ') + UnpaidLeaveDays.ToString("#0.00").PadLeft(10, ' ') + " | " + "Hours Worked".PadRight(15, ' ') + new MinuteToTimeConverter().Convert(HoursWorked, typeof(string), null, System.Globalization.CultureInfo.CurrentCulture).ToString().PadLeft(10, ' '), font, XBrushes.Black, new XRect(10, y, page.Width, 10), XStringFormats.TopLeft);
+            document.Save("Export Documents\\" + ReportName + " - " + SelectedEmployee.FULLNAME + " - " + CurYear + " - " + SelectedMonth.MNAME + ".pdf");
+            //System.Diagnostics.Process.Start("TestDocument.pdf");
+        }
+
         void PD_PrintPage(object sender, PrintPageEventArgs e)
         {
-            short PrintLen = 122;
+            e.Graphics.DrawString(GetPrintString(), new System.Drawing.Font("Courier New",10, System.Drawing.FontStyle.Bold), System.Drawing.Brushes.Black, 0, 0);
+        }
+
+        string GetPrintString()
+        {
+            short PrintLen = 125;
             string strReport = string.Empty;
+            string strLeftMargin = "   ";
             string ReportName = "Monthly Attendance Report";
             string EmpInfo = string.Format("Employee : {0} Year : {1} Month : {2}", SelectedEmployee.FULLNAME, CurYear, SelectedMonth.MNAME);
             strReport += Environment.NewLine;
@@ -78,36 +159,41 @@ namespace HRM.ViewModels
             strReport += ReportName.PadLeft((PrintLen + ReportName.Length) / 2, ' ') + Environment.NewLine;
             strReport += EmpInfo.PadLeft((PrintLen + EmpInfo.Length) / 2, ' ') + Environment.NewLine;
             strReport += Environment.NewLine;
-            strReport += string.Empty.PadLeft(PrintLen, '-') + Environment.NewLine;
-            strReport += "Date".PadRight(11, ' ') + "|Day".PadRight(4, ' ') + "|Check In".PadRight(9, ' ') + "|Mode".PadRight(15, ' ') + "|Remarks".PadRight(15, ' ') +
-                "|Check Out".PadRight(9, ' ') + "|Mode".PadRight(15, ' ') + "|Remarks".PadRight(15, ' ') + "|T. Duration".PadRight(12, ' ') +
-                "|A. Duration".PadRight(12, ' ') + Environment.NewLine;
-            strReport += string.Empty.PadLeft(PrintLen, '-') + Environment.NewLine;
+            strReport += strLeftMargin + string.Empty.PadLeft(PrintLen, '-') + Environment.NewLine;
+            strReport += strLeftMargin + "Date".PadRight(10, ' ') + " | " + "Day".PadRight(4, ' ') + " | " + "Check In".PadRight(8, ' ') + " | " + "Mode".PadRight(12, ' ') + " | " + "Remarks".PadRight(16, ' ') +
+                " | " + "Check Out".PadRight(9, ' ') + " | " + "Mode".PadRight(12, ' ') + " | " + "Remarks".PadRight(16, ' ') + " | " + "T. Duration".PadRight(16, ' ') +
+                //"|A. Duration".PadRight(12, ' ') + 
+                Environment.NewLine;
+            strReport += strLeftMargin + string.Empty.PadLeft(PrintLen, '-') + Environment.NewLine;
             foreach (MonthlyAttendance ma in ReportSource)
             {
+                string Day = ma.ATT_DATE.DayOfWeek.ToString().Substring(0, 3);
+                string AttDate = GetDate(ma.TDATE);
                 if (ma.CHECKIN == null && ma.ATT_REMARKS != null)
                 {
-                    strReport += GetDate(ma.TDATE).PadRight(12, ' ') + ma.ATT_DATE.DayOfWeek.ToString().Substring(0, 3).PadRight(4, ' ') + ma.ATT_REMARKS.PadLeft((PrintLen - 31 + ma.ATT_REMARKS.Length) / 2, ' ') + Environment.NewLine;
+                    strReport += strLeftMargin + PaddedString(AttDate, 10) + " | " + PaddedString(Day, 4) + " | " + ma.ATT_REMARKS.PadLeft((PrintLen - 31 + ma.ATT_REMARKS.Length) / 2, ' ') + Environment.NewLine;
                 }
                 else if (ma.CHECKIN == null && ma.ATT_REMARKS == null)
                 {
-                    strReport += GetDate(ma.TDATE).PadRight(12, ' ') + ma.ATT_DATE.DayOfWeek.ToString().Substring(0, 3).PadRight(4, ' ') + Environment.NewLine;
+                    strReport += strLeftMargin + PaddedString(AttDate, 10) + " | " + PaddedString(Day, 4) + " | " + Environment.NewLine;
                 }
                 else
-                    strReport += GetDate(ma.TDATE).PadRight(12, ' ') + ma.ATT_DATE.DayOfWeek.ToString().Substring(0, 3).PadRight(4, ' ') + ma.CHECKIN.Value.ToString("hh:mm tt").PadRight(9, ' ') +
-                        PaddedString(ma.CHECKINMODE, 15) + PaddedString(ma.CHECKINREMARKS, 15) + PaddedString(ma.CHECKOUT, 9) + PaddedString(ma.CHECKOUTMODE, 15) +
-                        PaddedString(ma.CHECKOUTREMARKS, 15) + ToPeriod(ma.TotalDuration).PadRight(12, ' ') + ToPeriod(ma.ActualDuration).PadRight(12, ' ') + Environment.NewLine;
+                    strReport += strLeftMargin + PaddedString(AttDate, 10) + " | " + PaddedString(Day, 4) + " | " + PaddedString(ma.CHECKIN, 8) + " | " +
+                        PaddedString(ma.CHECKINMODE, 12) + " | " + PaddedString(ma.CHECKINREMARKS, 16) + " | " + PaddedString(ma.CHECKOUT, 9) + " | " + PaddedString(ma.CHECKOUTMODE, 12) + " | " +
+                        PaddedString(ma.CHECKOUTREMARKS, 16) + " | " + ToPeriod(ma.TotalDuration).PadRight(16, ' ') +
+                        //ToPeriod(ma.ActualDuration).PadRight(12, ' ') + 
+                        Environment.NewLine;
             }
-            strReport += string.Empty.PadLeft(PrintLen, '-') + Environment.NewLine;
-            strReport += string.Empty.PadLeft(20, ' ') + "Total Days".PadRight(15, ' ') + TotalDays.ToString().PadLeft(10, ' ') + "|" + "Weekends".PadRight(15, ' ') + Weekend.ToString().PadLeft(10, ' ') + "|" + "Holidays".PadRight(15, ' ') + Holidays.ToString().PadLeft(10, ' ') + Environment.NewLine;
-            strReport += string.Empty.PadLeft(20, ' ') + "Working Days".PadRight(15, ' ') + WorkingDays.ToString().PadLeft(10, ' ') + "|" + "Present Days".PadRight(15, ' ') + PresentDays.ToString().PadLeft(10, ' ') + "|" + "Absent Days".PadRight(15, ' ') + AbsentDays.ToString().PadLeft(10, ' ') + Environment.NewLine;
-            strReport += string.Empty.PadLeft(20, ' ') + "Paid Leaves".PadRight(15, ' ') + PaidLeaveDays.ToString("#0.00").PadLeft(10, ' ') + "|" + "Unpaid Leaves".PadRight(15, ' ') + UnpaidLeaveDays.ToString("#0.00").PadLeft(10, ' ') + "|" + "Hours Worked".PadRight(15, ' ') + HoursWorked.ToString().PadLeft(10, ' ') + Environment.NewLine;
-            e.Graphics.DrawString(strReport, new System.Drawing.Font("Courier New", 9), System.Drawing.Brushes.Black,0,0);
+            strReport += strLeftMargin + string.Empty.PadLeft(PrintLen, '-') + Environment.NewLine;
+            strReport += string.Empty.PadLeft(20, ' ') + "Total Days".PadRight(15, ' ') + TotalDays.ToString().PadLeft(10, ' ') + " | " + "Weekends".PadRight(15, ' ') + Weekend.ToString().PadLeft(10, ' ') + " | " + "Holidays".PadRight(15, ' ') + Holidays.ToString().PadLeft(10, ' ') + Environment.NewLine;
+            strReport += string.Empty.PadLeft(20, ' ') + "Working Days".PadRight(15, ' ') + WorkingDays.ToString().PadLeft(10, ' ') + " | " + "Present Days".PadRight(15, ' ') + PresentDays.ToString().PadLeft(10, ' ') + " | " + "Absent Days".PadRight(15, ' ') + AbsentDays.ToString().PadLeft(10, ' ') + Environment.NewLine;
+            strReport += string.Empty.PadLeft(20, ' ') + "Paid Leaves".PadRight(15, ' ') + PaidLeaveDays.ToString("#0.00").PadLeft(10, ' ') + " | " + "Unpaid Leaves".PadRight(15, ' ') + UnpaidLeaveDays.ToString("#0.00").PadLeft(10, ' ') + " | " + "Hours Worked".PadRight(15, ' ') + new MinuteToTimeConverter().Convert(HoursWorked, typeof(string), null, System.Globalization.CultureInfo.CurrentCulture).ToString().PadLeft(10, ' ') + Environment.NewLine;
+            return strReport;
         }
 
         private void PrintReport(object obj)
         {
-            
+
             ////            string HeaderTemplate =
             ////@"<ResourceDictionary xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
             ////                    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
@@ -155,6 +241,7 @@ namespace HRM.ViewModels
             else
                 return TDATE.Substring(12, 10);
         }
+
 
         string PaddedString(DateTime? value, int TotLength)
         {
@@ -234,12 +321,15 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE BETWEEN @FDATE AND 
                     ReportSource = new ObservableCollection<dynamic>(PreReport);
                     PaidLeaveDays = conn.ExecuteScalar<Decimal>("SELECT SUM(Cr) FROM LEAVE_LEDGER LL JOIN LEAVES L ON LL.LEAVE_ID = L.LEAVE_ID WHERE ENO = @ENO AND ISPAIDLEAVE = 1 AND APPLIED_DATE BETWEEN @FDate AND @TDate", new { FDate = SDate, TDate = TDate, ENO = SelectedEmployee.ENO });
                     UnpaidLeaveDays = conn.ExecuteScalar<Decimal>("SELECT SUM(Cr) FROM LEAVE_LEDGER LL JOIN LEAVES L ON LL.LEAVE_ID = L.LEAVE_ID WHERE ENO = @ENO AND ISPAIDLEAVE = 0 AND APPLIED_DATE BETWEEN @FDate AND @TDate", new { FDate = SDate, TDate = TDate, ENO = SelectedEmployee.ENO });
-                    TotalDays = TDate.Subtract(SDate).Days;
+                    TotalDays = TDate.Subtract(SDate).Days + 1;
                     Weekend = PreReport.Where(x => x.IsWeekend).Count();
                     Holidays = PreReport.Where(x => !string.IsNullOrEmpty(x.HOLIDAY_NAME)).Count();
                     WorkingDays = TotalDays - (Weekend + Holidays);
-                    PresentDays = PreReport.Where(x => x.CHECKIN != null && x.CHECKOUT != null).Count();
-                    AbsentDays = WorkingDays - (PresentDays + Convert.ToInt16(Math.Floor(PaidLeaveDays)));
+                    if (SETTING.ABSENT_IF_NO_CHECK_OUT)
+                        PresentDays = PreReport.Where(x => x.CHECKIN != null && x.CHECKOUT != null).Count();
+                    else
+                        PresentDays = PreReport.Where(x => x.CHECKIN != null).Count();
+                    AbsentDays = (WorkingDays > (PresentDays + PaidLeaveDays)) ? WorkingDays - (PresentDays + Convert.ToInt16(Math.Floor(PaidLeaveDays))) : 0;
                     HoursWorked = PreReport.Sum(x => x.ActualDuration);
                     SetAction(ButtonAction.Selected);
                 }
@@ -278,7 +368,7 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE BETWEEN @FDATE AND 
         public bool IsAbsent { get; set; }
         public bool LEAVE_ID { get; set; }
 
-        public DateTime INDATE { get; set; }
+        public DateTime INTIME { get; set; }
         public DateTime INGRACETIME { get; set; }
         public DateTime OUTTIME { get; set; }
         public DateTime OUTGRACETIME { get; set; }

@@ -10,4 +10,5 @@
     <vc:DateToDayConverter x:Key="DateToDay"/>
     <vc:MinuteToTimeConverter x:Key="MinuteToTime"/>
     <vc:TextboxToPasswordConverter x:Key="ToPassword"/>
+    <vc:AttendanceColorIndicator x:Key="LateIndicator"/>
 </ResourceDictionary>

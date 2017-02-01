@@ -49,10 +49,10 @@
                     <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding leave.LEAVE_NAME, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Annual Leave Days"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" HorizontalContentAlignment="Right" Text="{Binding leave.ANNUALLEAVECOUNT, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" HorizontalContentAlignment="Right" Text="{Binding leave.ANNUALLEAVECOUNT, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}"/>
 
                     <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Max Leave Days"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding leave.MAXALLOWEDLEAVES, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding leave.MAXALLOWEDLEAVES, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" HorizontalContentAlignment="Right"/>
 
                     <!--<TextBlock Style = "{StaticResource Label}" Padding="5 0 0 0"  Grid.Row="3" Text="Equivalent Working Day" TextWrapping="Wrap"/>
                     <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding leave.EQUIVALENTWORKINGDAYS, UpdateSourceTrigger=PropertyChanged}"/>-->

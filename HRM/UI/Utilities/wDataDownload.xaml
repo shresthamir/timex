@@ -2,7 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         ResizeMode="NoResize"
+        xmlns:TemplateSelector="clr-namespace:HRM.Library.Helper"
         Title="Download Attendance Data" Height="300" Width="600">
+    <Window.Resources>
+        <TemplateSelector:DownloadStatusTemplateSelector x:Key="DeviceStatusSelector"/>
+    </Window.Resources>
     <Border Style="{StaticResource PlainBackground}" Padding="5">
         <Grid>
             <Grid.RowDefinitions>
@@ -25,28 +29,7 @@
                     <DataGridTextColumn Header="Model" Binding="{Binding DEVICE_MODEL}" Width="100"/>
                     <DataGridTextColumn Header="Name" Binding="{Binding DISPLAY_NAME}" Width="200"/>
                     <DataGridTextColumn Header="IP Address" Binding="{Binding DEVICE_IP}" Width="100"/>
-                    <DataGridTemplateColumn Width="120" Header="Status">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="20"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="txtStatus" Text="Offline"/>
-                                    <Image x:Name="imgStatus" Height="16" Grid.Column="1" Source="pack://application:,,,/Images/Red.png"/>
-                                </Grid>
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding STATUS}" Value="1">
-                                        <Setter TargetName="imgStatus" Property="Source" Value="pack://application:,,,/Images/Green.png"/>
-                                        <Setter TargetName="txtStatus" Property="Text" Value="Online"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding STATUS}" Value="2">                                        
-                                        <Setter TargetName="txtStatus" Property="Text" Value="Connecting..."/>
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn Width="120" Header="Status" CellTemplateSelector="{StaticResource DeviceStatusSelector}">
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>

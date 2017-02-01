@@ -27,7 +27,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style = "{StaticResource Label}" Text="Employee No"/>
-            <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding emp.ENO, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+            <TextBox Grid.Column="1" Tag="KEY" FontSize="14" FontWeight="SemiBold" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding emp.ENO, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
                 </TextBox.InputBindings>
@@ -43,7 +43,7 @@
             <TextBlock Style="{StaticResource Label}" Grid.Column="7" Text="Calender Type"/>
             <RadioButton VerticalAlignment="Center" IsEnabled="False" Grid.Column="8" GroupName="Calendar" Content="AD" IsChecked="{Binding IsDate}" />
             <RadioButton VerticalAlignment="Center" IsEnabled="False" Grid.Column="9" GroupName="Calendar" Content="BS" IsChecked="{Binding IsDate, Converter={StaticResource InvertBool}}" />
-            
+
             <Grid Grid.Row="1" Grid.ColumnSpan="15" IsEnabled="{Binding EntryPanelEnabled}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="32"/>

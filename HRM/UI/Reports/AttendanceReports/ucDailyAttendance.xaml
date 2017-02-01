@@ -55,13 +55,7 @@
                                 ItemsSource="{Binding ReportSource}"
                                QueryCoveredRange="sfgrid_QueryCoveredRange"
                                ResizingColumns="sfgrid_ResizingColumns"
-                               SelectionUnit="Cell">
-            <syncfusion:SfDataGrid.PrintSettings>
-                <syncfusion:PrintSettings PrintPageHeaderHeight="80"                                           
-                                          AllowColumnWidthFitToPrintPage="False"
-                                          PrintPageMargin="20" PrintPageOrientation="Landscape" >
-                </syncfusion:PrintSettings>
-            </syncfusion:SfDataGrid.PrintSettings>
+                               SelectionUnit="Cell">         
             <syncfusion:SfDataGrid.GroupColumnDescriptions>
                 <syncfusion:GroupColumnDescription ColumnName="DEPARTMENT" />
             </syncfusion:SfDataGrid.GroupColumnDescriptions>

@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/ValueConverter.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/WatermarkComboBox.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/Syncfuision.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Styles/DataTemplates.xaml" />
                 <!--<ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
