@@ -1,1 +1,0 @@
-server=Dell-PC;Database=HRMDB;uid=sa;pwd=tebahal
