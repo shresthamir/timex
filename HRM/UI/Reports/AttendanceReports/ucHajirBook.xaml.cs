@@ -24,7 +24,7 @@ namespace HRM.UI.Reports.AttendanceReports
         public ucHajirBook()
         {
             InitializeComponent();
-            this.DataContext = new HajirBookViewModel();
+            this.DataContext = new HajirBookViewModel() { sfGrid = this.sfgrid };
         }
     }
 }

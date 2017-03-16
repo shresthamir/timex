@@ -309,8 +309,8 @@
                         </Style>
                     </Style.Resources>
                     <Setter Property="BorderThickness" Value="1.5"/>
-                    <Setter Property="IsSelected" Value="{Binding IsNodeSelected, Mode=TwoWay}"/>
-                    <Setter Property="IsExpanded" Value="{Binding IsNodeExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <!--<Setter Property="Visibility" Value="{Binding Path=IsMatch, Mode=OneWay, Converter={StaticResource  ResourceKey=boolToVisibility}}"/>-->
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">

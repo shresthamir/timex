@@ -97,6 +97,7 @@
     <Reference Include="Syncfusion.Shared.WPF, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Syncfusion.XlsIO.Base, Version=14.2450.0.26, Culture=neutral, PublicKeyToken=3d67ed1f87d44c89, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -128,6 +129,12 @@
     <Compile Include="Controls\ucDateMiti.xaml.cs">
       <DependentUpon>ucDateMiti.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\wAbsentRemarks.xaml.cs">
+      <DependentUpon>wAbsentRemarks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\wWorkingHourDetail.xaml.cs">
+      <DependentUpon>wWorkingHourDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Library\AppScopeClasses\AppVariables.cs" />
     <Compile Include="Library\AppScopeClasses\KeyHandler.cs" />
     <Compile Include="Library\AppScopeClasses\LeaveFunctions.cs" />
@@ -146,6 +153,8 @@
     <Compile Include="Library\Behaviors\ExecutionStrategy.cs" />
     <Compile Include="Library\Behaviors\SimpleCommand.cs" />
     <Compile Include="Library\CustomControls\WatermarkComboBox.cs" />
+    <Compile Include="Library\Helper\BindingProxy.cs" />
+    <Compile Include="Library\Helper\GrayScaleEffect.cs" />
     <Compile Include="Library\Helper\RelayCommand.cs" />
     <Compile Include="Library\Helper\StyleSelectors.cs" />
     <Compile Include="Library\Helper\TemplateSelectors.cs" />
@@ -221,6 +230,12 @@
     <Compile Include="UI\Misc\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Misc\wExport.xaml.cs">
+      <DependentUpon>wExport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Reports\AttendanceReports\ucAttLog.xaml.cs">
+      <DependentUpon>ucAttLog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Reports\AttendanceReports\ucDailyAbsent.xaml.cs">
       <DependentUpon>ucDailyAbsent.xaml</DependentUpon>
     </Compile>
@@ -282,6 +297,9 @@
     <Compile Include="UI\Utilities\wDataRestore.xaml.cs">
       <DependentUpon>wDataRestore.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Utilities\wDeviceTime.xaml.cs">
+      <DependentUpon>wDeviceTime.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Utilities\wDeviceSetting.xaml.cs">
       <DependentUpon>wDeviceSetting.xaml</DependentUpon>
     </Compile>
@@ -289,6 +307,8 @@
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\AddLeaveViewModel.cs" />
     <Compile Include="ViewModels\DeviceSettingViewModel.cs" />
+    <Compile Include="ViewModels\EmployeeTreeViewModel.cs" />
+    <Compile Include="ViewModels\Reports\AttLogViewModel.cs" />
     <Compile Include="ViewModels\Reports\HajirBookViewModel.cs" />
     <Compile Include="ViewModels\Reports\MonthlyAttSummaryViewModel.cs" />
     <Compile Include="ViewModels\Reports\EmployeeListViewModel.cs" />
@@ -316,6 +336,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Library\BaseClasses\RootModel.cs" />
+    <Page Include="Controls\wAbsentRemarks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\wWorkingHourDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -408,6 +436,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Misc\wExport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\AttendanceReports\ucAttLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Reports\AttendanceReports\ucDailyAbsent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -488,6 +524,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Utilities\wDeviceTime.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Utilities\wDeviceSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -517,10 +557,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\Department24.png" />
+    <Resource Include="Images\Person24.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="Component\GrayscaleEffect.fx" />
+    <Resource Include="Component\GrayscaleEffect.ps" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -582,6 +626,33 @@
     <Resource Include="Images\LoginButton.png" />
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>6</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="zkemkeeper">
       <Guid>{FE9DED34-E159-408E-8490-B720A5E632C7}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -592,7 +663,14 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Search32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

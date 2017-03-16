@@ -14,11 +14,17 @@ using Syncfusion.UI.Xaml.Grid.Converter;
 using Syncfusion.Windows.PdfViewer;
 using System.Windows.Markup;
 using System.Windows;
+using Syncfusion.XlsIO;
+using Microsoft.Win32;
+using System.IO;
+
 namespace HRM.ViewModels
 {
     class ReportViewModel : RootViewModel
     {
         public SfDataGrid sfGrid;
+        public string ReportName;
+        public string ReportParameter;
         protected string RecordNotFoundMessage = "Record does not exists.";
         private ObservableCollection<dynamic> _ReportSource;
         private IEnumerable<Employee> _EmpList;
@@ -77,13 +83,73 @@ namespace HRM.ViewModels
         public ReportViewModel()
         {
             SelectedEmployee = new Employee();
-            SelectedEmployee.PropertyChanged += SelectedEmployee_PropertyChanged;            
+            SelectedEmployee.PropertyChanged += SelectedEmployee_PropertyChanged;
             CurYear = (SETTING.DEFAULT_CALENDAR == "AD") ? DateTime.Today.Year : DateFunctions.GetBsYear(DateTime.Today);
+            ExportCommand = new Library.Helpers.RelayCommand(ExportReport);
         }
 
+        protected virtual void ExportReport(object obj)
+        {
+            //string opt = new UI.Misc.wExport().GetExportOption();
+            ExcelExportingOptions option = new ExcelExportingOptions();
+            option.ExportMode = ExportMode.Text;
+            option.ExcludeColumns.Add("DEPARTMENT");
+            var Engine = sfGrid.ExportToExcel(sfGrid.View, option);
+            var workBook = Engine.Excel.Workbooks[0];
 
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                FilterIndex = 2,
+                Filter = "Excel 97 to 2003 Files(*.xls)|*.xls|Excel 2007 to 2010 Files(*.xlsx)|*.xlsx",
+                FileName = "Book1"
+            };
 
+            if (sfd.ShowDialog() == true)
+            {
+                using (Stream stream = sfd.OpenFile())
+                {
+                    if (sfd.FilterIndex == 1)
+                        workBook.Version = ExcelVersion.Excel97to2003;
+                    else
+                        workBook.Version = ExcelVersion.Excel2007;
+                    var sheet = workBook.ActiveSheet;
+                    sheet.InsertRow(1, 5);
+                    var CNAME = sheet.Range[1, 1, 1, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                    CNAME.Merge();
+                    CNAME.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                    CNAME.CellStyle.Font.Size = 12;
+                    CNAME.CellStyle.Font.Bold = true;
 
+                    var CADDRESS = sheet.Range[2, 1, 2, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                    CADDRESS.Merge();
+                    CADDRESS.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+
+                    var RPTNAME = sheet.Range[3, 1, 3, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                    RPTNAME.Merge();
+                    RPTNAME.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                    RPTNAME.CellStyle.Font.Bold = true;
+
+                    var RPTPARAM = sheet.Range[4, 1, 4, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                    RPTPARAM.Merge();
+                    RPTPARAM.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                    RPTPARAM.CellStyle.Font.Italic = true;
+                    //sheet.MergeRanges(sheet.Range[1, 1], sheet.Range[1, 10]);
+                    sheet.Range[1, 1].Value = AppVariables.CompanyInfo.COMPANY_NAME;
+                    sheet.Range[2, 1].Value = AppVariables.CompanyInfo.COMPANY_ADDRESS;
+                    sheet.Range[3, 1].Value = ReportName;
+                    sheet.Range[4, 1].Value = ReportParameter;
+                    workBook.SaveAs(stream);
+                }
+
+                //Message box confirmation to view the created spreadsheet.
+                if (MessageBox.Show("Do you want to view the workbook?", "Workbook has been created",
+                                    MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                {
+                    //Launching the Excel file using the default Application.[MS Excel Or Free ExcelViewer]
+                    System.Diagnostics.Process.Start(sfd.FileName);
+                }
+            }
+        }
 
         void SelectedEmployee_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -110,6 +176,8 @@ namespace HRM.ViewModels
 
             }
         }
+
+
     }
 
     class LeaveStatusViewModel : ReportViewModel
@@ -118,6 +186,7 @@ namespace HRM.ViewModels
         {
             try
             {
+                ReportName = "Leave Status Report";
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
                     EmpList = conn.Query<Employee>("SELECT 0 ENO, '' FULLNAME UNION ALL SELECT ENO, FULLNAME FROM EMPLOYEE");
@@ -145,7 +214,7 @@ namespace HRM.ViewModels
                     <RowDefinition Height=""20""/>
                 </Grid.RowDefinitions>
                 <TextBlock FontWeight=""SemiBold"" FontSize=""14""  Text=""" + AppVariables.CompanyInfo.COMPANY_NAME + @"""/>
-                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Monthly Attendance Report - Detail""/>                
+                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Leave Status Report""/>                
                 <StackPanel Orientation=""Horizontal"" Grid.Row=""2"">                                      
                     <TextBlock Width=""70"" Margin=""20 0 0 0"" Text=""Employee :""/>
                      <TextBlock Text=""" + ((AllEmployee) ? "All" : SelectedEmployee.FULLNAME) + @"""/>                      
@@ -183,6 +252,7 @@ namespace HRM.ViewModels
                 }
                 ReportSource = new ObservableCollection<dynamic>(Source);
                 SetAction(ButtonAction.Selected);
+                ReportParameter = "Employee : " + ((AllEmployee) ? "All" : SelectedEmployee.FULLNAME);
             }
             catch (Exception ex)
             {
@@ -197,6 +267,7 @@ namespace HRM.ViewModels
         {
             try
             {
+                ReportName = "Leave Ledger Report";
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
                     EmpList = conn.Query<Employee>("SELECT ENO, FULLNAME FROM EMPLOYEE");
@@ -224,7 +295,7 @@ namespace HRM.ViewModels
                     <RowDefinition Height=""20""/>
                 </Grid.RowDefinitions>
                 <TextBlock FontWeight=""SemiBold"" FontSize=""14""  Text=""" + AppVariables.CompanyInfo.COMPANY_NAME + @"""/>
-                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Monthly Attendance Report - Detail""/>                
+                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Leave Ledger Report""/>                
                 <StackPanel Orientation=""Horizontal"" Grid.Row=""2"">                                      
                      <TextBlock Width=""70"" Text=""Employee :""/>
                      <TextBlock Text=""" + SelectedEmployee.FULLNAME + @"""/>                      
@@ -272,6 +343,7 @@ ORDER BY LNAME, LEAVE_DATE";
                 }
                 ReportSource = new ObservableCollection<dynamic>(Source);
                 SetAction(ButtonAction.Selected);
+                ReportParameter = "Employee : " + SelectedEmployee.NAME + "   Leaves : " + ((AllLeaves) ? "All" : SelectedLeave.LEAVE_NAME);
             }
             catch (Exception ex)
             {

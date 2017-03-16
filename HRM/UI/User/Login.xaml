@@ -1,6 +1,7 @@
 ﻿<Window x:Class="HRM.UI.User.Login"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        FocusManager.FocusedElement="{Binding ElementName=txtUserName}"
         Title="Login" Height="250" Width="450">
     <Grid>
         <Grid.Background>

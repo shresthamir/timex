@@ -1,0 +1,77 @@
+﻿<Window x:Class="HRM.Controls.wWorkingHourDetail"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HRM.Controls"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="{Binding WorkhourTitle}" Height="200" Width="450">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="100"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="5 0"/>
+        </Style>
+    </Window.Resources>
+    <Border Style="{StaticResource PlainBackground}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Description"/>
+            <TextBlock Grid.Column="1" Text=":"/>
+            <TextBlock Grid.Column="2" Grid.ColumnSpan="5"  Text="{Binding DESCRIPTION}"/>
+
+
+            <Label Grid.Row="1" Content="Check In Time"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text=":"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding INTIME, StringFormat={}{0:hh:mm tt}}"/>
+
+            <Label Grid.Row="1" Grid.Column="4" Content="Check In Grace"/>
+            <TextBlock Grid.Row="1" Grid.Column="5" Text=":"/>
+            <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding INGRACETIME, StringFormat={}{0:hh:mm tt}}"/>
+
+            <Label Grid.Row="2" Content="Check Out Time"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text=":"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding OUTTIME, StringFormat={}{0:hh:mm tt}}"/>
+
+            <Label Grid.Row="2" Grid.Column="4" Content="Check Out Grace"/>
+            <TextBlock Grid.Row="2" Grid.Column="5" Text=":"/>
+            <TextBlock Grid.Row="2" Grid.Column="6" Text="{Binding OUTGRACETIME, StringFormat={}{0:hh:mm tt}}"/>
+
+            <Label Grid.Row="3" Content="Lunch Duration"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Text=":"/>
+            <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding LUNCHDURATION, Converter={StaticResource MinuteToTime}}"/>
+            
+            <Label Grid.Row="3" Grid.Column="4" Content="Break Duration"/>
+            <TextBlock Grid.Row="3" Grid.Column="5" Text=":"/>
+            <TextBlock Grid.Row="3" Grid.Column="6" Text="{Binding BREAKDURATION, Converter={StaticResource MinuteToTime}}"/>
+
+            <Label Grid.Row="4" Content="Total Duration"/>
+            <TextBlock Grid.Row="4" Grid.Column="1" Text=":"/>
+            <TextBlock Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="5" Text="{Binding TOTALDURATION, Converter={StaticResource MinuteToTime}}"/>
+
+            <Button Content="Close" Grid.Row="5" Grid.ColumnSpan="7" Width="60" HorizontalAlignment="Right" Margin="0 0 10 0" Click="Button_Click"></Button>
+
+        </Grid>
+    </Border>
+</Window>

@@ -5,9 +5,11 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Behavior="clr-namespace:HRM.Library.Behaviors"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:Helper="clr-namespace:HRM.Library.Helper"
         xmlns:Lib="clr-namespace:HRM.Library.AppScopeClasses"
+        xmlns:Model="clr-namespace:HRM.Models"
          WindowState="Maximized" 
-        >   
+        >
     <Window.InputBindings>
         <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewCommand}"/>
         <KeyBinding Key="E" Modifiers="Control" Command="{Binding EditCommand}"/>
@@ -20,10 +22,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="40"/>
             <RowDefinition />
             <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>         
+        </Grid.RowDefinitions>
         <Menu x:Name="MainMenu">
             <Menu.Resources>
                 <Style TargetType="MenuItem">
@@ -45,7 +47,7 @@
                 <MenuItem Header="Holiday Setup" Visibility="{Binding HOLIDAY, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
                 <MenuItem Header="Leave Setup" Visibility="{Binding LEAVE, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
                 <MenuItem Header="Working Hour" Visibility="{Binding WORKHOUR, Converter={StaticResource ToVisibility}}" Click="Master_Click"/>
-                
+
             </MenuItem>
             <MenuItem Header="Tasks" Visibility="{Binding TASKS, Converter={StaticResource ToVisibility}}">
                 <MenuItem Header="Employee Registration" Visibility="{Binding EMPLOYEE_REGISTRATION, Converter={StaticResource ToVisibility}}" Click="Task_Click" />
@@ -64,6 +66,7 @@
                     <MenuItem Header="Annual Attendance Report" Visibility="{Binding ANNUAL_ATTENDANCE, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
                     <MenuItem Header="Daily Absent Report" Click="Report_Click" Visibility="{Binding DAILY_ABSENT, Converter={StaticResource ToVisibility}}"/>
                     <MenuItem Header="Manual Attendance Report" Visibility="{Binding MANUAL_ATTENDANCE_REPORT, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                    <MenuItem Header="Attendance Log Report" Click="Report_Click"/>
                 </MenuItem>
                 <MenuItem Header="Leave Reports" Visibility="{Binding LEAVE_REPORTS, Converter={StaticResource ToVisibility}}">
                     <MenuItem Header="Leave Status Report" Click="Report_Click" Visibility="{Binding LEAVE_STATUS, Converter={StaticResource ToVisibility}}"/>
@@ -86,15 +89,30 @@
                 <MenuItem Header="Download Attendance Data" Click="Utilities_Click" Visibility="{Binding DOWNLOAD_ATTENDANCE_DATA, Converter={StaticResource ToVisibility}}"/>
                 <MenuItem Header="Database Backup" Click="Utilities_Click" Visibility="{Binding DATA_BACKUP, Converter={StaticResource ToVisibility}}"/>
                 <MenuItem Header="Database Restore" Click="Utilities_Click" Visibility="{Binding DATA_RESTORE, Converter={StaticResource ToVisibility}}"/>
-                <MenuItem Header="Device Setting" Click="Utilities_Click" Visibility="{Binding DEVICE_SETTING, Converter={StaticResource ToVisibility}}"/>                
+                <MenuItem Header="Device Setting" Click="Utilities_Click" Visibility="{Binding DEVICE_SETTING, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Device Time Sync" Click="Utilities_Click" Visibility="{Binding DEVICE_SETTING, Converter={StaticResource ToVisibility}}"/>
             </MenuItem>
             <MenuItem Header="Windows">
-                
+
             </MenuItem>
             <MenuItem Header="Help"></MenuItem>
-            
+
         </Menu>
         <ToolBar Grid.Row="1">
+            <ToolBar.Resources>
+                <Style TargetType="Image">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Opacity" Value="0.4"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <Helper:GrayscaleEffect/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ToolBar.Resources>
             <!--<Button ToolTip="New Action (Ctrl + N)"  Tag="NEW" Command="{Binding NewCommand}" IsEnabled="{Binding NewEnabled}">
                 <Button.ContextMenu>
                     <ContextMenu>
@@ -114,7 +132,7 @@
                 </i:Interaction.Behaviors>
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/New.png" SnapsToDevicePixels="True"  />
+                        <Image Source="Images/New.png" SnapsToDevicePixels="True" IsEnabled="{Binding NewEnabled}"  />
                         <Separator Margin="0">
                             <Separator.LayoutTransform>
                                 <TransformGroup>
@@ -149,7 +167,7 @@
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
-                    </Style>                   
+                    </Style>
                 </Button.Resources>
                 <Button.Style>
                     <Style TargetType="Button">
@@ -162,19 +180,19 @@
                 </Button.Style>
             </Button>
 
-            <Button ToolTip="Edit Action (Ctrl + E)" Tag="EDIT" Command="{Binding EditCommand}" IsEnabled="{Binding EditEnabled}">                
+            <Button ToolTip="Edit Action (Ctrl + E)" Tag="EDIT" Command="{Binding EditCommand}" IsEnabled="{Binding EditEnabled}">
                 <Button.Content>
-                    <Image Source="Images\Edit.png" />
+                    <Image Source="Images\Edit.png" IsEnabled="{Binding EditEnabled}" />
                 </Button.Content>
             </Button>
             <Button ToolTip="Delete Action (Del)"  Tag="DELETE" Command="{Binding DeleteCommand}" IsEnabled="{Binding DeleteEnabled}">
                 <Button.Content>
-                    <Image Source="Images\Delete.png" />
+                    <Image Source="Images\Delete.png" IsEnabled="{Binding DeleteEnabled}" />
                 </Button.Content>
             </Button>
             <Button ToolTip="Save Action (Ctrl + S)"  Tag="SAVE" Command="{Binding SaveCommand}" IsEnabled="{Binding SaveEnabled}">
                 <Button.Content>
-                    <Image Source="Images\Save.png" />
+                    <Image Source="Images\Save.png" IsEnabled="{Binding SaveEnabled}" />
                 </Button.Content>
             </Button>
             <Button ToolTip="Undo Action (Ctrl + Z)"  Tag="CLEAR" Command="{Binding ClearCommand}">
@@ -184,32 +202,64 @@
             </Button>
             <Button ToolTip="Print Action (Ctrl + P)"  Tag="PRINT" Command="{Binding PrintCommand}" IsEnabled="{Binding PrintEnabled}">
                 <Button.Content>
-                    <Image Source="Images\Print.png" />
+                    <Image Source="Images\Print.png" IsEnabled="{Binding PrintEnabled}"/>
                 </Button.Content>
             </Button>
             <Button ToolTip="Export Action (Ctrl + L)"  Tag="EXPORT" Command="{Binding ExportCommand}" IsEnabled="{Binding ExportEnabled}">
                 <Button.Content>
-                    <Image Source="Images\Export.png" />
+                    <Image Source="Images\Export.png" IsEnabled="{Binding ExportEnabled}" />
                 </Button.Content>
             </Button>
         </ToolBar>
-        <xcad:DockingManager  x:Name="DMan" Grid.Column="1" Grid.Row="2" >
-            <xcad:DockingManager.Background>
-                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                    <GradientStop Color="White" Offset="0.8"/>
-                    <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}"/>
-                </LinearGradientBrush>
-            </xcad:DockingManager.Background>
-            <xcad:LayoutRoot x:Name="LayRoot">
-                <xcad:LayoutPanel  x:Name="LayPanel"  Orientation="Horizontal"  >
-                    <xcad:LayoutDocumentPaneGroup x:Name="LayDocPaneGroup" >
-                        <xcad:LayoutDocumentPane x:Name="LayDocPane"  ChildrenCollectionChanged="LayDocPane_ChildrenCollectionChanged"  />
-                    </xcad:LayoutDocumentPaneGroup>
-                </xcad:LayoutPanel>
-            </xcad:LayoutRoot>
-        </xcad:DockingManager>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="tvEmp" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1">
+                <ScrollViewer>
+                    <TreeView  Style="{StaticResource TreeViewStyle}" ItemsSource="{Binding TreeSource}" HorizontalAlignment="Stretch">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type Model:Department}"  ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal" Margin="2 0 4 0">
+                                    <Image Height="20" Source="pack://application:,,,/Images/Department24.png"/>
+                                    <TextBlock x:Name="txtTreeNode" VerticalAlignment="Center" Text="{Binding Path=DEPARTMENT, Mode=OneWay}" Margin="0" />
+                                </StackPanel>
+                                <HierarchicalDataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding LEVEL}" Value="0">
+                                        <Setter TargetName="txtTreeNode" Property="FontWeight" Value="SemiBold"/>
+                                    </DataTrigger>
+                                </HierarchicalDataTemplate.Triggers>
+                            </HierarchicalDataTemplate>
+                            <DataTemplate DataType="{x:Type Model:EmployeeAllDetail}">
+                                <StackPanel Orientation="Horizontal" Margin="2 0 4 0">
+                                    <Image Height="20" Source="pack://application:,,,/Images/Person24.png"/>
+                                    <TextBlock x:Name="txtTreeNode" VerticalAlignment="Center" Text="{Binding Path=FULLNAME, Mode=OneWay, StringFormat={}{0} - }" Margin="0" />
+                                    <TextBlock x:Name="txtENO" VerticalAlignment="Center" Text="{Binding Path=ENO}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </ScrollViewer>
+            </Border>
+            <xcad:DockingManager    x:Name="DMan" Grid.Column="1" >
+                <xcad:DockingManager.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="White" Offset="0.8"/>
+                        <GradientStop Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}"/>
+                    </LinearGradientBrush>
+                </xcad:DockingManager.Background>
+                <xcad:LayoutRoot x:Name="LayRoot">
+                    <xcad:LayoutPanel  x:Name="LayPanel"  Orientation="Horizontal"  >
+                        <xcad:LayoutDocumentPaneGroup x:Name="LayDocPaneGroup" >
+                            <xcad:LayoutDocumentPane x:Name="LayDocPane"  ChildrenCollectionChanged="LayDocPane_ChildrenCollectionChanged"  />
+                        </xcad:LayoutDocumentPaneGroup>
+                    </xcad:LayoutPanel>
+                </xcad:LayoutRoot>
+            </xcad:DockingManager>
+        </Grid>
         <Border Grid.Row="3" BorderBrush="Black" BorderThickness="0 1 0 0">
-            <Grid>                
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -220,7 +270,7 @@
                     <StackPanel Margin="10 0 20 0" Orientation="Horizontal" DataContext="{x:Static Lib:AppVariables.CompanyInfo}">
                         <TextBlock FontSize="11">Licensed To:</TextBlock>
                         <TextBlock FontSize="11" Text="{Binding COMPANY_NAME}"/>
-                        <TextBlock FontSize="11">, </TextBlock>
+                        <TextBlock FontSize="11">,</TextBlock>
                         <TextBlock FontSize="11" Text="{Binding COMPANY_ADDRESS}"/>
                     </StackPanel>
                 </Border>

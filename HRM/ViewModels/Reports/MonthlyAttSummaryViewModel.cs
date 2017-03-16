@@ -37,6 +37,7 @@ namespace HRM.ViewModels
             {
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
+                    ReportName = "Monthly Attendance Summary Report";
                     DepartmentList = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT FROM DEPARTMENT");
                     _All_Months = conn.Query<Month>("SELECT MID, MTYPE, MNAME FROM tblMonthNames");
                     MonthList = _All_Months.Where(x => x.MTYPE == SETTING.DEFAULT_CALENDAR);
@@ -92,24 +93,29 @@ namespace HRM.ViewModels
         }
 
         private void LoadReport(object obj)
-        {            
+        {
+            string PresentDayColumn = SETTING.ABSENT_IF_NO_CHECK_OUT ? "CHECKOUT" : "CHECKIN";
+            string WeekendCondition = SETTING.COUNT_AS_PRESENT_ON_WEEKEND ? "" : " AND ISNULL(ISWEEKEND, 0) = 0 ";
+            string HolidayCondition = SETTING.COUNT_AS_PRESENT_ON_HOLIDAY ? "" : " AND ISNULL(HOLIDAY_ID, 0 ) = 0 ";
+            string PresentDayCondition = "SUM(CASE WHEN 0 = 0" + WeekendCondition + HolidayCondition + " AND " + PresentDayColumn + " IS NOT NULL THEN 1 ELSE 0 END)";
             IEnumerable<dynamic> PreReport;
             try
-            {                
+            {
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
 
                     string strSql =
  @"SELECT A.ENO, ED.FULLNAME ENAME, ED.DEPARTMENT, TotalDays , Weekends, Holidays, PaidLeaves, UnPaidLeaves, TotalDays - (Weekends + Holidays) WorkingDays, PresentDays, 
-TotalDays - (Weekends + Holidays + FLOOR(PaidLeaves) + PresentDays - PresentOnNonWorkingDay) AbsentDays, PresentOnNonWorkingDay, TotalDuration FROM
+Weekends + Holidays + PaidLeaves + PresentDays PayableDays,
+TotalDays - (Weekends + Holidays + FLOOR(PaidLeaves) + PresentDays) AbsentDays,  PresentOnNonWorkingDay, TotalDuration FROM
 (
 	SELECT A.ENO, 
 	(
-		SELECT COUNT(CheckIn) FROM ATTENDANCE WHERE (ATT_DATE BETWEEN @FDATE AND @TDATE) AND ENO = A.ENO AND 
+		SELECT COUNT(" + PresentDayColumn + @") FROM ATTENDANCE WHERE (ATT_DATE BETWEEN @FDATE AND @TDATE) AND ENO = A.ENO AND 
 		(
-			IsWeekend IS NOT NULL OR LEAVE_ID IS NOT NULL OR HOLIDAY_ID IS NOT NULL
+			ISNULL(IsWeekend,0) > 0 OR ISNULL(LEAVE_ID, 0) > 0 OR ISNULL(HOLIDAY_ID, 0) > 0
 		)
-	) PresentOnNonWorkingDay, DATEDIFF(d,@FDATE,@TDATE) + 1 TotalDays, COUNT(CheckIn) PresentDays, ISNULL(SUM(CAST(IsWeekend AS INT)), 0) Weekends, Count(Holiday_ID) Holidays, 
+	) PresentOnNonWorkingDay, DATEDIFF(d,@FDATE,@TDATE) + 1 TotalDays, " + PresentDayCondition + @" PresentDays, ISNULL(SUM(CAST(IsWeekend AS INT)), 0) Weekends, Count(Holiday_ID) Holidays, 
 	ISNULL(AVG(PaidLeaves),0) PaidLeaves, ISNULL(AVG(UnPaidLeaves),0) UnPaidLeaves, 
     SUM(CASE WHEN CHECKIN IS NOT NULL AND CHECKOUT IS NOT NULL THEN DATEDIFF(MI,CHECKIN,CHECKOUT) ELSE 0 END) TotalDuration FROM ATTENDANCE A 
 	LEFT JOIN 
@@ -127,12 +133,12 @@ TotalDays - (Weekends + Holidays + FLOOR(PaidLeaves) + PresentDays - PresentOnNo
 		) UnPaidLeaves  FROM LEAVE_LEDGER LL JOIN LEAVES L ON LL.LEAVE_ID = L.LEAVE_ID WHERE ISPAIDLEAVE = 0 AND Cr>0 AND APPLIED_DATE BETWEEN @FDATE AND @TDATE
 	) UL ON UL.LEAVE_ID = A.LEAVE_ID AND A.ENO = UL.ENO
 	WHERE ATT_DATE BETWEEN @FDATE AND @TDATE GROUP BY A.ENO
-) A JOIN vwEmpDetail ED ON A.ENO = ED.ENO WHERE 0 = 0 " + 
-(AllDepartments ? string.Empty : " AND ED.DEPARTMENT_ID = @DEPARTMENT_ID");
+) A JOIN vwEmpDetail ED ON A.ENO = ED.ENO WHERE 0 = 0 " +
+(AllDepartments ? string.Empty : " AND (ED.DEPARTMENT_ID = @DEPARTMENT_ID OR ED.DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENT WHERE PARENT = @DEPARTMENT_ID))");
                     DateFunctions.GetFirstAndLastDayOfMonth(SelectedMonth, CurYear, ref _FDate, ref _TDate);
-                    PreReport = conn.Query<dynamic>(strSql, 
-                        new 
-                        { 
+                    PreReport = conn.Query<MonthlyAttSummary>(strSql,
+                        new
+                        {
                             DEPARTMENT_ID = AllDepartments ? 0 : SelectedDepartment.DEPARTMENT_ID,
                             FDATE = FDate,
                             TDate = TDate
@@ -142,6 +148,7 @@ TotalDays - (Weekends + Holidays + FLOOR(PaidLeaves) + PresentDays - PresentOnNo
                     {
                         ReportSource = new ObservableCollection<dynamic>(PreReport);
                         SetAction(ButtonAction.Selected);
+                        ReportParameter = "Month : " + SelectedMonth.MNAME + "     Department : " + ((AllDepartments) ? "All" : SelectedDepartment.DEPARTMENT);
                     }
                     else
                         ShowWarning("Record does not exists for entered criteria");
@@ -152,5 +159,23 @@ TotalDays - (Weekends + Holidays + FLOOR(PaidLeaves) + PresentDays - PresentOnNo
                 ShowError(ex.Message);
             }
         }
+    }
+
+    class MonthlyAttSummary
+    {
+        public int ENO { get; set; }
+        public string ENAME { get; set; }
+        public string DEPARTMENT { get; set; }
+        public int TotalDays { get; set; }
+        public int Weekends { get; set; }
+        public int Holidays { get; set; }
+        public double PaidLeaves { get; set; }
+        public double UnPaidLeaves { get; set; }
+        public int WorkingDays { get; set; }
+        public int PresentDays { get; set; }
+        public int AbsentDays { get; set; }
+        public int PresentOnNonWorkingDay { get; set; }
+        public int TotalDuration { get; set; }
+        public double PayableDays { get; set; }
     }
 }

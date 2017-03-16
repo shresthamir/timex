@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Reflection;
 using HRM.Library.AppScopeClasses;
+using System.Collections.ObjectModel;
+
 namespace HRM.Models
 {
     class Employee : RootModel, IDataErrorInfo
@@ -445,7 +447,7 @@ namespace HRM.Models
         }
     }
 
-    class EmployeeAllDetail : Employee
+    class EmployeeAllDetail : Employee, ITreeItem
     {
         private short _BRANCH_ID;
         private short _DEPARTMENT_ID;
@@ -456,7 +458,7 @@ namespace HRM.Models
         private string _STATUS;
         private string _MARITAL_STATUS;
         private string _CMODE;
-        
+
         public short BRANCH_ID { get { return _BRANCH_ID; } set { _BRANCH_ID = value; OnPropertyChanged("BRANCH_ID"); } }
         public short DEPARTMENT_ID { get { return _DEPARTMENT_ID; } set { _DEPARTMENT_ID = value; OnPropertyChanged("DEPARTMENT_ID"); } }
         public short DESIGNATION_ID { get { return _DESIGNATION_ID; } set { _DESIGNATION_ID = value; OnPropertyChanged("DESIGNATION_ID"); } }
@@ -467,6 +469,23 @@ namespace HRM.Models
         public string MARITAL_STATUS { get { return _MARITAL_STATUS; } set { _MARITAL_STATUS = value; OnPropertyChanged("MARITAL_STATUS"); } }
         public string CMODE { get { return _CMODE; } set { _CMODE = value; OnPropertyChanged("CMODE"); } }
 
+
+        #region TreeNode
+        public void ExpandTree(ITreeItem Branch)
+        {
+        }
+        public string NodeID { get { return ENO.ToString(); } }
+        public string NodeName { get { return FULLNAME; } }
+        public bool IsExpanded { get; set; }
+        public string ParentID { get { return DEPARTMENT_ID.ToString(); } }
+        public ObservableCollection<ITreeItem> Children { get; set; }
+
+        public ITreeItem Parent
+        {
+            get;
+            set;
+        }
+        #endregion
     }
 
 }

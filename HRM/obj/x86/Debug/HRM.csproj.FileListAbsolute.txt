@@ -140,3 +140,14 @@ D:\Projects\HRM\HRM\bin\x86\Debug\PdfSharp.xml
 D:\Projects\HRM\HRM\bin\x86\Debug\PdfSharp.Charting.xml
 D:\Projects\HRM\HRM\bin\x86\Debug\de\PdfSharp.resources.dll
 D:\Projects\HRM\HRM\bin\x86\Debug\de\PdfSharp.Charting.resources.dll
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Misc\wExport.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Misc\wExport.baml
+D:\Projects\HRM\HRM\obj\x86\Debug\Controls\wAbsentRemarks.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\Controls\wAbsentRemarks.baml
+D:\Projects\HRM\HRM\obj\x86\Debug\Controls\wWorkingHourDetail.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\Controls\wWorkingHourDetail.baml
+D:\Projects\HRM\HRM\obj\x86\Debug\TimeX_Content.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\AttendanceReports\ucAttLog.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\AttendanceReports\ucAttLog.baml
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Utilities\wDeviceTime.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Utilities\wDeviceTime.baml

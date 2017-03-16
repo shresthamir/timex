@@ -121,6 +121,30 @@ namespace HRM.ViewModels
         public RelayCommand AddTrainingCommand { get { return new RelayCommand(AddTraining, CanAddTraining); } }
         public RelayCommand BrowseImageCommand { get { return new RelayCommand(BrowseImage); } }
         public RelayCommand RefreshLeaveCommand { get { return new RelayCommand(RefreshLeave); } }
+        public RelayCommand DeleteEmployeeCommand { get { return new RelayCommand(DeleteEmployee); } }
+
+        private void DeleteEmployee(object obj)
+        {
+            try
+            {
+                if (!ShowConfirmation("Do you want to delete Employee - " + emp.FULLNAME))
+                    return;
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    if (conn.ExecuteScalar<int>("SP_DELETE_EMPLOYEE", new { ENO = emp.ENO }, commandType: System.Data.CommandType.StoredProcedure) == 1)
+                    {
+                        ShowInformation("Employee Deleted successfully.");
+                        ClearForm(null);
+                    }
+                    else
+                        ShowWarning("Employee could not be deleted");
+                }
+            }
+            catch (Exception Ex)
+            {
+                ShowError(Ex.Message);
+            }
+        }
 
         private void RefreshLeave(object obj)
         {
@@ -271,7 +295,7 @@ namespace HRM.ViewModels
                         Browse browse = new Browse() { DataContext = bvm };
                         browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new Binding("ENO"), Header = "ENO", Width = 100 });
                         browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new Binding("ECODE"), Header = "Employee Code", Width = 120 });
-                        browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new Binding("ECODE"), Header = "Employee Name", Width = 200 });
+                        browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new Binding("FULLNAME"), Header = "Employee Name", Width = 200 });
                         browse.ShowDialog();
                         if (browse.DialogResult != true)
                             return;

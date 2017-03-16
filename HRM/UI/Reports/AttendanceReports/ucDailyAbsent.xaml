@@ -49,7 +49,6 @@
                                 AllowDraggingColumns="False"                                       
                                 AllowFiltering="False"
                                 AllowResizingColumns="True"
-                                AllowSorting="False"
                                 AllowGrouping="True"                                   
                                 ItemsSource="{Binding ReportSource}"
                                QueryCoveredRange="sfgrid_QueryCoveredRange"

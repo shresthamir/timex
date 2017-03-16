@@ -63,7 +63,7 @@ namespace HRM.Models
                     return "Department Name cannot be Empty";
                 return string.Empty;
             }
-        }
+        }    
 
         public string this[string columnName]
         {
@@ -88,7 +88,7 @@ namespace HRM.Models
         private ITreeItem _Parent;
         private ObservableCollection<ITreeItem> _Children;
         private bool _IsExpanded;
-        private bool _IsNodeSelected;
+        private bool _IsSelected;
         public ITreeItem Parent { get { return _Parent; } set { _Parent = value; PARENT = (value as Department).DEPARTMENT_ID; OnPropertyChanged("Parent"); } }
 
         public ObservableCollection<ITreeItem> Children
@@ -109,22 +109,21 @@ namespace HRM.Models
 
         public string NodeName { get { return this.DEPARTMENT; } }
         public string NodeID { get { return this.DEPARTMENT_ID.ToString(); } }
-        public bool IsNodeSelected { get { return _IsNodeSelected; } set { _IsNodeSelected = value; OnPropertyChanged("IsNodeSelected"); } }
-        public bool IsNodeExpanded { get { return _IsExpanded; } set { _IsExpanded = value; OnPropertyChanged("IsExpanded"); } }
+        public string ParentID { get { return this.PARENT.ToString(); } }
+        public bool IsSelected { get { return _IsSelected; } set { _IsSelected = value; OnPropertyChanged("IsSelected"); } }
+        public bool IsExpanded { get { return _IsExpanded; } set { _IsExpanded = value; OnPropertyChanged("IsExpanded"); } }
         public void ExpandTree(ITreeItem Branch)
         {
             foreach (ITreeItem ti in Branch.Children)
             {
                 ExpandTree(ti);
             }
-            Branch.IsNodeExpanded = true;
-
-
+            Branch.IsExpanded = true;
         }
 
 
 
-        
+
     }
 
 }

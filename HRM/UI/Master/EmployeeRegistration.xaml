@@ -30,15 +30,20 @@
             <TextBox Grid.Column="1" Tag="KEY" FontSize="14" FontWeight="SemiBold" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding emp.ENO, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                    <KeyBinding Key="Delete" Modifiers="Ctrl+Shift" Command="{Binding DeleteEmployeeCommand}"/>
                 </TextBox.InputBindings>
             </TextBox>
             <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}">
-                <Button.Content>
-                    <Image Source="pack://application:,,,/Images/add.png"/>
-                </Button.Content>
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Height="28" Source="pack://application:,,,/Images/Search32.png"/>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
             <TextBlock Style = "{StaticResource Label}" Grid.Column="4" Text="Employee Code"/>
-            <TextBox Grid.Column="5" Text="{Binding emp.ECODE, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding EntryPanelEnabled}"/>
+            <TextBox Grid.Column="5" Text="{Binding emp.ECODE, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding EntryPanelEnabled}">
+                
+            </TextBox>
 
             <TextBlock Style="{StaticResource Label}" Grid.Column="7" Text="Calender Type"/>
             <RadioButton VerticalAlignment="Center" IsEnabled="False" Grid.Column="8" GroupName="Calendar" Content="AD" IsChecked="{Binding IsDate}" />

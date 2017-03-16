@@ -24,8 +24,7 @@ namespace HRM.UI.Reports
         public ucEmployeeList()
         {
             InitializeComponent();
-            this.DataContext = new HRM.ViewModels.EmployeeListViewModel() {sfGrid = sfgrid };
-            
+            this.DataContext = new HRM.ViewModels.EmployeeListViewModel() {sfGrid = sfgrid };            
         }
 
     }

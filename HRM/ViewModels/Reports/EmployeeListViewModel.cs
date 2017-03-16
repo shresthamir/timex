@@ -36,6 +36,7 @@ namespace HRM.ViewModels
         {
             try
             {
+                ReportName = "Employye List";
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
                     DepartmentList = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT FROM DEPARTMENT");
@@ -64,10 +65,8 @@ namespace HRM.ViewModels
                     <RowDefinition Height=""20""/>
                 </Grid.RowDefinitions>
                 <TextBlock FontWeight=""SemiBold"" FontSize=""14""  Text=""" + AppVariables.CompanyInfo.COMPANY_NAME + @"""/>
-                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Daily Attendance Report""/>                
+                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Employee List""/>                
                 <StackPanel Orientation=""Horizontal"" Grid.Row=""2"">
-                    <TextBlock Width=""70"" Text=""Date :""/>
-                    <TextBlock Text=""" + TDate.ToString("MM/dd/yyyy") + @"""/>                    
                     <TextBlock Width=""70"" Margin=""20 0 0 0"" Text=""Department :""/>
                     <TextBlock Text=""" + ((AllDepartments) ? "All" : SelectedDepartment.DEPARTMENT) + @"""/>                    
                 </StackPanel>
@@ -119,6 +118,7 @@ JOIN (SELECT ENO, MAX(EMP_TRANID) TRANID FROM EMPLOYEE_DETAIL GROUP BY ENO) EDD 
                     {
                         ReportSource = new ObservableCollection<dynamic>(PreReport);
                         SetAction(ButtonAction.Selected);
+                        ReportParameter = "Department : " + ((AllDepartments) ? "All" : SelectedDepartment.DEPARTMENT);
                     }
                     else
                         ShowWarning("Record does not exists for entered criteria");

@@ -59,6 +59,7 @@ namespace HRM.ViewModels
 
         private void ExecuteAdd(object obj)
         {
+            mAtt.ATT_TIME = mAtt.ATT_DATE.Add(mAtt.ATT_TIME.TimeOfDay);
             mAtt.ValidateModel();
             if (!mAtt.IsValid)
                 return;
@@ -83,7 +84,10 @@ namespace HRM.ViewModels
                 if (empAtt == null)
                 {
                     if (mAtt.ATT_TYPE != "Sign In")
+                    {
                         ShowWarning("Employe Sign in detail not found. Cannot add without Sign In detail.");
+                        return;
+                    }
                 }
                 else
                 {
@@ -331,12 +335,13 @@ namespace HRM.ViewModels
                                 ma.TRAN_USER = AppVariables.LoggedUser;
                                 ma.Save(tran);
                             }
-                            DataDownloadViewModel.RefreshAttendanceData(tran, EmpList);
                             tran.Commit();
                         }
                     }
                     ShowInformation("Manual Attendance successfully saved.");
                     ClearInterface(null);
+                    System.Threading.Thread T = new System.Threading.Thread(new System.Threading.ThreadStart(this.RefreshAttData));
+                    T.Start();
                 }
             }
             catch (Exception ex)
@@ -344,5 +349,19 @@ namespace HRM.ViewModels
                 ShowError(ex.Message);
             }
         }
+
+        void RefreshAttData()
+        {
+            using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+            {
+                conn.Open();
+                using (SqlTransaction tran = conn.BeginTransaction())
+                {
+                    DataDownloadViewModel.RefreshAttendanceData(tran, EmpList);
+                    tran.Commit();
+                }
+            }
+        }
+
     }
 }

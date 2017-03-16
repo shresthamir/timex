@@ -7,6 +7,8 @@
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:Lib="clr-namespace:HRM.Library.AppScopeClasses"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             xmlns:Helper="clr-namespace:HRM.Library.Helper"
+             x:Name="MonthlyAttendance"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1024">
     <UserControl.Resources>
@@ -17,7 +19,7 @@
         <Style TargetType="TextBlock" x:Key="SummaryValue" BasedOn="{StaticResource SummaryText}">
             <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
-
+        <Helper:BindingProxy x:Key="DataContextProxy"  Data="{Binding}" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -67,10 +69,12 @@
                                           SelectedValue="{Binding SelectedEmployee.FULLNAME}" />
 
 
-                        <Button Grid.Column="2" Height="26" Style="{x:Null}" Command="{Binding LoadData}" Margin="20 0 0 0">
-                            <Button.Content>
-                                <Image Source="pack://application:,,,/Images/add.png"/>
-                            </Button.Content>
+                        <Button Grid.Column="2" Height="28" Command="{Binding LoadData}" Margin="20 0 0 0">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Image Source="pack://application:,,,/Images/Search32.png"/>
+                                </ControlTemplate>
+                            </Button.Template>
                         </Button>
                     </Grid>
                 </StackPanel>
@@ -109,8 +113,10 @@
             </syncfusion:SfDataGrid.PrintSettings>
             <syncfusion:SfDataGrid.RecordContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="View Workhour" Command="{Binding Path=Data.ShowWorkhourCommand, Source={StaticResource DataContextProxy}}" CommandParameter="{Binding}"/>
                     <MenuItem Header="Leave Application" Command="{Binding Path=DataContext.LeaveCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                     <MenuItem Header="Manual Attendance"/>
+                    <MenuItem Header="Absent Remarks" Command="{Binding Path=Data.AddRemarksCommand, Source={StaticResource DataContextProxy}}" CommandParameter="{Binding}"/>
                 </ContextMenu>
             </syncfusion:SfDataGrid.RecordContextMenu>
             <!--<syncfusion:SfDataGrid.GroupColumnDescriptions>
@@ -139,6 +145,7 @@
                 <syncfusion:GridTextColumn HeaderText="Mode" MappingName="CHECKOUTMODE" Width="100"/>
                 <syncfusion:GridTextColumn HeaderText="Remarks" MappingName="CHECKOUTREMARKS" Width="100"/>
                 <syncfusion:GridTextColumn HeaderText="T. Duration" DisplayBinding="{Binding TotalDuration, Converter={StaticResource MinuteToTime}}" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Status" MappingName="ATT_REMARKS" Width="0.1"/>
                 <!--<syncfusion:GridTextColumn HeaderText="A. Duration" DisplayBinding="{Binding ActualDuration, Converter={StaticResource MinuteToTime}}" Width="100"/>-->
 
                 <!--<syncfusion:GridTextColumn HeaderText="Lunch Out" DisplayBinding="{Binding LUNCHOUT, StringFormat={}{0:hh:mm tt}}" Width="70"/>

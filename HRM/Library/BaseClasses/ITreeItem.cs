@@ -11,8 +11,9 @@ namespace HRM.Library.BaseClasses
     {
         string NodeID { get; }
         string NodeName { get; }
-        bool IsNodeSelected { get; set; }
-        bool IsNodeExpanded { get; set; }
+        bool IsSelected { get; set; }
+        bool IsExpanded { get; set; }        
+        string ParentID { get; }
         ObservableCollection<ITreeItem> Children { get; set; }
         ITreeItem Parent { get; set; }
 

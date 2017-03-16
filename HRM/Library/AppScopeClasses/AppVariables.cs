@@ -45,7 +45,8 @@ namespace HRM.Library.AppScopeClasses
         public static bool ABSENT_IF_NO_CHECK_OUT { get; set; }
         public static string DEFAULT_WEEKEND { get; set; }
         public static bool CLEAR_DEVICE_DATA_AFTER_DOWNLOAD { get; set; }
-
+        public static bool COUNT_AS_PRESENT_ON_WEEKEND {get; set;}
+        public static bool COUNT_AS_PRESENT_ON_HOLIDAY{get; set;}
         static SETTING()
         {
             Type t = typeof(SETTING);
@@ -79,6 +80,16 @@ namespace HRM.Library.AppScopeClasses
                     }
                 }
             }
+        }
+    }
+
+    static class ExceptionHandler
+    {
+        public static Exception GetException(Exception Ex)
+        {
+            while (Ex.InnerException != null)
+                return GetException(Ex);
+            return Ex;
         }
     }
 }

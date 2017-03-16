@@ -21,6 +21,7 @@ namespace HRM.ViewModels
         {
             try
             {
+                ReportName = "Daily Attendance Report";
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
                     DepartmentList = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT FROM DEPARTMENT");
@@ -101,13 +102,15 @@ ELSE 'Present' END ATT_REMARKS
 FROM ATTENDANCE A JOIN WORKHOUR WH ON A.WORKHOUR_ID = WH.WORKHOUR_ID
 JOIN vwEmpDetail ED ON A.ENO = ED.ENO
 LEFT JOIN HOLIDAYS H ON H.HOLIDAY_ID = A.HOLIDAY_ID
-LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE" + (AllDepartments ? string.Empty : " AND ED.DEPARTMENT_ID = @DEPARTMENT_ID");
+LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE" 
++ (AllDepartments ? string.Empty : " AND (ED.DEPARTMENT_ID = @DEPARTMENT_ID OR ED.DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENT WHERE PARENT = @DEPARTMENT_ID))");
+                    
                     Source = conn.Query<MonthlyAttendance>(strSql, new { DEPARTMENT_ID = AllDepartments ? 0 : SelectedDepartment.DEPARTMENT_ID, ATT_DATE = TDate });
 
                     foreach (EmployeeAllDetail emp in EmpDList)
                     {
-                        if (!AllDepartments && emp.DEPARTMENT_ID != SelectedDepartment.DEPARTMENT_ID)
-                            continue;
+                        //if (!AllDepartments && emp.DEPARTMENT_ID != SelectedDepartment.DEPARTMENT_ID)
+                        //    continue;
                         if (!Source.Any(x => x.ENO == emp.ENO))
                         {
                             if (PresentOnly)
@@ -125,6 +128,8 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE" + (All
                     {
                         ReportSource = new ObservableCollection<dynamic>(PreReport);
                         SetAction(ButtonAction.Selected);
+                        string Date = (SETTING.DEFAULT_CALENDAR == "AD") ? TDate.ToString("MM/dd/yyyy") : DateFunctions.GetBsDate(TDate);
+                        ReportParameter = "Date : " + Date + "    Department : " + ((AllDepartments) ? "All" : SelectedDepartment.DEPARTMENT);
                     }
                     else
                         ShowWarning("Record does not exists for entered criteria");
@@ -218,13 +223,14 @@ ELSE 'Present' END ATT_REMARKS
 FROM ATTENDANCE A JOIN WORKHOUR WH ON A.WORKHOUR_ID = WH.WORKHOUR_ID
 JOIN vwEmpDetail ED ON A.ENO = ED.ENO
 LEFT JOIN HOLIDAYS H ON H.HOLIDAY_ID = A.HOLIDAY_ID
-LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE" + (AllDepartments ? string.Empty : " AND ED.DEPARTMENT_ID = @DEPARTMENT_ID");
+LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE" +
+(AllDepartments ? string.Empty : " AND (ED.DEPARTMENT_ID = @DEPARTMENT_ID OR ED.DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENT WHERE PARENT = @DEPARTMENT_ID))");
                     Source = conn.Query<MonthlyAttendance>(strSql, new { DEPARTMENT_ID = AllDepartments ? 0 : SelectedDepartment.DEPARTMENT_ID, ATT_DATE = TDate });
 
                     foreach (EmployeeAllDetail emp in EmpDList)
                     {
-                        if (!AllDepartments && emp.DEPARTMENT_ID != SelectedDepartment.DEPARTMENT_ID)
-                            continue;
+                        //if (!AllDepartments && emp.DEPARTMENT_ID != SelectedDepartment.DEPARTMENT_ID)
+                        //    continue;
                         if (!Source.Any(x => x.ENO == emp.ENO))
                         {
                             PreReport.Add(new MonthlyAttendance { ENAME = emp.FULLNAME, DEPARTMENT = emp.DEPARTMENT, IsAbsent = true, ATT_REMARKS = "Absent" });

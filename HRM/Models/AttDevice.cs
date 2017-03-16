@@ -21,6 +21,8 @@ namespace HRM.Models
         private byte _STATUS;
         private int _LogCount = 100;
         private int _Counter;
+        private string _DEVICE_SERIAL;
+        private DateTime _DEVICE_DATE;
 
         #endregion
 
@@ -32,6 +34,8 @@ namespace HRM.Models
 
         public string DEVICE_IP { get { return _DEVICE_IP; } set { _DEVICE_IP = value; OnPropertyChanged("DEVICE_IP"); } }
 
+        public string DEVICE_SERIAL { get { return _DEVICE_SERIAL; } set { _DEVICE_SERIAL = value; OnPropertyChanged("DEVICE_SERIAL"); } }
+
         public byte DEVICE_MODE { get { return _DEVICE_MODE; } set { _DEVICE_MODE = value; OnPropertyChanged("DEVICE_MODE"); } }
 
         public byte STATUS { get { return _STATUS; } set { _STATUS = value; OnPropertyChanged("STATUS"); } }
@@ -39,6 +43,8 @@ namespace HRM.Models
         public int LogCount { get { return _LogCount; } set { _LogCount = value; OnPropertyChanged("LogCount"); } }
 
         public int Counter { get { return _Counter; } set { _Counter = value; OnPropertyChanged("Counter"); } }
+
+        public DateTime DEVICE_DATE { get { return _DEVICE_DATE; } set { _DEVICE_DATE = value; OnPropertyChanged("DEVICE_DATE"); } }
 
         #endregion
 

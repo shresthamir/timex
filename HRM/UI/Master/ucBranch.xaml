@@ -24,9 +24,11 @@
                 </TextBox.InputBindings>
             </TextBox>
             <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}">
-                <Button.Content>
-                    <Image Source="pack://application:,,,/Images/add.png"/>
-                </Button.Content>
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Height="28" Source="pack://application:,,,/Images/Search32.png"/>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
             <Grid Grid.Row="1" Grid.ColumnSpan="4" IsEnabled="{Binding EntryPanelEnabled}">
                 <Grid.RowDefinitions>

@@ -59,7 +59,7 @@ namespace HRM.ViewModels
                 TreeSource = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT, PARENT, LEVEL FROM DEPARTMENT");
             }
             LoadTree(Root);
-            Root.IsNodeExpanded = true;
+            Root.IsExpanded = true;
         }
 
         void LoadTree(Department Parent)
@@ -75,7 +75,7 @@ namespace HRM.ViewModels
 
         void d_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsNodeSelected" && (sender as ITreeItem).IsNodeSelected)
+            if (e.PropertyName == "IsSelected" && (sender as ITreeItem).IsSelected)
             {
                 SelectedDepartment = sender as Department;
                 department.DEPARTMENT_ID = SelectedDepartment.DEPARTMENT_ID;

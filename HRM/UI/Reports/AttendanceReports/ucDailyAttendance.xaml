@@ -50,7 +50,6 @@
                                 AllowDraggingColumns="False"                                       
                                 AllowFiltering="False"
                                 AllowResizingColumns="True"
-                                AllowSorting="False"
                                 AllowGrouping="True"                                   
                                 ItemsSource="{Binding ReportSource}"
                                QueryCoveredRange="sfgrid_QueryCoveredRange"
@@ -63,10 +62,24 @@
                 <syncfusion:GridTextColumn HeaderText="Department Name" MappingName="DEPARTMENT" Width="300"/>
                 <syncfusion:GridTextColumn HeaderText="Employee Name" MappingName="ENAME" Width="300"/>
                 <syncfusion:GridTextColumn HeaderText="Status" MappingName="ATT_REMARKS" Width="0.1"/>
-                <syncfusion:GridTextColumn HeaderText="Check In" DisplayBinding="{Binding CHECKIN, StringFormat={}{0:hh:mm tt}}" Width="80"/>
+                <syncfusion:GridTextColumn HeaderText="Check In"  DisplayBinding="{Binding CHECKIN, StringFormat={}{0:hh:mm tt}}" Width="70">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource LateIndicator}, ConverterParameter='CHECKIN'}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <!--<syncfusion:GridTextColumn HeaderText="Check In" DisplayBinding="{Binding CHECKIN, StringFormat={}{0:hh:mm tt}}" Width="80"/>-->
                 <syncfusion:GridTextColumn HeaderText="Mode" MappingName="CHECKINMODE" Width="80"/>
                 <syncfusion:GridTextColumn HeaderText="Remarks" MappingName="CHECKINREMARKS" Width="100"/>
-                <syncfusion:GridTextColumn HeaderText="Check Out" DisplayBinding="{Binding CHECKOUT, StringFormat={}{0:hh:mm tt}}" Width="80"/>
+                <syncfusion:GridTextColumn HeaderText="Check Out" DisplayBinding="{Binding CHECKOUT, StringFormat={}{0:hh:mm tt}}" Width="70">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource LateIndicator}, ConverterParameter='CHECKIN'}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <!--<syncfusion:GridTextColumn HeaderText="Check Out" DisplayBinding="{Binding CHECKOUT, StringFormat={}{0:hh:mm tt}}" Width="80"/>-->
                 <syncfusion:GridTextColumn HeaderText="Mode" MappingName="CHECKOUTMODE" Width="80"/>
                 <syncfusion:GridTextColumn HeaderText="Remarks" MappingName="CHECKOUTREMARKS" Width="100"/>
                 <syncfusion:GridTextColumn HeaderText="T. Duration" DisplayBinding="{Binding TotalDuration, Converter={StaticResource MinuteToTime}}" Width="100"/>

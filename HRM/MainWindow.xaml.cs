@@ -37,7 +37,7 @@ namespace HRM
             InitializeComponent();
             var version =System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             Title = "TimeX - Attendance & Leave Management Software v " + version.Major + "."  + version.Minor + "." + version.Build;            
-            this.Closing+=MainWindow_Closing;
+            this.Closing+=MainWindow_Closing;            
         }
 
         internal MainWindow(UserManagement user)
@@ -53,6 +53,7 @@ namespace HRM
                 {
                     IsAppRunningInServer = (Environment.MachineName == conn.ExecuteScalar<string>("SELECT SERVERPROPERTY('MachineName') "));
                 }
+                tvEmp.DataContext = new ViewModels.EmployeeTreeViewModel();
             }
             catch (Exception ex)
             {
@@ -101,6 +102,9 @@ namespace HRM
                 case "Employee List":
                     la.Content = new ucEmployeeList();
                     break;
+                case "Attendance Log Report":
+                    la.Content = new ucAttLog();
+                    break;
             }
             //b.Converter = new Library.Converters.LanguageConverter();
             //b.ConverterParameter = (sender as MenuItem).Header.ToString();
@@ -146,6 +150,7 @@ namespace HRM
 
         private void Task_Click(object sender, RoutedEventArgs e)
         {
+            bool Float = false;
             LayoutAnchorable la = new LayoutAnchorable();
             la.Title = (sender as MenuItem).Header.ToString();
             Binding b = new Binding();
@@ -156,18 +161,32 @@ namespace HRM
                     break;
                 case "Manual Attendance":
                     la.Content = new UI.Tasks.ucForceAttendance();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 800;
+                    Float = true;
                     break;
                 case "Monthly Leave":
                     la.Content = new UI.Tasks.ucMonthlyLeave();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 750;
+                    Float = true;
                     break;
                 case "Add Leave":
                     la.Content = new UI.Tasks.ucAddLeave();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 750;
+                    Float = true;
                     break;
                 case "Leave Application":
                     la.Content = new UI.Tasks.ucLeaveApplication();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 750;
+                    Float = true;      
                     break;
                 case "Assign Workhour":
                     la.Content = new UI.Tasks.ucWorkhourAssign();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 750;
                     break;
             }
             //b.Converter = new Library.Converters.LanguageConverter();
@@ -176,6 +195,14 @@ namespace HRM
             la.PropertyChanged += la_PropertyChanged;
             la.IsSelected = true;
             LayDocPane.Children.Add(la);
+            if (Float)
+            {
+                Point p = DMan.PointToScreen(new Point(0, 0));
+                la.FloatingLeft = p.X;
+                la.FloatingTop = p.Y;
+                la.Float();
+            }
+
         }
 
 
@@ -203,7 +230,9 @@ namespace HRM
                 case "Device Setting":
                     new wDeviceSetting().Show();
                     return;
-
+                case "Device Time Sync":
+                    new wDeviceTime().Show();
+                    return;
             }
             //b.Converter = new Library.Converters.LanguageConverter();
             //b.ConverterParameter = (sender as MenuItem).Header.ToString();

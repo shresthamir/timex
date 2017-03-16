@@ -93,22 +93,46 @@ namespace HRM.ViewModels
                             if (zkem.ReadGeneralLogData(zkem.MachineNumber))
                             {
                                 LogData ld = new LogData();
-                                while (zkem.SSR_GetGeneralLogData(zkem.MachineNumber, out ld.dwEnrollNumber, out ld.dwVerifyMode, out ld.dwInOutMode, out ld.dwYear, out ld.dwMonth, out ld.dwDay, out ld.dwHour, out ld.dwMinute, out ld.dwSecond, ref ld.dwWorkCode))
-                                {
-                                    AttLog al = new AttLog
+                                if (ad.DEVICE_MODEL == "SC105")
+                                    while (zkem.GetGeneralLogData(zkem.MachineNumber, ref ld.dwTMachineNumber, ref ld.dwEnrollNumberInt, ref ld.dwEMachineNumber, ref ld.dwVerifyMode, ref ld.dwInOutMode, ref ld.dwYear, ref ld.dwMonth, ref ld.dwDay, ref ld.dwHour, ref ld.dwMinute))
                                     {
-                                        ENO = Convert.ToInt16(ld.dwEnrollNumber),
-                                        ATT_DATE = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay),
-                                        ATT_TIME = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond),
-                                        VerifyMode = Convert.ToByte(ld.dwVerifyMode),
-                                        InOutMode = Convert.ToByte(ld.dwInOutMode)
-                                    };
-                                    al.Save(tran);
-                                    //System.Threading.Thread.Sleep(1000);
-                                    ad.Counter++;
-                                }
+                                        AttLog al = new AttLog
+                                        {
+                                            ENO = Convert.ToInt16(ld.dwEnrollNumberInt),
+                                            ATT_DATE = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay),
+                                            ATT_TIME = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond),
+                                            VerifyMode = Convert.ToByte(ld.dwVerifyMode),
+                                            InOutMode = Convert.ToByte(ld.dwInOutMode),
+                                            DEVICE_NAME = ad.DISPLAY_NAME
+                                        };
+                                        if (al.ATT_DATE > DateTime.Today)
+                                            al.SaveTemp(tran);
+                                        else
+                                            al.Save(tran);
+                                        //System.Threading.Thread.Sleep(1000);
+                                        ad.Counter++;
+                                    }
+                                else if (ad.DEVICE_MODEL == "U160")
+                                    while (zkem.SSR_GetGeneralLogData(zkem.MachineNumber, out ld.dwEnrollNumber, out ld.dwVerifyMode, out ld.dwInOutMode, out ld.dwYear, out ld.dwMonth, out ld.dwDay, out ld.dwHour, out ld.dwMinute, out ld.dwSecond, ref ld.dwWorkCode))
+                                    {
+                                        AttLog al = new AttLog
+                                        {
+                                            ENO = Convert.ToInt16(ld.dwEnrollNumber),
+                                            ATT_DATE = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay),
+                                            ATT_TIME = new DateTime(ld.dwYear, ld.dwMonth, ld.dwDay, ld.dwHour, ld.dwMinute, ld.dwSecond),
+                                            VerifyMode = Convert.ToByte(ld.dwVerifyMode),
+                                            InOutMode = Convert.ToByte(ld.dwInOutMode),
+                                            DEVICE_NAME = ad.DISPLAY_NAME
+                                        };
+                                        if (al.ATT_DATE > DateTime.Today)
+                                            al.SaveTemp(tran);
+                                        else
+                                            al.Save(tran);
+                                        //System.Threading.Thread.Sleep(1000);
+                                        ad.Counter++;
+                                    }
                             }
-                            tran.Commit();                            
+                            tran.Commit();
                             if (SETTING.CLEAR_DEVICE_DATA_AFTER_DOWNLOAD)
                                 zkem.ClearGLog(zkem.MachineNumber);
                             zkem.Disconnect();
@@ -119,15 +143,16 @@ namespace HRM.ViewModels
                             RefreshAllData(tran);
                             tran.Commit();
                         }
-                        ShowInformation("Attendance Data Downloaded successfully.");
                         ad.STATUS = 1;
                         ad.Counter = 0;
                         ad.LogCount = 0;
                     }
+                    ShowInformation("Attendance Data Downloaded successfully.");
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                throw ex;
             }
         }
 
@@ -258,6 +283,8 @@ WHERE FYID = " + AppVariables.FYID + " ORDER BY HOLIDAY_DATE", transaction: tran
             foreach (Employee e in EmpList)
             {
                 var HolidayAlreadygiven = tran.Connection.Query<short>("SELECT DISTINCT HOLIDAY_ID FROM ATTENDANCE WHERE ENO = @ENO AND FYID = @FYID AND HOLIDAY_ID IS NOT NULL", new { ENO = e.ENO, FYID = AppVariables.FYID }, tran);
+                if (!EmpHolidaySettingList.Any(x => x.ENO == e.ENO))
+                    continue;
                 var empHSetting = EmpHolidaySettingList.First(x => x.ENO == e.ENO);
                 foreach (dynamic holiday in HolidayList)
                 {
@@ -322,9 +349,9 @@ WHERE FYID = " + AppVariables.FYID + " ORDER BY HOLIDAY_DATE", transaction: tran
                 RefreshWeekendData(tran);
                 RefreshAttendanceData(tran, EmpList);
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                throw;
+                ShowError(Ex.Message);
             }
         }
 
@@ -336,8 +363,8 @@ WHERE FYID = " + AppVariables.FYID + " ORDER BY HOLIDAY_DATE", transaction: tran
 
 
             CheckInOutData = tran.Connection.Query<Attendance>
-                (
-        @"SELECT [IN].*, dbo.GetEmpWorkHour([IN].ENO,[IN].ATT_DATE) WORKHOUR_ID, InMode.MODE CHECKINMODE, InMode.REMARKS CHECKINREMARKS,  [OUT].CHECKOUT, OutMode.MODE CHECKOUTMODE, OutMode.REMARKS CHECKINREMARKS FROM
+                            (
+                    @"SELECT [IN].*, dbo.GetEmpWorkHour([IN].ENO,[IN].ATT_DATE) WORKHOUR_ID, InMode.MODE CHECKINMODE, InMode.REMARKS CHECKINREMARKS,  [OUT].CHECKOUT, OutMode.MODE CHECKOUTMODE, OutMode.REMARKS CHECKINREMARKS FROM
 (
 	SELECT L.ENO, L.ATT_DATE, 
 	CASE WHEN A.CHECKIN IS NULL THEN MIN(ATT_TIME) 
@@ -363,7 +390,7 @@ LEFT JOIN
 	) [OUT] 
 	JOIN vwAttLogDetail OUTMODE ON [OUT].ENO = OUTMODE.ENO AND [OUT].ATT_DATE = OUTMODE.ATT_DATE AND [OUT].CHECKOUT = OUTMODE.ATT_TIME
 ) ON [IN].ENO = [OUT].ENO AND [IN].ATT_DATE = [OUT].ATT_DATE AND DATEDIFF(MINUTE, [IN].CHECKIN, [OUT].CHECKOUT) > 0", transaction: tran
-                );
+                            );
 
             foreach (Attendance att in CheckInOutData)
             {
@@ -472,6 +499,7 @@ LEFT JOIN
     {
         public int dwTMachineNumber = 0;
         public string dwEnrollNumber = "";
+        public int dwEnrollNumberInt = 0;
         public int dwEMachineNumber = 0;
         public int dwVerifyMode = 0;
         public int dwInOutMode = 0;

@@ -17,6 +17,11 @@ using PdfSharp.Pdf;
 using PdfSharp;
 using PdfSharp.Drawing;
 using System.Windows.Forms;
+using HRM.Controls;
+using HRM.Library.BaseClasses;
+using Syncfusion.UI.Xaml.Grid.Converter;
+using System.IO;
+using Syncfusion.XlsIO;
 
 namespace HRM.ViewModels
 {
@@ -43,7 +48,74 @@ namespace HRM.ViewModels
         public int AbsentDays { get { return _AbsentDays; } set { _AbsentDays = value; OnPropertyChanged("AbsentDays"); } }
         public int HoursWorked { get { return _HoursWorked; } set { _HoursWorked = value; OnPropertyChanged("HoursWorked"); } }
 
+
         public RelayCommand LeaveCommand { get { return new RelayCommand(OpenLeaveApplication); } }
+        public RelayCommand ShowWorkhourCommand { get { return new RelayCommand(ShowWorkhour); } }
+        public RelayCommand AddRemarksCommand { get { return new RelayCommand(AddRemarks, CanAddRemarks); } }
+
+        private bool CanAddRemarks(object obj)
+        {
+            if (obj != null && obj is Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo)
+            {
+                Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo cmi = obj as Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo;
+                if (cmi.Record is MonthlyAttendance)
+                {
+                    MonthlyAttendance ma = cmi.Record as MonthlyAttendance;
+                    return ma.IsAbsent;
+                }
+            }
+            return false;
+        }
+
+        private void AddRemarks(object obj)
+        {
+            try
+            {
+                Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo cmi = obj as Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo;
+                MonthlyAttendance ma = cmi.Record as MonthlyAttendance;
+                wAbsentRemarks window = new wAbsentRemarks();
+                window.txtRemarks.Text = ma.ATT_REMARKS.Replace("Absent", "").Trim(' ', '-');
+                window.ShowDialog();
+                if (window.DialogResult.Value)
+                {
+                    ma.ATT_REMARKS = window.txtRemarks.Text;
+                    ma.ENO = SelectedEmployee.ENO;
+                    using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                    {
+                        conn.Execute(@"IF NOT EXISTS (SELECT * FROM ATT_ABSENT_REMARKS WHERE ENO = @ENO AND ATT_DATE = @ATT_DATE)
+INSERT INTO ATT_ABSENT_REMARKS(ENO, ATT_DATE, REMARKS) VALUES (@ENO, @ATT_DATE, @ATT_REMARKS)
+ELSE 
+UPDATE ATT_ABSENT_REMARKS SET REMARKS = @ATT_REMARKS WHERE ENO = @ENO AND ATT_DATE = @ATT_DATE", ma);
+                    }
+                    ma.ATT_REMARKS = "Absent - " + ma.ATT_REMARKS;
+                    ma.OnPropertyChanged("ATT_REMARKS");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+            }
+
+        }
+
+        private void ShowWorkhour(object obj)
+        {
+            WorkHour wh;
+            Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo cmi = obj as Syncfusion.UI.Xaml.Grid.GridRecordContextMenuInfo;
+            MonthlyAttendance ma = cmi.Record as MonthlyAttendance;
+            if (ma.WORKHOUR_ID == 0)
+            {
+                ShowWarning("No Attendance Data!");
+                return;
+            }
+            using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+            {
+                wh = conn.Query<WorkHour>("SELECT WORKHOUR_ID, DESCRIPTION, ISDEFAULT, INTIME, INGRACETIME, OUTTIME, OUTGRACETIME, LUNCHDURATION, BREAKDURATION, TOTALDURATION FROM WORKHOUR WHERE WORKHOUR_ID = " + ma.WORKHOUR_ID).First();
+            }
+            wWorkingHourDetail w = new wWorkingHourDetail() { Title = "Workhour Detail" };
+            w.DataContext = wh;
+            w.ShowDialog();
+        }
 
         private void OpenLeaveApplication(object obj)
         {
@@ -54,6 +126,7 @@ namespace HRM.ViewModels
         {
             try
             {
+                ReportName = "Monthly Attendance Report";
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
                     EmpList = conn.Query<Employee>("SELECT ENO, FULLNAME, CALENDAR_TYPE FROM EMPLOYEE");
@@ -62,11 +135,11 @@ namespace HRM.ViewModels
                 }
                 LoadData = new Library.Helpers.RelayCommand(LoadReport);
                 PrintCommand = new Library.Helpers.RelayCommand(PrintReport);
-                ExportCommand = new RelayCommand(ExportToPDF);
+                //ExportCommand = new RelayCommand(ExportToPDF);
                 PD = new PrintDocument();
                 PD.PrinterSettings.DefaultPageSettings.Landscape = true;
-                PD.PrintPage += PD_PrintPage;             
-                
+                PD.PrintPage += PD_PrintPage;
+
             }
             catch (Exception Ex)
             {
@@ -74,8 +147,8 @@ namespace HRM.ViewModels
             }
         }
 
-        void ExportToPDF(object obj)
-        {            
+        void ExportToPDF()
+        {
             PdfDocument document = new PdfDocument();
             document.Info.Author = "Rolf Baxter";
             document.Info.Keywords = "PdfSharp, Examples, C#";
@@ -83,9 +156,9 @@ namespace HRM.ViewModels
             PdfPage page = document.AddPage();
             page.Size = PageSize.A4;
             page.Orientation = PageOrientation.Landscape;
-            
-            XGraphics gfx = XGraphics.FromPdfPage(page);          
-            
+
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
             XFont font = new XFont("Courier New", 10, XFontStyle.Regular);
             XFont CNameFont = new XFont("Courier New", 16, XFontStyle.Bold);
             XFont CAddressFont = new XFont("Courier New", 12, XFontStyle.BoldItalic);
@@ -100,12 +173,12 @@ namespace HRM.ViewModels
             string strLeftMargin = "   ";
             string ReportName = "Monthly Attendance Report";
             string EmpInfo = string.Format("Employee : {0} Year : {1} Month : {2}", SelectedEmployee.FULLNAME, CurYear, SelectedMonth.MNAME);
-            
+
             gfx.DrawString(AppVariables.CompanyInfo.COMPANY_NAME, CNameFont, XBrushes.Black, new XRect(10, 30, page.Width, 15), XStringFormats.Center);
             gfx.DrawString(AppVariables.CompanyInfo.COMPANY_ADDRESS, CAddressFont, XBrushes.Black, new XRect(10, 45, page.Width, 15), XStringFormats.Center);
             gfx.DrawString(ReportName, RptNameFont, XBrushes.Black, new XRect(10, 60, page.Width, 15), XStringFormats.Center);
             gfx.DrawString(EmpInfo, Empfont, XBrushes.Black, new XRect(10, 75, page.Width, 15), XStringFormats.Center);
-            
+
             gfx.DrawString(strLeftMargin + string.Empty.PadLeft(PrintLen, '-'), RptNameFont, XBrushes.Black, new XRect(10, 85, page.Width, 10), XStringFormats.Center);
             gfx.DrawString(strLeftMargin + "Date".PadRight(10, ' ') + " | " + "Day".PadRight(4, ' ') + " | " + "Check In".PadRight(8, ' ') + " | " + "Mode".PadRight(12, ' ') + " | " + "Remarks".PadRight(16, ' ') +
                 " | " + "Check Out".PadRight(9, ' ') + " | " + "Mode".PadRight(12, ' ') + " | " + "Remarks".PadRight(16, ' ') + " | " + "T. Duration".PadRight(16, ' '), Empfont, XBrushes.Black, new XRect(10, 95, page.Width, 10), XStringFormats.TopLeft);
@@ -143,7 +216,7 @@ namespace HRM.ViewModels
 
         void PD_PrintPage(object sender, PrintPageEventArgs e)
         {
-            e.Graphics.DrawString(GetPrintString(), new System.Drawing.Font("Courier New",10, System.Drawing.FontStyle.Bold), System.Drawing.Brushes.Black, 0, 0);
+            e.Graphics.DrawString(GetPrintString(), new System.Drawing.Font("Courier New", 10, System.Drawing.FontStyle.Bold), System.Drawing.Brushes.Black, 0, 0);
         }
 
         string GetPrintString()
@@ -193,45 +266,8 @@ namespace HRM.ViewModels
 
         private void PrintReport(object obj)
         {
-
-            ////            string HeaderTemplate =
-            ////@"<ResourceDictionary xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
-            ////                    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
-            ////        <DataTemplate x:Key=""HeaderTemplate"">
-            ////            <Grid HorizontalAlignment=""Center"">
-            ////                <Grid.RowDefinitions>
-            ////                    <RowDefinition Height=""25""/>
-            ////                    <RowDefinition Height=""25""/>
-            ////                    <RowDefinition Height=""20""/>
-            ////                </Grid.RowDefinitions>
-            ////                <TextBlock FontWeight=""SemiBold"" FontSize=""14""  Text="""+AppVariables.CompanyInfo.COMPANY_NAME+@"""/>
-            ////                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Monthly Attendance Report - Detail""/>                
-            ////                <StackPanel Orientation=""Horizontal"" Grid.Row=""2"">
-            ////                    <TextBlock Width=""70"" Text=""Employee :""/>
-            ////                    <TextBlock Text="""+SelectedEmployee.FULLNAME+@"""/>                    
-            ////                    <TextBlock Width=""50"" Margin=""20 0 0 0"" Text=""Year :""/>
-            ////                    <TextBlock Text=""" + CurYear + @"""/>                    
-            ////                    <TextBlock Width=""50"" Margin=""20 0 0 0"" Text=""Month :""/>
-            ////                    <TextBlock Text=""" + SelectedMonth.MNAME + @"""/>                    
-            ////                </StackPanel>
-            ////            </Grid>  
-            ////        </DataTemplate>
-            ////</ResourceDictionary>
-            ////";
-
-            ////            sfGrid.PrintSettings.PrintPageHeaderTemplate = (XamlReader.Parse(HeaderTemplate) as ResourceDictionary)["HeaderTemplate"] as DataTemplate;
-            ////            sfGrid.Print();
-
-            //System.IO.Stream st = new System.IO.MemoryStream();
-            //PdfExportingOptions options = new PdfExportingOptions();
-            //options.ExportMergedCells = true;            
-            //var document = sfGrid.ExportToPdf(options);
-            //document.Save(st);
-
-            //new HRM.UI.Reports.PdfViewer(st).ShowDialog();
             PD.DefaultPageSettings.Landscape = true;
             PD.Print();
-            //RawPrintFunctions.RawPrinterHelper.SendStringToPrinter(new PrinterSettings().PrinterName, strReport, "Monthly Attendance Report");
         }
 
         string GetDate(string TDATE)
@@ -272,8 +308,8 @@ namespace HRM.ViewModels
 
         private void LoadReport(object obj)
         {
-
             DateTime FDate, TDate, SDate;
+            IEnumerable<MonthlyAttendance> AbsentRemarks;
             IEnumerable<MonthlyAttendance> Source;
             List<MonthlyAttendance> PreReport = new List<MonthlyAttendance>();
             try
@@ -286,7 +322,7 @@ namespace HRM.ViewModels
                 {
 
                     string strSql =
- @"SELECT ATT_DATE, CONVERT(VARCHAR,ATT_DATE,101) + ' ('+ MC.BS + ')' TDATE, CHECKIN, CHECKINREMARKS, CHECKINMODE, CHECKOUT, CHECKOUTMODE, 
+ @"SELECT ATT_DATE, CONVERT(VARCHAR,ATT_DATE,101) + ' ('+ MC.BS + ')' TDATE, A.WORKHOUR_ID,  CHECKIN, CHECKINREMARKS, CHECKINMODE, CHECKOUT, CHECKOUTMODE, 
 CHECKOUTREMARKS, LUNCHOUT, LUNCHOUTMODE, LUNCHOUTREMARKS, LUNCHIN, LUNCHINMODE, LUNCHINREMARKS, DATEDIFF(MI,LUNCHOUT,LUNCHIN) LunchTime,  
 CASE WHEN DATEDIFF(MI,LUNCHOUT,LUNCHIN)>LUNCHDURATION THEN DATEDIFF(MI,LUNCHOUT,LUNCHIN) - LUNCHDURATION ELSE 0 END ExcessLunchTime,
 DATEDIFF(MI,CHECKIN,CHECKOUT) TotalDuration, A.HOLIDAY_ID, A.LEAVE_ID, A.IsWeekend, WH.INTIME, WH.INGRACETIME, WH.OUTTIME, 
@@ -302,12 +338,19 @@ LEFT JOIN HOLIDAYS H ON H.HOLIDAY_ID = A.HOLIDAY_ID
 LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE BETWEEN @FDATE AND @TDATE AND ENO = @ENO";
                     Source = conn.Query<MonthlyAttendance>(strSql, new { ENO = SelectedEmployee.ENO, FDATE = FDate, TDate = TDate });
 
+                    AbsentRemarks = conn.Query<MonthlyAttendance>("SELECT ENO, ATT_DATE, REMARKS ATT_REMARKS FROM ATT_ABSENT_REMARKS WHERE ENO  = @ENO AND ATT_DATE BETWEEN @FDATE AND @TDATE", new { ENO = SelectedEmployee.ENO, FDATE = FDate, TDate = TDate });
+
                     while (FDate <= TDate)
                     {
                         if (!Source.Any(x => x.ATT_DATE == FDate))
                         {
                             if (FDate <= DateTime.Today)
-                                PreReport.Add(new MonthlyAttendance { ATT_DATE = FDate, TDATE = FDate.ToString("MM/dd/yyyy") + " (" + DateFunctions.GetBsDate(FDate) + ")", IsAbsent = true, ATT_REMARKS = "Absent" });
+                            {
+                                if (AbsentRemarks.Any(x => x.ATT_DATE == FDate))
+                                    PreReport.Add(new MonthlyAttendance { ATT_DATE = FDate, TDATE = FDate.ToString("MM/dd/yyyy") + " (" + DateFunctions.GetBsDate(FDate) + ")", IsAbsent = true, ATT_REMARKS = "Absent - " + AbsentRemarks.First(x => x.ATT_DATE == FDate).ATT_REMARKS });
+                                else
+                                    PreReport.Add(new MonthlyAttendance { ATT_DATE = FDate, TDATE = FDate.ToString("MM/dd/yyyy") + " (" + DateFunctions.GetBsDate(FDate) + ")", IsAbsent = true, ATT_REMARKS = "Absent" });
+                            }
                             else
                                 PreReport.Add(new MonthlyAttendance { ATT_DATE = FDate, TDATE = FDate.ToString("MM/dd/yyyy") + " (" + DateFunctions.GetBsDate(FDate) + ")" });
                         }
@@ -325,6 +368,10 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE BETWEEN @FDATE AND 
                     Weekend = PreReport.Where(x => x.IsWeekend).Count();
                     Holidays = PreReport.Where(x => !string.IsNullOrEmpty(x.HOLIDAY_NAME)).Count();
                     WorkingDays = TotalDays - (Weekend + Holidays);
+                    if (!SETTING.COUNT_AS_PRESENT_ON_HOLIDAY)
+                        PreReport = PreReport.Where(x => string.IsNullOrEmpty(x.HOLIDAY_NAME)).ToList();
+                    if (!SETTING.COUNT_AS_PRESENT_ON_WEEKEND)
+                        PreReport = PreReport.Where(x => !x.IsWeekend).ToList();
                     if (SETTING.ABSENT_IF_NO_CHECK_OUT)
                         PresentDays = PreReport.Where(x => x.CHECKIN != null && x.CHECKOUT != null).Count();
                     else
@@ -339,10 +386,130 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE BETWEEN @FDATE AND 
                 ShowError(ex.Message);
             }
         }
+
+        protected override void ExportReport(object obj)
+        {
+            string opt = new UI.Misc.wExport().GetExportOption();
+            if (opt.Equals("Excel"))
+                ExportToExcel();
+            else if (opt.Equals("PDF"))
+                ExportToPDF();
+
+        }
+
+        void ExcelExport_CellExporting(object sender, GridCellExcelExportingEventArgs e)
+        {
+            //if(e.CellType == ExportCellType.RecordCell && e.ColumnName == "TDATE" )
+            //{
+
+            //    if (SETTING.DEFAULT_CALENDAR == "AD")
+            //       e.Range.Value  = e.CellValue.ToString().Substring(0, 10);
+            //    else
+            //        e.Range.Value = e.CellValue.ToString().Substring(12, 10);
+            //    e.Handled = true;
+            //}
+            if (e.CellType == ExportCellType.RecordCell && e.ColumnName == "ATT_REMARKS" && e.CellValue != null && !e.CellValue.Equals("Present"))
+            {
+                var sheet = e.Range.Worksheet;
+                var Remarks = sheet.Range[e.Range.Row, 3, e.Range.Row, 10];
+                Remarks.CellStyle.FillPattern = ExcelPattern.Solid;
+                if (e.CellValue.ToString().Contains("Absent"))
+                    Remarks.CellStyle.FillBackground = ExcelKnownColors.Red;
+                else if (e.CellValue.ToString().Contains("Leave"))
+                    Remarks.CellStyle.FillBackgroundRGB = System.Drawing.Color.FromArgb(112, 252, 160);
+                else if (e.CellValue.Equals("Weekend"))
+                    Remarks.CellStyle.FillBackground = ExcelKnownColors.Orange;
+                else if (e.CellValue.Equals("Holiday"))
+                    Remarks.CellStyle.FillBackgroundRGB = System.Drawing.Color.FromArgb(255, 211, 86);
+                if (string.IsNullOrEmpty(sheet.Range[e.Range.Row, 3].Value))
+                {
+                    Remarks.Merge();
+                    Remarks.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                    Remarks.Value = e.CellValue.ToString();
+                }
+            }
+        }
+
+        void ExportToExcel()
+        {
+            try
+            {
+                //string opt = new UI.Misc.wExport().GetExportOption();
+                ReportParameter = "Employee : " + SelectedEmployee.FULLNAME + "  Month : " + SelectedMonth.MNAME;
+                ExcelExportingOptions option = new ExcelExportingOptions();
+                option.ExportMode = ExportMode.Text;
+
+                option.CellsExportingEventHandler = new GridCellExcelExportingEventHandler(ExcelExport_CellExporting);
+                //option.ExportingEventHandler = new GridExcelExportingEventhandler(ExcelExport_CellExporting);
+
+                option.ExcludeColumns.Add("DEPARTMENT");
+                var Engine = sfGrid.ExportToExcel(sfGrid.View, option);
+                var workBook = Engine.Excel.Workbooks[0];
+
+                Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog
+                {
+                    FilterIndex = 2,
+                    Filter = "Excel 97 to 2003 Files(*.xls)|*.xls|Excel 2007 to 2010 Files(*.xlsx)|*.xlsx",
+                    FileName = "Book1"
+                };
+
+                if (sfd.ShowDialog() == true)
+                {
+                    using (Stream stream = sfd.OpenFile())
+                    {
+                        if (sfd.FilterIndex == 1)
+                            workBook.Version = ExcelVersion.Excel97to2003;
+                        else
+                            workBook.Version = ExcelVersion.Excel2007;
+                        var sheet = workBook.ActiveSheet;
+                        sheet.InsertRow(1, 5);
+                        var CNAME = sheet.Range[1, 1, 1, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                        CNAME.Merge();
+                        CNAME.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                        CNAME.CellStyle.Font.Size = 12;
+                        CNAME.CellStyle.Font.Bold = true;
+
+                        var CADDRESS = sheet.Range[2, 1, 2, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                        CADDRESS.Merge();
+                        CADDRESS.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+
+                        var RPTNAME = sheet.Range[3, 1, 3, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                        RPTNAME.Merge();
+                        RPTNAME.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                        RPTNAME.CellStyle.Font.Bold = true;
+
+                        var RPTPARAM = sheet.Range[4, 1, 4, option.Columns.Count - option.ExcludeColumns.Count + 1];
+                        RPTPARAM.Merge();
+                        RPTPARAM.HorizontalAlignment = ExcelHAlign.HAlignCenter;
+                        RPTPARAM.CellStyle.Font.Italic = true;
+                        //sheet.MergeRanges(sheet.Range[1, 1], sheet.Range[1, 10]);
+                        sheet.Range[1, 1].Value = AppVariables.CompanyInfo.COMPANY_NAME;
+                        sheet.Range[2, 1].Value = AppVariables.CompanyInfo.COMPANY_ADDRESS;
+                        sheet.Range[3, 1].Value = ReportName;
+                        sheet.Range[4, 1].Value = ReportParameter;
+                        workBook.SaveAs(stream);
+                    }
+
+                    //Message box confirmation to view the created spreadsheet.
+                    if (System.Windows.MessageBox.Show("Do you want to view the workbook?", "Workbook has been created",
+                                        MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    {
+                        //Launching the Excel file using the default Application.[MS Excel Or Free ExcelViewer]
+                        System.Diagnostics.Process.Start(sfd.FileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ExceptionHandler.GetException(ex).Message);
+                throw;
+            }
+        }
     }
 
-    class MonthlyAttendance
+    class MonthlyAttendance : RootModel
     {
+        public short WORKHOUR_ID { get; set; }
         public short ENO { get; set; }
         public string ENAME { get; set; }
         public string DEPARTMENT { get; set; }

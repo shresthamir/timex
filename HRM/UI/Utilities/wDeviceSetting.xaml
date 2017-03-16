@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HRM.UI.Utilities"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="Device Setting" Height="400" Width="400">
+        Title="Device Setting" Height="450" Width="500">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -14,7 +14,7 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="165"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         <Border Style="{StaticResource PlainBackground}">
@@ -30,6 +30,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Device Model"/>
                 <ComboBox Grid.Column="1" ItemsSource="{Binding ModelList}" SelectedValue="{Binding Device.DEVICE_MODEL,ValidatesOnDataErrors=True}"/>
@@ -40,15 +41,19 @@
                 <TextBlock Grid.Row="2" Text="Device IP"/>
                 <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Device.DEVICE_IP,ValidatesOnDataErrors=True}"/>
 
-                <Button Grid.Row="3"  Content="Save" Command="{Binding AddCommand}"/>
-                <Button Grid.Row="3" Grid.Column="1" Content="Test Connection" Command="{Binding TestConnectionCommand}"/>
+                <TextBlock Grid.Row="3" Text="Device Serial"/>
+                <TextBox Grid.Row="3" Grid.Column="1" IsReadOnly="True" Text="{Binding Device.DEVICE_SERIAL,ValidatesOnDataErrors=True}"/>
+
+                <Button Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Content="Save" Style="{StaticResource ButtonStyle}" Margin="0" Width="80" Command="{Binding AddCommand}"/>
+                <Button Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource ButtonStyle}" Margin="0" Width="120" Content="Test Connection" Command="{Binding TestConnectionCommand}"/>
             </Grid>
         </Border>
         <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding DeviceList}" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Device Model" Binding="{Binding DEVICE_MODEL}" Width="120"/>
-                <DataGridTextColumn Header="Display Name" Binding="{Binding DISPLAY_NAME}" Width="170"/>
+                <DataGridTextColumn Header="Device Model" Binding="{Binding DEVICE_MODEL}" Width="100"/>
+                <DataGridTextColumn Header="Display Name" Binding="{Binding DISPLAY_NAME}" Width="150"/>
                 <DataGridTextColumn Header="Device IP" Binding="{Binding DEVICE_IP}" Width="100"/>
+                <DataGridTextColumn Header="Device Serial" Binding="{Binding DEVICE_SERIAL}" Width="125"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

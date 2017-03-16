@@ -44,7 +44,7 @@ namespace HRM.Models
 
         public string REMARKS { get { return _REMARKS; } set { _REMARKS = value; OnPropertyChanged("REMARKS"); } }
 
-        public DateTime ATT_DATE { get { return _ATT_DATE; } set { _ATT_DATE = value; ATT_TIME = value; OnPropertyChanged("ATT_DATE"); } }
+        public DateTime ATT_DATE { get { return _ATT_DATE; } set { _ATT_DATE = value; OnPropertyChanged("ATT_DATE"); } }
 
         #endregion
 
@@ -109,10 +109,17 @@ namespace HRM.Models
         public DateTime ATT_TIME { get; set; }
         public byte VerifyMode { get; set; }
         public byte InOutMode { get; set; }
+        public string DEVICE_NAME { get; set; }
 
         public bool Save(SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO ATT_LOG(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO ATT_LOG(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
+        }
+
+
+        public bool SaveTemp(SqlTransaction tran)
+        {
+            return tran.Connection.Execute("INSERT INTO ATT_LOG_TEMP(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
         }
     }
 
