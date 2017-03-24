@@ -11,6 +11,7 @@ FD:\Projects\HRM\HRM\UI\Master\EmployeeRegistration.xaml;;
 FD:\Projects\HRM\HRM\UI\Master\ucDepartment.xaml;;
 FD:\Projects\HRM\HRM\UI\Misc\About.xaml;;
 FD:\Projects\HRM\HRM\UI\Misc\wExport.xaml;;
+FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucAttLog.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucDailyAbsent.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucDailyAttendance.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucMonthlyAttendance.xaml;;
@@ -24,7 +25,6 @@ FD:\Projects\HRM\HRM\UI\Tasks\ucMonthlyLeave.xaml;;
 FD:\Projects\HRM\HRM\UI\Tasks\ucWorkhourAssign.xaml;;
 FD:\Projects\HRM\HRM\UI\User\ucUserManagement.xaml;;
 FD:\Projects\HRM\HRM\UI\Utilities\wDataDownload.xaml;;
-FD:\Projects\HRM\HRM\UI\Utilities\wDeviceSetting.xaml;;
-FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucAttLog.xaml;;
 FD:\Projects\HRM\HRM\UI\Utilities\wDeviceTime.xaml;;
+FD:\Projects\HRM\HRM\UI\Utilities\wDeviceSetting.xaml;;
 

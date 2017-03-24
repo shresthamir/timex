@@ -151,3 +151,4 @@ D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\AttendanceReports\ucAttLog.g.cs
 D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\AttendanceReports\ucAttLog.baml
 D:\Projects\HRM\HRM\obj\x86\Debug\UI\Utilities\wDeviceTime.g.cs
 D:\Projects\HRM\HRM\obj\x86\Debug\UI\Utilities\wDeviceTime.baml
+D:\Projects\HRM\HRM\bin\x86\Debug\ZKEUEmKeeperNet.dll

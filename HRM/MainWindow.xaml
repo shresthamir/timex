@@ -90,7 +90,8 @@
                 <MenuItem Header="Database Backup" Click="Utilities_Click" Visibility="{Binding DATA_BACKUP, Converter={StaticResource ToVisibility}}"/>
                 <MenuItem Header="Database Restore" Click="Utilities_Click" Visibility="{Binding DATA_RESTORE, Converter={StaticResource ToVisibility}}"/>
                 <MenuItem Header="Device Setting" Click="Utilities_Click" Visibility="{Binding DEVICE_SETTING, Converter={StaticResource ToVisibility}}"/>
-                <MenuItem Header="Device Time Sync" Click="Utilities_Click" Visibility="{Binding DEVICE_SETTING, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Device Time Sync" Click="Utilities_Click" Visibility="{Binding DEVICE_TIME_SYNC, Converter={StaticResource ToVisibility}}"/>
+                <MenuItem Header="Employee Name Sync" Click="Utilities_Click" Visibility="{Binding DEVICE_ENAME_SYNC, Converter={StaticResource ToVisibility}}"/>
             </MenuItem>
             <MenuItem Header="Windows">
 

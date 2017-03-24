@@ -116,6 +116,7 @@ namespace HRM
 
         private void Master_Click(object sender, RoutedEventArgs e)
         {
+            bool Float = false;
             LayoutAnchorable la = new LayoutAnchorable();
             la.Title = (sender as MenuItem).Header.ToString();
             Binding b = new Binding();
@@ -123,21 +124,39 @@ namespace HRM
             {
                 case "Branch Setup":
                     la.Content = new ucBranch();
+                    la.FloatingHeight = 250;
+                    la.FloatingWidth = 550;
+                    Float = true;
                     break;
                 case "Holiday Setup":
                     la.Content = new ucHoliday();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 800;
+                    Float = true;
                     break;
                 case "Leave Setup":
                     la.Content = new ucLeave();
+                    la.FloatingHeight = 250;
+                    la.FloatingWidth = 500;
+                    Float = true;
                     break;
                 case "Departments":
                     la.Content = new ucDepartment();
+                    la.FloatingHeight = 400;
+                    la.FloatingWidth = 700;
+                    Float = true;
                     break;
                 case "Designation":
                     la.Content = new ucDesignation();
+                    la.FloatingHeight = 200;
+                    la.FloatingWidth = 500;
+                    Float = true;
                     break;
                 case "Working Hour":
                     la.Content = new ucWorkHour();
+                    la.FloatingHeight = 500;
+                    la.FloatingWidth = 800;
+                    Float = true;
                     break;
             }
             //b.Converter = new Library.Converters.LanguageConverter();
@@ -146,6 +165,13 @@ namespace HRM
             la.PropertyChanged += la_PropertyChanged;
             la.IsSelected = true;
             LayDocPane.Children.Add(la);
+            if (Float)
+            {
+                Point p = DMan.PointToScreen(new Point(0, 0));
+                la.FloatingLeft = p.X;
+                la.FloatingTop = p.Y;
+                la.Float();
+            }
         }
 
         private void Task_Click(object sender, RoutedEventArgs e)
@@ -208,6 +234,7 @@ namespace HRM
 
         private void Utilities_Click(object sender, RoutedEventArgs e)
         {
+            bool Float = false;
             LayoutAnchorable la = new LayoutAnchorable();
             la.Title = (sender as MenuItem).Header.ToString();
             Binding b = new Binding();
@@ -215,9 +242,12 @@ namespace HRM
             {
                 case "Company Info":
                     la.Content = new ucCompany();
+                    la.FloatingHeight = 220;
+                    la.FloatingWidth = 600;
+                    Float = true;
                     break;
                 case "Download Attendance Data":
-                    new wDataDownload().Show();
+                    new wDataDownload().ShowDialog();
                     return;
                 case "Database Backup":
                     if (IsAppRunningInServer)
@@ -233,6 +263,9 @@ namespace HRM
                 case "Device Time Sync":
                     new wDeviceTime().Show();
                     return;
+                case "Employee Name Sync":
+                    ViewModels.DeviceDateTimeSyncViewModel.SyncName();
+                    return;
             }
             //b.Converter = new Library.Converters.LanguageConverter();
             //b.ConverterParameter = (sender as MenuItem).Header.ToString();
@@ -241,6 +274,13 @@ namespace HRM
             la.PropertyChanged += la_PropertyChanged;
             la.IsSelected = true;
             LayDocPane.Children.Add(la);
+            if (Float)
+            {
+                Point p = DMan.PointToScreen(new Point(0, 0));
+                la.FloatingLeft = p.X;
+                la.FloatingTop = p.Y;
+                la.Float();
+            }
         }
 
         void la_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

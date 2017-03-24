@@ -44,6 +44,7 @@
                                 AllowDraggingColumns="False"                                       
                                 AllowFiltering="False"
                                 AllowResizingColumns="True"
+                               GroupCaptionTextFormat=" {ColumnName} : {Key} - {ItemsCount} Persons"
                                 AllowGrouping="True"                                   
                                 ItemsSource="{Binding ReportSource}"                              
                                SelectionUnit="Cell"                  

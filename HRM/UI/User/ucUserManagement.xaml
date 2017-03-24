@@ -113,6 +113,8 @@
                             <CheckBox Content="Data Backup" IsChecked="{Binding User.DATA_BACKUP}"/>
                             <CheckBox Content="Data Restore" IsChecked="{Binding User.DATA_RESTORE}"/>
                             <CheckBox Content="Device Setting" IsChecked="{Binding User.DEVICE_SETTING}"/>
+                            <CheckBox Content="Device Time Sync" IsChecked="{Binding User.DEVICE_TIME_SYNC}"/>
+                            <CheckBox Content="Employee Name Sync" IsChecked="{Binding User.DEVICE_ENAME_SYNC}"/>
                         </StackPanel>
                     </TabItem>
                 </TabControl>

@@ -52,6 +52,7 @@
                                 AllowResizingColumns="True"
                                 AllowGrouping="True"                                   
                                 ItemsSource="{Binding ReportSource}"
+                               GroupCaptionTextFormat=" {ColumnName} : {Key} - {ItemsCount} Persons"
                                QueryCoveredRange="sfgrid_QueryCoveredRange"
                                ResizingColumns="sfgrid_ResizingColumns"
                                SelectionUnit="Cell">         

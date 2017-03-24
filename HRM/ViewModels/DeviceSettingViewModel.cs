@@ -6,7 +6,9 @@ using System.Collections.ObjectModel;
 using HRM.Library.Helpers;
 using HRM.Library.AppScopeClasses;
 using System.Data.SqlClient;
+using System.Linq;
 using Dapper;
+using ZkSoftwareEU;
 namespace HRM.ViewModels
 {
     class DeviceSettingViewModel : RootViewModel
@@ -117,7 +119,7 @@ namespace HRM.ViewModels
         public AttDevice Device { get { return _Device; } set { _Device = value; OnPropertyChanged("Device"); } }
         public ObservableCollection<AttDevice> DeviceList { get { return _DeviceList; } set { _DeviceList = value; OnPropertyChanged("DeviceList"); } }
         public DateTime SyncDate { get { return _SyncDate; } set { _SyncDate = value; OnPropertyChanged("SyncDate"); } }
-        public bool SyncAllDevices { get { return _SyncAllDevices; }  set { _SyncAllDevices = value; OnPropertyChanged("SyncAllDevices"); } }
+        public bool SyncAllDevices { get { return _SyncAllDevices; } set { _SyncAllDevices = value; OnPropertyChanged("SyncAllDevices"); } }
         public RelayCommand SyncCommand { get { return new RelayCommand(SyncDateTime); } }
 
         private void SyncDateTime(object obj)
@@ -134,7 +136,7 @@ namespace HRM.ViewModels
                         }
                     }
                     else
-                        SetDeviceTime(Device)
+                        SetDeviceTime(Device);
                     ShowInformation("Device Time Synced Successfully");
                 }
                 catch (Exception ex)
@@ -159,7 +161,7 @@ namespace HRM.ViewModels
                         GetDeviceSerial(ad);
                     }
                 }
-                SyncDate = DateTime.Now;                
+                SyncDate = DateTime.Now;
             }
             catch (Exception Ex)
             {
@@ -174,7 +176,7 @@ namespace HRM.ViewModels
             if (zkem.Connect_Net(device.DEVICE_IP, 4370))
             {
                 zkem.SetDeviceTime2(zkem.MachineNumber, DTime.dwYear, DTime.dwMonth, DTime.dwDay, DTime.dwHour, DTime.dwMinute, DTime.dwSecond);
-                zkem.Disconnect();                
+                zkem.Disconnect();
             }
         }
 
@@ -194,6 +196,116 @@ namespace HRM.ViewModels
             }
             return false;
         }
+
+        public static void SyncName(bool Old)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    var EmployeeList = conn.Query<Employee>("SELECT ENO , TITLE + ' ' + FULLNAME FULLNAME FROM EMPLOYEE");
+                    var DeviceList = conn.Query<AttDevice>("SELECT DEVICE_MODEL, DISPLAY_NAME, DEVICE_IP FROM ATT_DEVICE");
+                    foreach (AttDevice ad in DeviceList)
+                    {
+                        var zkem = new zkemkeeper.CZKEM();
+                        //if (ad.DEVICE_MODEL == "U160")
+                        //    continue;
+                        if (zkem.Connect_Net(ad.DEVICE_IP, 4370))
+                        {
+                            foreach (Employee e in EmployeeList)
+                            {
+                                int refs = 0;
+                                DeviceUser du = new DeviceUser(true);
+                                if (ad.DEVICE_MODEL == "U160")
+                                {
+                                    
+                                    //zkem.SSR_GetAllUserInfo()
+                                    if (zkem.SSR_GetUserInfo(zkem.MachineNumber, e.ENO.ToString(), out du.Name, out du.Password, out du.Privilage, out du.Enabled))
+                                        zkem.SSR_SetUserInfo(zkem.MachineNumber, e.ENO.ToString(), e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                                    zkem.GetLastError(ref refs);
+                                }
+                                else if (ad.DEVICE_MODEL == "SC105")
+                                {
+                                    int vs = 0;
+                                    byte res = 0;
+
+                                    //zkem.GetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, ref priv, ref edata, ref pwd);
+                                    if (zkem.GetUserInfo(zkem.MachineNumber, e.ENO, ref du.Name, ref du.Password, ref du.Privilage, ref du.Enabled))
+                                        zkem.SetUserInfo(zkem.MachineNumber, e.ENO, e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                                    //zkem.SetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, priv, ref edata, pwd);
+
+                                }
+                            }
+
+                            //zkem.SetUserInfo(zkem.MachineNumber, 9999, "Admin", "9999", 1, true);
+                            zkem.Disconnect();
+                        }
+                    }
+                }
+            }
+            catch (Exception Ex)
+            {
+
+            }
+        }
+
+        public static void SyncName()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    var EmployeeList = new List<Employee>(conn.Query<Employee>("SELECT ENO , TITLE + ' ' + FULLNAME FULLNAME FROM EMPLOYEE"));
+                    var DeviceList = conn.Query<AttDevice>("SELECT DEVICE_MODEL, DISPLAY_NAME, DEVICE_IP FROM ATT_DEVICE");
+                    foreach (AttDevice ad in DeviceList)
+                    {
+                        var zkem = new CZKEUEMNetClass();
+                        //if (ad.DEVICE_MODEL == "U160")
+                        //    continue;
+                        
+                        if (zkem.Connect_Net_Tcp(ad.DEVICE_IP, 4370))
+                        {
+                            int refs = 0;
+                            DeviceUser du = new DeviceUser(true);
+                            if (ad.DEVICE_MODEL == "U160")
+                            {
+                                do
+                                {
+                                    if (EmployeeList.Any(x => x.ENO == du.ENO))
+                                    {
+                                        Employee e = EmployeeList.First(x => x.ENO == du.ENO);
+                                        zkem.SSR_SetUserInfo(zkem.MachineNumber, e.ENO.ToString(), e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                                    }
+                                }
+                                while (zkem.GetAllUserInfo(zkem.MachineNumber, ref du.ENO, ref du.Name, ref du.Password, ref du.Privilage, ref du.Enabled));
+
+
+                                zkem.GetLastError(ref refs);
+                            }
+                            //else if (ad.DEVICE_MODEL == "SC105")
+                            
+                            //    int vs = 0;
+                            //    byte res = 0;
+
+                            //    //zkem.GetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, ref priv, ref edata, ref pwd);
+                            //    if (zkem.GetUserInfo(zkem.MachineNumber, e.ENO, ref du.Name, ref du.Password, ref du.Privilage, ref du.Enabled))
+                            //        zkem.SetUserInfo(zkem.MachineNumber, e.ENO, e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                            //    //zkem.SetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, priv, ref edata, pwd);
+
+                            //}
+
+
+                            //zkem.SetUserInfo(zkem.MachineNumber, 9999, "Admin", "9999", 1, true);
+                            zkem.Disconnect();
+                        }
+                    }
+                }
+            }
+            catch (Exception Ex)
+            {
+
+            }
+        }
     }
 
     struct DeviceTime
@@ -204,7 +316,7 @@ namespace HRM.ViewModels
         public int dwHour;
         public int dwMinute;
         public int dwSecond;
-        
+
 
         public DeviceTime(DateTime date)
         {
@@ -219,6 +331,25 @@ namespace HRM.ViewModels
         public DateTime GetDate()
         {
             return new DateTime(dwYear, dwMonth, dwDay, dwHour, dwMinute, dwSecond);
+        }
+    }
+    struct DeviceUser
+    {
+        public int ENO;
+        public string Name;
+        public string Password;
+        public int Privilage;
+        public bool Enabled;
+
+
+        public DeviceUser(bool de)
+        {
+            ENO = 0;
+            Name = string.Empty;
+            Password = string.Empty;
+            Privilage = 0;
+            Enabled = true;
+
         }
     }
 }

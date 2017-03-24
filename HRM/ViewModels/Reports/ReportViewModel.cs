@@ -43,6 +43,7 @@ namespace HRM.ViewModels
         protected DateTime _FDate = DateTime.Today;
         protected DateTime _TDate = DateTime.Today;
         private IEnumerable<EmployeeAllDetail> _EmpDList;
+        private bool _AD;
 
         public bool AllEmployee
         {
@@ -79,9 +80,20 @@ namespace HRM.ViewModels
         public IEnumerable<Month> MonthList { get { return _MonthList; } set { _MonthList = value; OnPropertyChanged("MonthList"); } }
         public IEnumerable<Department> DepartmentList { get { return _DepartmentList; } set { _DepartmentList = value; OnPropertyChanged("DepartmentList"); } }
         public ObservableCollection<dynamic> ReportSource { get { return _ReportSource; } set { _ReportSource = value; OnPropertyChanged("ReportSource"); } }
+        public bool AD
+        {
+            get { return _AD; }
+            set
+            {
+                _AD = value;
+                OnPropertyChanged("AD");
+                MonthList = _All_Months.Where(x => x.MTYPE == ((value) ? "AD" : "BS"));
+                CurYear = (value) ? DateTime.Today.Year : DateFunctions.GetBsYear(DateTime.Today);
+            }
+        }
 
         public ReportViewModel()
-        {
+        {            
             SelectedEmployee = new Employee();
             SelectedEmployee.PropertyChanged += SelectedEmployee_PropertyChanged;
             CurYear = (SETTING.DEFAULT_CALENDAR == "AD") ? DateTime.Today.Year : DateFunctions.GetBsYear(DateTime.Today);
@@ -170,8 +182,7 @@ namespace HRM.ViewModels
                 Employee E = EmpList.FirstOrDefault(y => y.ENO == SelectedEmployee.ENO);
                 if (_All_Months != null && E != null)
                 {
-                    MonthList = _All_Months.Where(x => x.MTYPE == E.CALENDAR_TYPE);
-                    CurYear = (E.CALENDAR_TYPE == "AD") ? DateTime.Today.Year : DateFunctions.GetBsYear(DateTime.Today);
+                    AD = E.CALENDAR_TYPE == "AD";
                 }
 
             }

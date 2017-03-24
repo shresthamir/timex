@@ -81,7 +81,7 @@
                                        AllowDraggingColumns="False"                                       
                                        AllowFiltering="True"
                                        AllowGrouping="True"
-                                        
+                                        GroupCaptionTextFormat=" {ColumnName} : {Key} - {ItemsCount} Persons"
                                        ItemsSource="{Binding ReportSource}"
                                        ShowGroupDropArea="True" >
             <syncfusion:SfDataGrid.PrintSettings>

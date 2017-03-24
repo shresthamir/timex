@@ -113,13 +113,13 @@ namespace HRM.Models
 
         public bool Save(SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO ATT_LOG(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO ATT_LOG(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode, DEVICE_NAME) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
         }
 
 
         public bool SaveTemp(SqlTransaction tran)
         {
-            return tran.Connection.Execute("INSERT INTO ATT_LOG_TEMP(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
+            return tran.Connection.Execute("INSERT INTO ATT_LOG_TEMP(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode, DEVICE_NAME) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
         }
     }
 

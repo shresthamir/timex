@@ -32,59 +32,52 @@
         </Grid.ColumnDefinitions>
         <Border Style="{StaticResource PlainBackground}" Grid.ColumnSpan="2">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="500"/>
+                    <ColumnDefinition Width="450"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" IsEnabled="{Binding ElementName=chkAllEmp,Path=IsChecked,Converter={StaticResource InvertBool}}">
-                    <TextBlock  Text="Employee" Style="{StaticResource Label}" Width ="120" />
-                    <Grid Grid.Column="1" Style="{StaticResource WatermarkGrid}" Width="350">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="240"/>
-                            <ColumnDefinition Width="50"/>
-                        </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Label}" Text="Employee No" Width="90"/>
+                    <Button Style="{StaticResource ButtonStyle}" Height="26" Margin="0" Width="30" FontFamily="Marlett" FontSize="24" Content="6" Command="{Binding NPCommand}" CommandParameter="Previous"/>
+                    <TextBox Text="{Binding SelectedEmployee.ENO, Converter={StaticResource HideZero}}" Width="60"/>
+                    <Button Style="{StaticResource ButtonStyle}" Height="26" Margin="0" Width="30"  FontFamily="Marlett" FontSize="24" Content="5" Command="{Binding NPCommand}" CommandParameter="Next"/>
+                </StackPanel>
 
-                        <TextBlock Text="ENO" Style="{StaticResource Watermark}" Visibility="{Binding ElementName=txtENO, Path=Text, Converter={StaticResource WatermarkVisibility}}"/>
-                        <TextBox x:Name="txtENO" Width="60" Text="{Binding SelectedEmployee.ENO, ValidatesOnDataErrors=True, Converter={StaticResource HideZero}}" Background="Transparent">
-                            <Validation.ErrorTemplate>
-                                <ControlTemplate>
-                                    <DockPanel>
-                                        <Grid DockPanel.Dock="Right" Width="16" Height="16" VerticalAlignment="Center" Margin="353 0 0 0">
-                                            <Ellipse Width="16" Height="16" Fill="Red"/>
-                                            <Ellipse Width="3" Height="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 2 0 0" Fill="White"/>
-                                            <Ellipse Width="2" Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 2" Fill="White"/>
-                                        </Grid>
-                                        <AdornedElementPlaceholder/>
-                                    </DockPanel>
-                                </ControlTemplate>
-                            </Validation.ErrorTemplate>
-                        </TextBox>
-
-                        <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" 
+                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <TextBlock  Text="Employee" Style="{StaticResource Label}" Width ="90" />
+                    <cc:WatermarkComboBox Grid.Column="1" ItemsSource="{Binding EmpList}"  Height="26" Width="250"
                                                       Watermark="Employee Name" IsEditable="True"
                                                       DisplayMemberPath="FULLNAME" SelectedValuePath="FULLNAME"
                                           SelectedValue="{Binding SelectedEmployee.FULLNAME}" />
+                    <Button Grid.Column="2" Height="28" Command="{Binding SearchCommand}" >
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="pack://application:,,,/Images/Search32.png"/>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
 
-
-                        <Button Grid.Column="2" Height="28" Command="{Binding LoadData}" Margin="20 0 0 0">
-                            <Button.Template>
-                                <ControlTemplate>
-                                    <Image Source="pack://application:,,,/Images/Search32.png"/>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </Grid>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Month" Style="{StaticResource Label}" Width="100"/>
-                    <ComboBox ItemsSource="{Binding MonthList}" DisplayMemberPath="MNAME" SelectedItem="{Binding SelectedMonth}" Width="150"/>
-                    <toolkit:ShortUpDown Maximum="2100" Minimum="2000" Value="{Binding CurYear}" Width="100"/>
-                </StackPanel>
-                <Button Grid.Column="2" Width="70" Content="Load" Command="{Binding LoadData}"/>
+                
+                    <Border Grid.Column="1"  Style="{StaticResource PlainBackground}" Height="28" Width="120" HorizontalAlignment="Left" Padding="5 2" >
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <RadioButton IsChecked="{Binding AD}" Content="AD"/>
+                            <RadioButton IsChecked="{Binding AD, Converter={StaticResource InvertBool}}" Content="BS" Margin="20 0 0 0"/>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                        <!--<TextBlock Text="Month" Style="{StaticResource Label}" Width="100"/>-->
+                        <ComboBox Height="26" ItemsSource="{Binding MonthList}" DisplayMemberPath="MNAME" SelectedItem="{Binding SelectedMonth}" Width="150"/>
+                        <toolkit:ShortUpDown Height="26" Maximum="2100" Minimum="2000" Value="{Binding CurYear}" Width="100"/>
+                    </StackPanel>
+                <Button Grid.RowSpan="2" Grid.Column="2" Width="70" Height="40" Style="{StaticResource ButtonStyle}" Content="Load" Command="{Binding LoadData}"/>
             </Grid>
         </Border>
 

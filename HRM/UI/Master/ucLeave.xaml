@@ -4,68 +4,65 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="600">
+             d:DesignHeight="250" d:DesignWidth="500">
     <Border Style="{StaticResource PlainBackground}" Padding="10">
         <Grid>
-            <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style = "{StaticResource Label}" Text="Leave Id"/>
+            <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding leave.LEAVE_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}" Height="26">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Height="28" Source="pack://application:,,,/Images/Search32.png"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Grid Grid.Row="1" Grid.ColumnSpan="4" IsEnabled="{Binding EntryPanelEnabled}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
-                    <RowDefinition/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32"/>                    
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="120"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Style = "{StaticResource Label}" Text="Leave Id"/>
-                <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding leave.LEAVE_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
-                    <TextBox.InputBindings>
-                        <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
-                    </TextBox.InputBindings>
-                </TextBox>
-                <Button Grid.Column="2" Style="{x:Null}" Command="{Binding LoadData}" Height="26">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Height="28" Source="pack://application:,,,/Images/Search32.png"/>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-                <Grid Grid.Row="1" Grid.ColumnSpan="4" IsEnabled="{Binding EntryPanelEnabled}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="32"/>
-                        <RowDefinition Height="32"/>
-                        <RowDefinition Height="32"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="50"/>
-                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Style = "{StaticResource Label}"  Grid.Row="0" Text="Leave Name"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding leave.LEAVE_NAME, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Style = "{StaticResource Label}"  Grid.Row="0" Text="Leave Name"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding leave.LEAVE_NAME, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Annual Leave Days"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" HorizontalContentAlignment="Right" Text="{Binding leave.ANNUALLEAVECOUNT, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}"/>
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Annual Leave Days"/>
+                <TextBox Grid.Row="1" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" HorizontalContentAlignment="Right" Text="{Binding leave.ANNUALLEAVECOUNT, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}"/>
 
-                    <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Max Leave Days"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding leave.MAXALLOWEDLEAVES, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" HorizontalContentAlignment="Right"/>
+                <TextBlock Style = "{StaticResource Label}" Grid.Row="2" Text="Max Leave Days"/>
+                <TextBox Grid.Row="2" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding leave.MAXALLOWEDLEAVES, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" HorizontalContentAlignment="Right"/>
 
-                    <!--<TextBlock Style = "{StaticResource Label}" Padding="5 0 0 0"  Grid.Row="3" Text="Equivalent Working Day" TextWrapping="Wrap"/>
+                <!--<TextBlock Style = "{StaticResource Label}" Padding="5 0 0 0"  Grid.Row="3" Text="Equivalent Working Day" TextWrapping="Wrap"/>
                     <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding leave.EQUIVALENTWORKINGDAYS, UpdateSourceTrigger=PropertyChanged}"/>-->
 
-                    <GroupBox Grid.Row="5" Grid.ColumnSpan="3" Header="Leave Attributes" BorderBrush="Black">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <CheckBox Content="Is Paid Leave" IsChecked="{Binding leave.ISPAIDLEAVE}"/>
-                            <CheckBox Margin="20 0 0 0" Content="Expires" IsChecked="{Binding leave.EXPIRE}"/>
-                        </StackPanel>
-                    </GroupBox>
-                </Grid>
+                <GroupBox Grid.Row="5" Grid.ColumnSpan="3" Header="Leave Attributes" BorderBrush="Black">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <CheckBox Content="Is Paid Leave" IsChecked="{Binding leave.ISPAIDLEAVE}"/>
+                        <CheckBox Margin="20 0 0 0" Content="Expires" IsChecked="{Binding leave.EXPIRE}"/>
+                    </StackPanel>
+                </GroupBox>
             </Grid>
         </Grid>
     </Border>

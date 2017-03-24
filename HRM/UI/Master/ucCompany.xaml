@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="220" d:DesignWidth="600">
     <Border Style="{StaticResource PlainBackground}" Padding="10">
         <Grid DataContext="{Binding company}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
@@ -22,7 +22,7 @@
             </Grid.ColumnDefinitions>
             
             <TextBlock Style = "{StaticResource Label}" Text="Company Name"/>
-            <TextBox Grid.Column="1" Text="{Binding COMPANY_NAME, UpdateSourceTrigger=PropertyChanged}" Height="56"/>
+            <TextBox Grid.Column="1" Text="{Binding COMPANY_NAME, UpdateSourceTrigger=PropertyChanged}"/>
             
             <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="Address Line #1"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding COMPANY_ADDRESS, UpdateSourceTrigger=PropertyChanged}"/>
@@ -31,13 +31,13 @@
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding COMPANY_ADDRESS_LINE2, UpdateSourceTrigger=PropertyChanged}"/>
 
             <TextBlock Style = "{StaticResource Label}" Grid.Row="3" Text="Phone No."/>
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding COMPANY_PHONENO, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Width="200" HorizontalAlignment="Left"  Text="{Binding COMPANY_PHONENO, UpdateSourceTrigger=PropertyChanged}"/>
             
             <TextBlock Style = "{StaticResource Label}" Grid.Row="4" Text="Email"/>
             <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding COMPANY_EMAIL, UpdateSourceTrigger=PropertyChanged}"/>
 
             <TextBlock Style = "{StaticResource Label}" Grid.Row="5" Text="Company PAN"/>
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding COMPANY_PAN, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="5" Grid.Column="1" Width="200" HorizontalAlignment="Left" Text="{Binding COMPANY_PAN, UpdateSourceTrigger=PropertyChanged}"/>
 
 
         </Grid>

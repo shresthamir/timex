@@ -22,6 +22,8 @@ using HRM.Library.BaseClasses;
 using Syncfusion.UI.Xaml.Grid.Converter;
 using System.IO;
 using Syncfusion.XlsIO;
+using HRM.UI.Misc;
+using System.Windows.Controls;
 
 namespace HRM.ViewModels
 {
@@ -52,6 +54,22 @@ namespace HRM.ViewModels
         public RelayCommand LeaveCommand { get { return new RelayCommand(OpenLeaveApplication); } }
         public RelayCommand ShowWorkhourCommand { get { return new RelayCommand(ShowWorkhour); } }
         public RelayCommand AddRemarksCommand { get { return new RelayCommand(AddRemarks, CanAddRemarks); } }
+        public RelayCommand SearchCommand { get { return new RelayCommand(LoadEmpInfo); } }
+        public RelayCommand NPCommand { get { return new RelayCommand(LoadNextPrevious); } }
+
+        private void LoadNextPrevious(object obj)
+        {
+            if (obj.Equals("Next"))
+                SelectedEmployee = EmpList.FirstOrDefault(x => x.ENO > SelectedEmployee.ENO);
+            else
+                SelectedEmployee = EmpList.OrderByDescending(x=>x.ENO).FirstOrDefault(x => x.ENO < SelectedEmployee.ENO);
+
+            if (SelectedEmployee == null)
+                SelectedEmployee = new Employee();
+
+            if (_action == ButtonAction.Selected)
+                LoadReport(null);
+        }
 
         private bool CanAddRemarks(object obj)
         {
@@ -121,6 +139,30 @@ UPDATE ATT_ABSENT_REMARKS SET REMARKS = @ATT_REMARKS WHERE ENO = @ENO AND ATT_DA
         {
         }
 
+        private void LoadEmpInfo(object obj)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    var employee = conn.Query<Employee>("SELECT ENO, ECODE, FULLNAME FROM EMPLOYEE");
+                    BrowseViewModel bvm = new BrowseViewModel(employee, "ENO", "ECODE", "FULLNAME");
+                    Browse browse = new Browse() { DataContext = bvm };
+                    browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new System.Windows.Data.Binding("ENO"), Header = "ENO", Width = 100 });
+                    browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new System.Windows.Data.Binding("ECODE"), Header = "Employee Code", Width = 120 });
+                    browse.SearchGrid.Columns.Add(new DataGridTextColumn() { Binding = new System.Windows.Data.Binding("FULLNAME"), Header = "Employee Name", Width = 200 });
+                    browse.ShowDialog();
+                    if (browse.DialogResult != true)
+                        return;
+                    SelectedEmployee = browse.SearchGrid.SelectedItem as Employee;
+                }
+            }
+            catch (Exception Ex)
+            {
+                ShowError(Ex.Message);
+            }
+        }
+
 
         public MonthlyAttandanceViewModel()
         {
@@ -131,8 +173,8 @@ UPDATE ATT_ABSENT_REMARKS SET REMARKS = @ATT_REMARKS WHERE ENO = @ENO AND ATT_DA
                 {
                     EmpList = conn.Query<Employee>("SELECT ENO, FULLNAME, CALENDAR_TYPE FROM EMPLOYEE");
                     _All_Months = conn.Query<Month>("SELECT MID, MTYPE, MNAME FROM tblMonthNames");
-
                 }
+                AD = false;
                 LoadData = new Library.Helpers.RelayCommand(LoadReport);
                 PrintCommand = new Library.Helpers.RelayCommand(PrintReport);
                 //ExportCommand = new RelayCommand(ExportToPDF);
@@ -312,12 +354,22 @@ UPDATE ATT_ABSENT_REMARKS SET REMARKS = @ATT_REMARKS WHERE ENO = @ENO AND ATT_DA
             IEnumerable<MonthlyAttendance> AbsentRemarks;
             IEnumerable<MonthlyAttendance> Source;
             List<MonthlyAttendance> PreReport = new List<MonthlyAttendance>();
+            if (SelectedMonth == null)
+            {
+                ShowWarning("Please select a month first.");
+                return;
+            }
+            if (SelectedEmployee == null || SelectedEmployee.ENO == 0)
+            {
+                ShowWarning("Please select an employee first.");
+                return;
+            }
             try
             {
 
                 Employee E = EmpList.FirstOrDefault(x => x.ENO == SelectedEmployee.ENO);
-                SDate = FDate = (E.CALENDAR_TYPE == "AD") ? new DateTime(CurYear, SelectedMonth.MID, 1) : DateFunctions.GetFirstDayOfBSMonth(SelectedMonth.MID, CurYear);
-                TDate = (E.CALENDAR_TYPE == "AD") ? new DateTime(CurYear, SelectedMonth.MID, DateTime.DaysInMonth(CurYear, SelectedMonth.MID)) : DateFunctions.GetLastDayOfBSMonth(SelectedMonth.MID, CurYear);
+                SDate = FDate = AD ? new DateTime(CurYear, SelectedMonth.MID, 1) : DateFunctions.GetFirstDayOfBSMonth(SelectedMonth.MID, CurYear);
+                TDate = AD ? new DateTime(CurYear, SelectedMonth.MID, DateTime.DaysInMonth(CurYear, SelectedMonth.MID)) : DateFunctions.GetLastDayOfBSMonth(SelectedMonth.MID, CurYear);
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
 

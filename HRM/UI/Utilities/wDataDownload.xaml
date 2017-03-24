@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         ResizeMode="NoResize"
         xmlns:TemplateSelector="clr-namespace:HRM.Library.Helper"
+        WindowStartupLocation="CenterScreen"
         Title="Download Attendance Data" Height="300" Width="600">
     <Window.Resources>
         <TemplateSelector:DownloadStatusTemplateSelector x:Key="DeviceStatusSelector"/>

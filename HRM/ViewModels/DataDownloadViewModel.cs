@@ -92,7 +92,7 @@ namespace HRM.ViewModels
                         {
                             if (zkem.ReadGeneralLogData(zkem.MachineNumber))
                             {
-                                LogData ld = new LogData();
+                                LogData ld = new LogData();                                
                                 if (ad.DEVICE_MODEL == "SC105")
                                     while (zkem.GetGeneralLogData(zkem.MachineNumber, ref ld.dwTMachineNumber, ref ld.dwEnrollNumberInt, ref ld.dwEMachineNumber, ref ld.dwVerifyMode, ref ld.dwInOutMode, ref ld.dwYear, ref ld.dwMonth, ref ld.dwDay, ref ld.dwHour, ref ld.dwMinute))
                                     {

@@ -8,8 +8,8 @@
     <Border Style="{StaticResource PlainBackground}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition MinWidth="600"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
             <Grid>
                 <Grid.RowDefinitions>
@@ -108,16 +108,14 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="20"/>
                                 <RowDefinition/>
-                                <RowDefinition Height="20"/>
-
-                                <RowDefinition Height="20"/>
-                                <RowDefinition/>
-                                <RowDefinition Height="20"/>
-
-                                <RowDefinition Height="20"/>
-                                <RowDefinition/>
-                                <RowDefinition Height="20"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
 
                             <CheckBox Content="Gender Wise" IsChecked="{Binding IsGenderWise}" />
                             <ListBox Grid.Row="1" ItemsSource="{Binding GenderList}" IsEnabled="{Binding IsGenderWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -129,8 +127,8 @@
                             </ListBox>
 
 
-                            <CheckBox Grid.Row="3" Content="Branch Wise" IsChecked="{Binding IsBranchWise}"/>
-                            <ListBox Grid.Row="4" ItemsSource="{Binding BranchList}" IsEnabled="{Binding IsBranchWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <CheckBox Grid.Row="0" Grid.Column="2" Content="Branch Wise" IsChecked="{Binding IsBranchWise}"/>
+                            <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding BranchList}" IsEnabled="{Binding IsBranchWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <CheckBox  Content="{Binding BRANCH_NAME}" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"  ></CheckBox>
@@ -138,8 +136,8 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <CheckBox Grid.Row ="6" Content="Religion Wise" IsChecked="{Binding IsReligionWise}"/>
-                            <ListBox Grid.Row="7" ItemsSource="{Binding ReligionList}" IsEnabled="{Binding IsReligionWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <CheckBox Grid.Row ="0" Grid.Column="4" Content="Religion Wise" IsChecked="{Binding IsReligionWise}"/>
+                            <ListBox Grid.Row="1" Grid.Column="4" ItemsSource="{Binding ReligionList}" IsEnabled="{Binding IsReligionWise}" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <CheckBox  Content="{Binding RELIGION}" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"  ></CheckBox>
