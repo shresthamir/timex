@@ -150,7 +150,7 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE"
             {
                 using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
                 {
-                    DepartmentList = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT FROM DEPARTMENT");
+                    DepartmentList = conn.Query<Department>("SELECT DEPARTMENT_ID, DEPARTMENT, PARENT FROM DEPARTMENT");
                     EmpDList = conn.Query<EmployeeAllDetail>("SELECT * FROM vwEmpDetail");
                 }
                 LoadData = new Library.Helpers.RelayCommand(LoadReport);
@@ -227,10 +227,12 @@ LEFT JOIN LEAVES L ON A.LEAVE_ID = L.LEAVE_ID WHERE ATT_DATE = @ATT_DATE" +
 (AllDepartments ? string.Empty : " AND (ED.DEPARTMENT_ID = @DEPARTMENT_ID OR ED.DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM DEPARTMENT WHERE PARENT = @DEPARTMENT_ID))");
                     Source = conn.Query<MonthlyAttendance>(strSql, new { DEPARTMENT_ID = AllDepartments ? 0 : SelectedDepartment.DEPARTMENT_ID, ATT_DATE = TDate });
 
+                    var SubDeps = DepartmentList.Where(x => x.PARENT == SelectedDepartment.DEPARTMENT_ID);
                     foreach (EmployeeAllDetail emp in EmpDList)
                     {
-                        //if (!AllDepartments && emp.DEPARTMENT_ID != SelectedDepartment.DEPARTMENT_ID)
-                        //    continue;
+
+                        if (!AllDepartments && emp.DEPARTMENT_ID != SelectedDepartment.DEPARTMENT_ID && !SubDeps.Any(x=>x.DEPARTMENT_ID == emp.DEPARTMENT_ID))
+                            continue;
                         if (!Source.Any(x => x.ENO == emp.ENO))
                         {
                             PreReport.Add(new MonthlyAttendance { ENAME = emp.FULLNAME, DEPARTMENT = emp.DEPARTMENT, IsAbsent = true, ATT_REMARKS = "Absent" });

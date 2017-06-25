@@ -1,0 +1,28 @@
+﻿<Window x:Class="PassPhraseGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PassPhraseGenerator"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="250">
+    <Border Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="2">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <ItemsControl ItemsSource="{Binding SerialList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate >
+                        <TextBox Text="{Binding DeviceSerial}" Height="25" Margin="5 2"></TextBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Grid.Row="1" Content="Add Serial" Height="30" Margin="10 2" Command="{Binding AddSerialCommand}"/>
+            <Button Grid.Row="2" Content="Generate" Height="30" Margin="10 2" Command="{Binding GenerateCommand}"/>
+        </Grid>
+    </Border>
+</Window>

@@ -41,7 +41,7 @@ namespace HRM.Models
         private bool _LEAVE_STATEMENT;
         private bool _MONTHLY_LEAVE_REPORT;
         private bool _ANNUAL_LEAVE;
-        private bool _EMPLOYEE_LIST;
+        private bool _HOLIDAY_LIST;
         private bool _EMPLOYEE_DETAIL;
         private bool _MONTHLY_LATE_REPORT;
         private bool _ANNUAL_HOLIDAY_LIST;
@@ -81,7 +81,7 @@ namespace HRM.Models
         public bool MONTHLY_LEAVE { get { return _MONTHLY_LEAVE; } set { _MONTHLY_LEAVE = value; OnPropertyChanged("MONTHLY_LEAVE"); } }
         public bool ADD_LEAVE { get { return _ADD_LEAVE; } set { _ADD_LEAVE = value; OnPropertyChanged("ADD_LEAVE"); } }
         public bool LEAVE_APPLICATION { get { return _LEAVE_APPLICATION; } set { _LEAVE_APPLICATION = value; OnPropertyChanged("LEAVE_APPLICATION"); } }
-        public bool REPORTS { get { return _ATTENDANCE_REPORTS || _LEAVE_REPORTS || _EMPLOYEE_LIST || EMPLOYEE_DETAIL || MONTHLY_LATE_REPORT || ATTENDANCE_LOG || ANNUAL_HOLIDAY_LIST; } }
+        public bool REPORTS { get { return _ATTENDANCE_REPORTS || _LEAVE_REPORTS || _HOLIDAY_LIST || EMPLOYEE_DETAIL || MONTHLY_LATE_REPORT || ATTENDANCE_LOG || ANNUAL_HOLIDAY_LIST; } }
         public bool ATTENDANCE_REPORTS { get { return _ATTENDANCE_REPORTS; } set { _ATTENDANCE_REPORTS = value; OnPropertyChanged("ATTENDANCE_REPORTS"); } }
         public bool MONTHLY_ATTENDANCE_DETAIL { get { return _MONTHLY_ATTENDANCE_DETAIL; } set { _MONTHLY_ATTENDANCE_DETAIL = value; OnPropertyChanged("MONTHLY_ATTENDANCE_DETAIL"); } }
         public bool MONTHLY_ATTENDANCE_SUMMARY { get { return _MONTHLY_ATTENDANCE_SUMMARY; } set { _MONTHLY_ATTENDANCE_SUMMARY = value; OnPropertyChanged("MONTHLY_ATTENDANCE_SUMMARY"); } }
@@ -95,7 +95,8 @@ namespace HRM.Models
         public bool LEAVE_STATEMENT { get { return _LEAVE_STATEMENT; } set { _LEAVE_STATEMENT = value; OnPropertyChanged("LEAVE_STATEMENT"); } }
         public bool MONTHLY_LEAVE_REPORT { get { return _MONTHLY_LEAVE_REPORT; } set { _MONTHLY_LEAVE_REPORT = value; OnPropertyChanged("MONTHLY_LEAVE_REPORT"); } }
         public bool ANNUAL_LEAVE { get { return _ANNUAL_LEAVE; } set { _ANNUAL_LEAVE = value; OnPropertyChanged("ANNUAL_LEAVE"); } }
-        public bool EMPLOYEE_LIST { get { return _EMPLOYEE_LIST; } set { _EMPLOYEE_LIST = value; OnPropertyChanged("EMPLOYEE_LIST"); } }
+        public bool EMPLOYEE_LIST { get { return _HOLIDAY_LIST; } set { _HOLIDAY_LIST = value; OnPropertyChanged("EMPLOYEE_LIST"); } }
+        public bool HOLIDAY_LIST { get { return _HOLIDAY_LIST; } set { _HOLIDAY_LIST = value; OnPropertyChanged("HOLIDAY_LIST"); } }
         public bool EMPLOYEE_DETAIL { get { return _EMPLOYEE_DETAIL; } set { _EMPLOYEE_DETAIL = value; OnPropertyChanged("EMPLOYEE_DETAIL"); } }
         public bool MONTHLY_LATE_REPORT { get { return _MONTHLY_LATE_REPORT; } set { _MONTHLY_LATE_REPORT = value; OnPropertyChanged("MONTHLY_LATE_REPORT"); } }
         public bool ANNUAL_HOLIDAY_LIST { get { return _ANNUAL_HOLIDAY_LIST; } set { _ANNUAL_HOLIDAY_LIST = value; OnPropertyChanged("ANNUAL_HOLIDAY_LIST"); } }

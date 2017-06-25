@@ -130,4 +130,87 @@ JOIN (SELECT ENO, MAX(EMP_TRANID) TRANID FROM EMPLOYEE_DETAIL GROUP BY ENO) EDD 
             }
         }
     }
+
+    class HolidayListViewModel : ReportViewModel
+    {
+        public HolidayListViewModel()
+        {
+            try
+            {
+                ReportName = "HolidayList List";
+                LoadReport(null);
+                PrintCommand = new Library.Helpers.RelayCommand(PrintReport);
+            }
+            catch (Exception Ex)
+            {
+                ShowError(Ex.Message);
+            }
+        }
+
+        private void PrintReport(object obj)
+        {
+            string HeaderTemplate =
+@"<ResourceDictionary xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+                    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
+        <DataTemplate x:Key=""HeaderTemplate"">
+            <Grid HorizontalAlignment=""Center"">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=""25""/>
+                    <RowDefinition Height=""25""/>
+                    <RowDefinition Height=""20""/>
+                </Grid.RowDefinitions>
+                <TextBlock FontWeight=""SemiBold"" FontSize=""14""  Text=""" + AppVariables.CompanyInfo.COMPANY_NAME + @"""/>
+                <TextBlock Grid.Row=""1"" FontWeight=""SemiBold"" FontSize=""14"" Text=""Holiday List""/>                
+            </Grid>  
+        </DataTemplate>
+</ResourceDictionary>
+";
+
+            sfGrid.PrintSettings.PrintPageHeaderTemplate = (XamlReader.Parse(HeaderTemplate) as ResourceDictionary)["HeaderTemplate"] as DataTemplate;
+            sfGrid.Print();
+
+            //System.IO.Stream st = new System.IO.MemoryStream();
+            //PdfExportingOptions options = new PdfExportingOptions();
+            //options.ExportMergedCells = true;            
+            //var document = sfGrid.ExportToPdf(options);
+            //document.Save(st);
+
+            //new HRM.UI.Reports.PdfViewer(st).ShowDialog();
+
+        }
+
+        private void LoadReport(object obj)
+        {
+            IEnumerable<dynamic> PreReport;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+
+                    string strSql =
+ @"SELECT H.HOLIDAY_ID, HOLIDAY_NAME, HOLIDAY_DATE, BS, GENDER, RELIGION, BRANCH_NAME  FROM HOLIDAYS H 
+JOIN HOLIDAY_DATE HD ON H.HOLIDAY_ID = HD.HOLIDAY_ID
+JOIN MITICONVERTER MC ON HD.HOLIDAY_DATE = MC.AD
+LEFT JOIN HOLIDAY_GENDER HG ON H.HOLIDAY_ID = HG.HOLIDAY_ID
+LEFT JOIN HOLIDAY_BRANCH HB ON H.HOLIDAY_ID = HB.HOLIDAY_ID
+LEFT JOIN BRANCH B ON HB.BRANCH_ID = B.BRANCH_ID
+LEFT JOIN HOLIDAY_RELIGION HR ON H.HOLIDAY_ID = HR.HOLIDAY_ID
+ORDER BY HOLIDAY_DATE
+";
+                    PreReport = conn.Query<dynamic>(strSql);
+                    if (PreReport.Count() > 0)
+                    {
+                        ReportSource = new ObservableCollection<dynamic>(PreReport);
+                        SetAction(ButtonAction.Selected);                        
+                    }
+                    else
+                        ShowWarning("Record does not exists for entered criteria");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+            }
+        }
+    }
 }

@@ -24,11 +24,12 @@ namespace HRM.Library.AppScopeClasses
                 ConnectionString = System.IO.File.ReadAllText(Environment.CurrentDirectory + "\\conn.txt");
             if (!System.IO.Directory.Exists("Export Documents"))
                 System.IO.Directory.CreateDirectory("Export Documents");
-            FYID = 1;
+            
             DefaultWeekend = SETTING.DEFAULT_WEEKEND.Split(';');
             using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 CompanyInfo = conn.Query<Company>("SELECT * FROM COMPANY").First();
+                FYID = conn.ExecuteScalar<byte>("SELECT FYID FROM FiscalYear WHERE GETDATE() BETWEEN STARTDATE AND ENDDATE");
             }
         }
     }

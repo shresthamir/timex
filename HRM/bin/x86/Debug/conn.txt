@@ -1,1 +1,1 @@
-server=dell-pc;Database=LEMON;uid=sa;pwd=tebahal
+server=dell-pc;Database=test;uid=sa;pwd=tebahal

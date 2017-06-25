@@ -25,7 +25,10 @@ namespace HRM.UI.Misc
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            new Register().ShowDialog();
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                Library.AppScopeClasses.TimeXLicense.DeleteLicense();
+            else
+                new Register().ShowDialog();
         }
     }
 }

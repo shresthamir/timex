@@ -74,10 +74,11 @@
                     <MenuItem Header="Annual Leave Report" Click="Report_Click" Visibility="{Binding ANNUAL_LEAVE, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
                     <MenuItem Header="Monthly Leave Report" Click="Report_Click" Visibility="{Binding MONTHLY_LEAVE_REPORT, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
                 </MenuItem>
+                
                 <MenuItem Header="Employee List" Click="Report_Click" Visibility="{Binding EMPLOYEE_LIST, Converter={StaticResource ToVisibility}}"/>
                 <MenuItem Header="Employee Detail" Visibility="{Binding EMPLOYEE_DETAIL, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
                 <MenuItem Header="Monthly Late Report" Visibility="{Binding MONTHLY_LATE, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
-                <MenuItem Header="Annual Holiday List" Visibility="{Binding ANNUAL_HOLIDAY_LIST, Converter={StaticResource ToVisibility}}" IsEnabled="False"/>
+                <MenuItem Header="Annual Holiday List" Click="Report_Click" Visibility="{Binding ANNUAL_HOLIDAY_LIST, Converter={StaticResource ToVisibility}}"/>
 
                 <MenuItem Header="Attendance Log" Visibility="{Binding ATTENDANCE_LOG, Converter={StaticResource ToVisibility}}" IsEnabled="False">
                     <MenuItem Header="Daily Attendance Log" Visibility="{Binding DAILY_ATTENDANCE, Converter={StaticResource ToVisibility}}"/>

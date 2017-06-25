@@ -30,6 +30,10 @@
                 <Setter TargetName="txtStatus" Property="Text" Value="Connecting..."/>
                 <Setter TargetName="pBar" Property="Visibility" Value="Collapsed"/>
             </DataTrigger>
+            <DataTrigger Binding="{Binding STATUS}" Value="3">
+                <Setter TargetName="txtStatus" Property="Text" Value="Unauthorized"/>
+                <Setter TargetName="pBar" Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
             <DataTrigger Binding="{Binding STATUS}" Value="100">
                 <Setter TargetName="pBar" Property="Visibility" Value="Visible"/>
             </DataTrigger>

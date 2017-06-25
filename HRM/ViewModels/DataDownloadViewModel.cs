@@ -50,17 +50,14 @@ namespace HRM.ViewModels
 
         private void DownloadData(object obj)
         {
-            BackgroundWorker DownloadWorker = new BackgroundWorker();
-            DownloadWorker.WorkerReportsProgress = true;
-            DownloadWorker.DoWork += DownloadWorker_DoWork;
-            DownloadWorker.ProgressChanged += DownloadWorker_ProgressChanged;
-            DownloadWorker.RunWorkerAsync();
             try
             {
-                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
-                {
-                    conn.Open();
-                }
+                BackgroundWorker DownloadWorker = new BackgroundWorker();
+                DownloadWorker.WorkerReportsProgress = true;
+                DownloadWorker.DoWork += DownloadWorker_DoWork;
+                DownloadWorker.ProgressChanged += DownloadWorker_ProgressChanged;
+                DownloadWorker.RunWorkerAsync();
+
             }
             catch (Exception ex)
             {
@@ -90,12 +87,15 @@ namespace HRM.ViewModels
                         zkem.Connect_Net(ad.DEVICE_IP, 4370);
                         using (SqlTransaction tran = conn.BeginTransaction())
                         {
+
                             if (zkem.ReadGeneralLogData(zkem.MachineNumber))
                             {
-                                LogData ld = new LogData();                                
+                                LogData ld = new LogData();
                                 if (ad.DEVICE_MODEL == "SC105")
                                     while (zkem.GetGeneralLogData(zkem.MachineNumber, ref ld.dwTMachineNumber, ref ld.dwEnrollNumberInt, ref ld.dwEMachineNumber, ref ld.dwVerifyMode, ref ld.dwInOutMode, ref ld.dwYear, ref ld.dwMonth, ref ld.dwDay, ref ld.dwHour, ref ld.dwMinute))
                                     {
+                                        if (ld.dwEnrollNumberInt > short.MaxValue || ld.dwEnrollNumberInt<short.MinValue)
+                                            continue;
                                         AttLog al = new AttLog
                                         {
                                             ENO = Convert.ToInt16(ld.dwEnrollNumberInt),
@@ -152,7 +152,7 @@ namespace HRM.ViewModels
             }
             catch (Exception ex)
             {
-                throw ex;
+                ShowError(ex.Message);
             }
         }
 
@@ -222,13 +222,38 @@ namespace HRM.ViewModels
 
             try
             {
+                string DeviceSerial = string.Empty;
                 int LogCount = 0;
                 zkem = new zkemkeeper.CZKEM();
                 AttDevice ad = e.Argument as AttDevice;
                 ad.STATUS = 2;
-                ad.STATUS = (byte)(zkem.Connect_Net(ad.DEVICE_IP, 4370) ? 1 : 0);
-                zkem.GetDeviceStatus(zkem.MachineNumber, 6, ref LogCount);
-                ad.LogCount = LogCount;
+                if (zkem.Connect_Net(ad.DEVICE_IP, 4370))
+                {
+                    zkem.GetSerialNumber(zkem.MachineNumber, out DeviceSerial);
+                    if (!TimeXLicense.Devices.Any(x => x == DeviceSerial))
+                    {
+                        if (TimeXLicense.Devices.Any(x => x == "TDL-IEI-MMC-EOE"))
+                        {
+                            using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                            {
+                                if (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM ATTENDANCE") >= 1000)
+                                {
+                                    ad.STATUS = 3;
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ad.STATUS = 3;
+                            return;
+                        }
+                    }
+                    zkem.GetDeviceStatus(zkem.MachineNumber, 6, ref LogCount);
+                    ad.LogCount = LogCount;
+                    ad.STATUS = 1;
+                }
+
                 zkem.Disconnect();
 
             }

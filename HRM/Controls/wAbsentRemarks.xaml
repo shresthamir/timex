@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         FocusManager.FocusedElement="{Binding ElementName=txtRemarks}"
         PreviewKeyDown="Window_PreviewKeyDown"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
         Title="Absent Remarks" Height="125" Width="400">
     <Border Style="{StaticResource PlainBackground}" Padding="5">
         <Grid>

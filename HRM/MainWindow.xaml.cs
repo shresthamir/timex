@@ -102,6 +102,9 @@ namespace HRM
                 case "Employee List":
                     la.Content = new ucEmployeeList();
                     break;
+                case "Annual Holiday List":
+                    la.Content = new ucHolidayList();
+                    break;
                 case "Attendance Log Report":
                     la.Content = new ucAttLog();
                     break;
@@ -123,39 +126,27 @@ namespace HRM
             switch ((sender as MenuItem).Header.ToString())
             {
                 case "Branch Setup":
-                    la.Content = new ucBranch();
-                    la.FloatingHeight = 250;
-                    la.FloatingWidth = 550;
+                    la.Content = new ucBranch();                    
                     Float = true;
                     break;
                 case "Holiday Setup":
                     la.Content = new ucHoliday();
-                    la.FloatingHeight = 400;
-                    la.FloatingWidth = 800;
                     Float = true;
                     break;
                 case "Leave Setup":
                     la.Content = new ucLeave();
-                    la.FloatingHeight = 250;
-                    la.FloatingWidth = 500;
                     Float = true;
                     break;
                 case "Departments":
                     la.Content = new ucDepartment();
-                    la.FloatingHeight = 400;
-                    la.FloatingWidth = 700;
                     Float = true;
                     break;
                 case "Designation":
                     la.Content = new ucDesignation();
-                    la.FloatingHeight = 200;
-                    la.FloatingWidth = 500;
                     Float = true;
                     break;
                 case "Working Hour":
                     la.Content = new ucWorkHour();
-                    la.FloatingHeight = 500;
-                    la.FloatingWidth = 800;
                     Float = true;
                     break;
             }
@@ -168,6 +159,8 @@ namespace HRM
             if (Float)
             {
                 Point p = DMan.PointToScreen(new Point(0, 0));
+                la.FloatingHeight = 400;
+                la.FloatingWidth = 700;
                 la.FloatingLeft = p.X;
                 la.FloatingTop = p.Y;
                 la.Float();

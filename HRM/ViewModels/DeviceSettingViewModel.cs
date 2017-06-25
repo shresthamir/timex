@@ -8,21 +8,24 @@ using HRM.Library.AppScopeClasses;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
-using ZkSoftwareEU;
 namespace HRM.ViewModels
 {
     class DeviceSettingViewModel : RootViewModel
     {
         private AttDevice _Device;
+        private AttDevice _SelectedDevice;
         private List<string> _ModelList;
         private ObservableCollection<AttDevice> _DeviceList;
 
         public List<string> ModelList { get { return _ModelList; } set { _ModelList = value; OnPropertyChanged("ModelList"); } }
         public AttDevice Device { get { return _Device; } set { _Device = value; OnPropertyChanged("Device"); } }
         public ObservableCollection<AttDevice> DeviceList { get { return _DeviceList; } set { _DeviceList = value; OnPropertyChanged("DeviceList"); } }
+        public AttDevice SelectedDevice { get { return _SelectedDevice; } set { _SelectedDevice = value; OnPropertyChanged("SelectedDevice"); } }
 
         public RelayCommand AddCommand { get { return new RelayCommand(SaveDeviceSetting); } }
         public RelayCommand TestConnectionCommand { get { return new RelayCommand(TestConnection); } }
+
+        
 
         private void TestConnection(object obj)
         {
@@ -83,14 +86,31 @@ namespace HRM.ViewModels
                     DeviceList = new ObservableCollection<AttDevice>(conn.Query<AttDevice>("SELECT DEVICE_MODEL, DISPLAY_NAME, DEVICE_IP FROM ATT_DEVICE"));
                     foreach (AttDevice ad in DeviceList)
                     {
-                        GetDeviceSerial(ad);
+                        System.Net.NetworkInformation.Ping p = new System.Net.NetworkInformation.Ping();
+                        if (p.Send(ad.DEVICE_IP, 1000).Status == System.Net.NetworkInformation.IPStatus.Success)
+                            GetDeviceSerial(ad);
                     }
+                    DeleteCommand = new RelayCommand(DeleteDevice);
                 }
                 Device = new AttDevice();
             }
             catch (Exception Ex)
             {
                 ShowError(Ex.Message);
+            }
+        }
+
+        private void DeleteDevice(object obj)
+        {
+            if(ShowConfirmation("Do you want to delete Selected Device?"))
+            {
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    conn.Execute("DELETE FROM ATT_DEVICE WHERE DISPLAY_NAME = @DISPLAY_NAME", SelectedDevice);
+                    DeviceList.Remove(SelectedDevice);
+                    SelectedDevice = null;
+                }
+                ShowConfirmation("Device successfully deleted.");
             }
         }
 
@@ -197,7 +217,7 @@ namespace HRM.ViewModels
             return false;
         }
 
-        public static void SyncName(bool Old)
+        public static void SyncName()
         {
             try
             {
@@ -212,31 +232,42 @@ namespace HRM.ViewModels
                         //    continue;
                         if (zkem.Connect_Net(ad.DEVICE_IP, 4370))
                         {
-                            foreach (Employee e in EmployeeList)
-                            {
-                                int refs = 0;
-                                DeviceUser du = new DeviceUser(true);
-                                if (ad.DEVICE_MODEL == "U160")
-                                {
+                            //foreach (Employee e in EmployeeList)
+                            //{
+                            //    int refs = 0;
+                            //    DeviceUser du = new DeviceUser(true);
+                            //    if (ad.DEVICE_MODEL == "U160")
+                            //    {
                                     
-                                    //zkem.SSR_GetAllUserInfo()
-                                    if (zkem.SSR_GetUserInfo(zkem.MachineNumber, e.ENO.ToString(), out du.Name, out du.Password, out du.Privilage, out du.Enabled))
-                                        zkem.SSR_SetUserInfo(zkem.MachineNumber, e.ENO.ToString(), e.FULLNAME, du.Password, du.Privilage, du.Enabled);
-                                    zkem.GetLastError(ref refs);
-                                }
-                                else if (ad.DEVICE_MODEL == "SC105")
-                                {
-                                    int vs = 0;
-                                    byte res = 0;
+                            //        //zkem.SSR_GetAllUserInfo()
+                            //        if (zkem.SSR_GetUserInfo(zkem.MachineNumber, e.ENO.ToString(), out du.Name, out du.Password, out du.Privilage, out du.Enabled))
+                            //            zkem.SSR_SetUserInfo(zkem.MachineNumber, e.ENO.ToString(), e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                            //        zkem.GetLastError(ref refs);
+                            //    }
+                            //    else if (ad.DEVICE_MODEL == "SC105")
+                            //    {
+                            //        int vs = 0;
+                            //        byte res = 0;
 
-                                    //zkem.GetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, ref priv, ref edata, ref pwd);
-                                    if (zkem.GetUserInfo(zkem.MachineNumber, e.ENO, ref du.Name, ref du.Password, ref du.Privilage, ref du.Enabled))
-                                        zkem.SetUserInfo(zkem.MachineNumber, e.ENO, e.FULLNAME, du.Password, du.Privilage, du.Enabled);
-                                    //zkem.SetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, priv, ref edata, pwd);
+                            //        //zkem.GetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, ref priv, ref edata, ref pwd);
+                            //        if (zkem.GetUserInfo(zkem.MachineNumber, e.ENO, ref du.Name, ref du.Password, ref du.Privilage, ref du.Enabled))
+                            //            zkem.SetUserInfo(zkem.MachineNumber, e.ENO, e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                            //        //zkem.SetEnrollData(zkem.MachineNumber, e.ENO, zkem.MachineNumber, 0, priv, ref edata, pwd);
 
-                                }
+                            //    }
+                            //}
+                            if(ad.DEVICE_MODEL == "U160")
+                            {
+                                
+                                zkem.SetUserInfo(zkem.MachineNumber, 2, "AMIR SHRESTHA", "", 1, true);
+                                DeviceUser du = new DeviceUser(true);
+                                //while (zkem.SSR_GetAllUserInfo(zkem.MachineNumber, out du.strENO, out du.Name, out du.Password, out du.Privilage, out du.Enabled))
+                                //{
+                                //    Employee e = EmployeeList.FirstOrDefault(x => x.ENO == int.Parse(du.strENO));
+                                //    if (e != null)
+                                //        zkem.SSR_SetUserInfo(zkem.MachineNumber, du.strENO, e.FULLNAME, du.Password, du.Privilage, du.Enabled);
+                                //}
                             }
-
                             //zkem.SetUserInfo(zkem.MachineNumber, 9999, "Admin", "9999", 1, true);
                             zkem.Disconnect();
                         }
@@ -249,7 +280,7 @@ namespace HRM.ViewModels
             }
         }
 
-        public static void SyncName()
+        public static void SyncName(bool New)
         {
             try
             {
@@ -259,11 +290,11 @@ namespace HRM.ViewModels
                     var DeviceList = conn.Query<AttDevice>("SELECT DEVICE_MODEL, DISPLAY_NAME, DEVICE_IP FROM ATT_DEVICE");
                     foreach (AttDevice ad in DeviceList)
                     {
-                        var zkem = new CZKEUEMNetClass();
-                        //if (ad.DEVICE_MODEL == "U160")
+                        var zkem = new zkemkeeper.CZKEM();
+                            //if (ad.DEVICE_MODEL == "U160")
                         //    continue;
-                        
-                        if (zkem.Connect_Net_Tcp(ad.DEVICE_IP, 4370))
+
+                        if (zkem.Connect_Net(ad.DEVICE_IP, 4370))
                         {
                             int refs = 0;
                             DeviceUser du = new DeviceUser(true);
@@ -283,7 +314,7 @@ namespace HRM.ViewModels
                                 zkem.GetLastError(ref refs);
                             }
                             //else if (ad.DEVICE_MODEL == "SC105")
-                            
+
                             //    int vs = 0;
                             //    byte res = 0;
 
@@ -336,6 +367,7 @@ namespace HRM.ViewModels
     struct DeviceUser
     {
         public int ENO;
+        public string strENO;
         public string Name;
         public string Password;
         public int Privilage;
@@ -345,6 +377,7 @@ namespace HRM.ViewModels
         public DeviceUser(bool de)
         {
             ENO = 0;
+            strENO = string.Empty;
             Name = string.Empty;
             Password = string.Empty;
             Privilage = 0;

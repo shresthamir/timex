@@ -131,7 +131,7 @@
                 <syncfusion:GridTextColumn HeaderText="Check Out" DisplayBinding="{Binding CHECKOUT, StringFormat={}{0:hh:mm tt}}" Width="70">
                     <syncfusion:GridTextColumn.CellStyle>
                         <Style TargetType="syncfusion:GridCell">
-                            <Setter Property="Foreground" Value="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource LateIndicator}, ConverterParameter='CHECKIN'}" />
+                            <Setter Property="Foreground" Value="{Binding DataContext, RelativeSource={RelativeSource Self}, Converter={StaticResource LateIndicator}, ConverterParameter='CHECKOUT'}" />
                         </Style>
                     </syncfusion:GridTextColumn.CellStyle>
                 </syncfusion:GridTextColumn>

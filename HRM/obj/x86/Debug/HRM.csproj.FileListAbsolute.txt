@@ -2,7 +2,6 @@ D:\Projects\HRM\HRM\bin\x86\Debug\TimeX.exe.config
 D:\Projects\HRM\HRM\bin\x86\Debug\TimeX.exe
 D:\Projects\HRM\HRM\bin\x86\Debug\TimeX.pdb
 D:\Projects\HRM\HRM\bin\x86\Debug\Dapper.dll
-D:\Projects\HRM\HRM\bin\x86\Debug\RawPrintFunctions.dll
 D:\Projects\HRM\HRM\bin\x86\Debug\SKGL.dll
 D:\Projects\HRM\HRM\bin\x86\Debug\Syncfusion.Data.WPF.dll
 D:\Projects\HRM\HRM\bin\x86\Debug\Syncfusion.Pdf.Base.dll
@@ -151,4 +150,5 @@ D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\AttendanceReports\ucAttLog.g.cs
 D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\AttendanceReports\ucAttLog.baml
 D:\Projects\HRM\HRM\obj\x86\Debug\UI\Utilities\wDeviceTime.g.cs
 D:\Projects\HRM\HRM\obj\x86\Debug\UI\Utilities\wDeviceTime.baml
-D:\Projects\HRM\HRM\bin\x86\Debug\ZKEUEmKeeperNet.dll
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\ucHolidayList.g.cs
+D:\Projects\HRM\HRM\obj\x86\Debug\UI\Reports\ucHolidayList.baml

@@ -18,7 +18,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style = "{StaticResource Label}" Text="Branch Id"/>
-            <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding branch.BRANCH_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+            <TextBox Grid.Column="1" Tag="KEY" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding branch.BRANCH_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
                 </TextBox.InputBindings>

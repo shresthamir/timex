@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRM.Controls"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Title="{Binding WorkhourTitle}" Height="200" Width="450">
     <Window.Resources>
         <Style TargetType="Label">

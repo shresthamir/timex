@@ -13,30 +13,36 @@ using System.Windows;
 using HRM.UI.Misc;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Collections.ObjectModel;
 
 namespace HRM.ViewModels
 {
     class DesignationViewModel : RootViewModel
     {
         private Designation _designation;
-        public Designation designation { get { return _designation; } set { _designation = value; OnPropertyChanged("designation"); } }
+        private ObservableCollection<Designation> _DesignationList;
 
+        public Designation designation { get { return _designation; } set { _designation = value; OnPropertyChanged("designation"); } }
+        public ObservableCollection<Designation> DesignationList { get { return _DesignationList; } set { _DesignationList = value; OnPropertyChanged("Designation"); } }
         public DesignationViewModel()
         {
             try
             {
                 MessageBoxCaption = "Designation Setup";
                 designation = new Designation();
-
                 NewCommand = new RelayCommand(NewAction);
                 DeleteCommand = new RelayCommand(DeleteDesignation);
                 ClearCommand = new RelayCommand(ClearInterface);
                 SaveCommand = new RelayCommand(SaveDesignation);
                 LoadData = new RelayCommand(LoadDesignationInfo);
+                using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                {
+                    DesignationList = new ObservableCollection<Designation>(conn.Query<Designation>("SELECT DESIGNATION_ID, DESIGNATION FROM DESIGNATION"));
+                }
             }
             catch (Exception ex)
             {
-
+                ShowError(ex.Message);
             }
         }
 
@@ -95,6 +101,7 @@ namespace HRM.ViewModels
                             tran.Commit();
                         }
                     }
+                    DesignationList.Remove(DesignationList.First(x => x.DESIGNATION_ID == designation.DESIGNATION_ID));
                     ShowInformation("Designation successfully deleted.");
                     ClearInterface(null);
                 }
@@ -140,9 +147,22 @@ namespace HRM.ViewModels
                         using (SqlTransaction tran = conn.BeginTransaction())
                         {
                             if (_action == ButtonAction.New)
+                            {
                                 designation.Save(tran);
+                                DesignationList.Add(new Designation
+                                {
+                                    DESIGNATION_ID = designation.DESIGNATION_ID,
+                                    DESIGNATION = designation.DESIGNATION,
+                                    LEVEL = designation.LEVEL
+                                });
+                            }
                             else if (_action == ButtonAction.Edit)
+                            {
                                 designation.Update(tran);
+                                Designation d = DesignationList.First(x => x.DESIGNATION_ID == designation.DESIGNATION_ID);
+                                d.DESIGNATION = designation.DESIGNATION;
+                                d.LEVEL = designation.LEVEL;
+                            }
                             tran.Commit();
                         }
                     }

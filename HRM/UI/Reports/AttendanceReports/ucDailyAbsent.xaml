@@ -7,7 +7,7 @@
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1024">
+             d:DesignHeight="700" d:DesignWidth="724">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -17,17 +17,17 @@
         <Border Style="{StaticResource PlainBackground}" Grid.ColumnSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="300"/>
-                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="250"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Style="{StaticResource Label}" Text="Date"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <DatePicker Margin="10 0 0 0" SelectedDate="{Binding TDate}"/>
-                    <TextBox Text="{Binding TDate, Converter={StaticResource ToMiti}}" Width="100"/>
+                    <DatePicker Margin="10 0 0 0" SelectedDate="{Binding TDate}" Width="100"/>
+                    <TextBox Text="{Binding TDate, Converter={StaticResource ToMiti}}" Width="80"/>
                 </StackPanel>
 
                 <GroupBox Grid.Column="2">

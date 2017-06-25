@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="HRM.UI.Reports.ucHolidayList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cc="clr-namespace:HRM.Library.CustomControls"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1024">
+
+    <Grid>
+        <syncfusion:SfDataGrid Name="sfgrid" Grid.Row="1"
+                                FontSize="11" RowHeight="20"
+                                AutoGenerateColumns="False"
+                                ShowColumnWhenGrouped="False"                                
+                                AutoExpandGroups="True"
+                                AllowDraggingColumns="True"                                       
+                                AllowFiltering="False"
+                                AllowResizingColumns="True"
+                                AllowSorting="True"
+                                AllowGrouping="True"                
+                               ShowGroupDropArea="True"
+                                ItemsSource="{Binding ReportSource}"                               
+                               SelectionUnit="Cell">
+            <syncfusion:SfDataGrid.PrintSettings>
+                <syncfusion:PrintSettings PrintPageHeaderHeight="80"                                           
+                                          AllowColumnWidthFitToPrintPage="False"
+                                          PrintPageMargin="20" >
+                </syncfusion:PrintSettings>
+            </syncfusion:SfDataGrid.PrintSettings>
+            <syncfusion:SfDataGrid.Columns>
+                <syncfusion:GridTextColumn HeaderText="Holiday Date" DisplayBinding="{Binding HOLIDAY_DATE, StringFormat={}{0:MM/dd/yyyy}}" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Holiday Miti" MappingName="BS" Width="100"/>
+                <syncfusion:GridTextColumn HeaderText="Holiday Name" MappingName="HOLIDAY_NAME" Width="200"/>                
+                <syncfusion:GridTextColumn HeaderText="Branch" MappingName="BRANCH_NAME" Width="150"/>
+                <syncfusion:GridTextColumn HeaderText="Gender" MappingName="GENDER" Width="150"/>
+                <syncfusion:GridTextColumn HeaderText="Religion" MappingName="RELIGION" Width="150"/>
+            </syncfusion:SfDataGrid.Columns>
+        </syncfusion:SfDataGrid>
+
+
+    </Grid>
+</UserControl>

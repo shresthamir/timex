@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="1024">
+             d:DesignHeight="600" d:DesignWidth="700">
     <Border Style="{StaticResource PlainBackground}" Padding="10">
         <Grid>
             <Grid.RowDefinitions>
@@ -19,7 +19,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Style = "{StaticResource Label}" Text="Workhour Id"/>
-            <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.WORKHOUR_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+            <TextBox Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.WORKHOUR_ID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}" Tag="KEY">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
                 </TextBox.InputBindings>
@@ -47,16 +47,15 @@
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="120"/>        
+                    <ColumnDefinition Width="100"/>                          
                     <ColumnDefinition/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Style = "{StaticResource Label}" Grid.Row="0" Text="Workhour Name"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Text="{Binding wHour.DESCRIPTION, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding wHour.DESCRIPTION, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <CheckBox Grid.Row="0" Grid.Column="7" Content="Default" IsChecked="{Binding wHour.ISDEFAULT}" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                <CheckBox Grid.Row="0" Grid.Column="6" Content="Default" IsChecked="{Binding wHour.ISDEFAULT}" VerticalAlignment="Center" Margin="10 0 0 0"/>
                 
 
                 <TextBlock Style = "{StaticResource Label}" Grid.Row="1" Text="In Time"/>
@@ -68,11 +67,11 @@
                 <TextBlock Style="{StaticResource Label}" Grid.Row="2" Text="T. Duration (Mins)"/>
                 <toolkit:ShortUpDown Grid.Row="2" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.TOTALDURATION, UpdateSourceTrigger=PropertyChanged}" Height="26"/>
 
-                <TextBlock Style="{StaticResource Label}" Grid.Row="2" Grid.Column="3" Text="Lunch (Mins)"/>
-                <toolkit:ShortUpDown Grid.Row="2" Grid.Column="4" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.LUNCHDURATION, UpdateSourceTrigger=PropertyChanged}" Height="26"/>
+                <TextBlock Style="{StaticResource Label}" Grid.Row="4" Text="Lunch (Mins)"/>
+                <toolkit:ShortUpDown Grid.Row="4" Grid.Column="1" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.LUNCHDURATION, UpdateSourceTrigger=PropertyChanged}" Height="26"/>
 
-                <TextBlock Style="{StaticResource Label}" Grid.Row="2" Grid.Column="6" Text="Break (Mins)"/>
-                <toolkit:ShortUpDown Grid.Row="2" Grid.Column="7" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.BREAKDURATION, UpdateSourceTrigger=PropertyChanged}" Height="26"/>
+                <TextBlock Style="{StaticResource Label}" Grid.Row="4" Grid.Column="3" Text="Break (Mins)"/>
+                <toolkit:ShortUpDown Grid.Row="4" Grid.Column="4" PreviewKeyDown="TextBox_PreviewKeyDown" Text="{Binding wHour.BREAKDURATION, UpdateSourceTrigger=PropertyChanged}" Height="26"/>
 
                 <TextBlock Style = "{StaticResource Label}" Grid.Row="3" Text="Out Time"/>
                 <toolkit:TimePicker Grid.Row="3" Grid.Column="1" Value="{Binding wHour.OUTTIME, UpdateSourceTrigger=PropertyChanged}" Height="26"/>
@@ -83,14 +82,14 @@
                 <DataGrid Grid.Row="5" Grid.ColumnSpan="10" ItemsSource="{Binding WorkHourList}" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Id" Width="50" Binding="{Binding WORKHOUR_ID}"/>
-                        <DataGridTextColumn Header="Name" Width="150" Binding="{Binding DESCRIPTION}"/>
-                        <DataGridTextColumn Header="In Time" Width="80" Binding="{Binding INTIME, StringFormat={}{0:hh:mm tt}}"/>
-                        <DataGridTextColumn Header="In Grace" Width="80" Binding="{Binding INGRACETIME, StringFormat={}{0:hh:mm tt}}"/>
-                        <DataGridTextColumn Header="Out Time" Width="80" Binding="{Binding OUTTIME, StringFormat={}{0:hh:mm tt}}"/>
-                        <DataGridTextColumn Header="Out Grace" Width="80" Binding="{Binding OUTGRACETIME, StringFormat={}{0:hh:mm tt}}"/>
-                        <DataGridTextColumn Header="Lunch" Width="80" Binding="{Binding LUNCHDURATION}"/>
-                        <DataGridTextColumn Header="Break" Width="80" Binding="{Binding BREAKDURATION}"/>
-                        <DataGridTextColumn Header="Total Duration" Width="100" Binding="{Binding TOTALDURATION}"/>
+                        <DataGridTextColumn Header="Name" Width="120" Binding="{Binding DESCRIPTION}"/>
+                        <DataGridTextColumn Header="In Time" Width="70" Binding="{Binding INTIME, StringFormat={}{0:hh:mm tt}}"/>
+                        <DataGridTextColumn Header="In Grace" Width="70" Binding="{Binding INGRACETIME, StringFormat={}{0:hh:mm tt}}"/>
+                        <DataGridTextColumn Header="Out Time" Width="70" Binding="{Binding OUTTIME, StringFormat={}{0:hh:mm tt}}"/>
+                        <DataGridTextColumn Header="Out Grace" Width="70" Binding="{Binding OUTGRACETIME, StringFormat={}{0:hh:mm tt}}"/>
+                        <DataGridTextColumn Header="Lunch" Width="70" Binding="{Binding LUNCHDURATION}"/>
+                        <DataGridTextColumn Header="Break" Width="70" Binding="{Binding BREAKDURATION}"/>
+                        <DataGridTextColumn Header="Total Duration" Width="90" Binding="{Binding TOTALDURATION}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

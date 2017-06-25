@@ -122,5 +122,4 @@ namespace HRM.Models
             return tran.Connection.Execute("INSERT INTO ATT_LOG_TEMP(ENO, ATT_DATE, ATT_TIME, VerifyMode, InOutMode, DEVICE_NAME) VALUES (@ENO, @ATT_DATE, @ATT_TIME, @VerifyMode, @InOutMode, @DEVICE_NAME)", this, tran) == 1;
         }
     }
-
 }

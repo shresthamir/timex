@@ -78,19 +78,21 @@ namespace HRM.UI.Misc
             {
                 try
                 {
-                    //using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
-                    //{
-                    //    if (conn.ExecuteScalar<String>("SELECT TOP 1 COMPANY_NAME FROM COMPANY") != "ALKA HOSPITAL")
-                    //    {
-                    //        System.Windows.MessageBox.Show("Invalid License. Please contact your system provider. 9851155543 Suraj Neupane");
-                    //        this.Close();
-                    //        return;
-                    //    }
-                    //}
+                    using (SqlConnection conn = new SqlConnection(AppVariables.ConnectionString))
+                    {
+                        conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ATT_LOG' AND COLUMN_NAME = 'DEVICE_NAME') 
+                                         ALTER TABLE ATT_LOG ADD DEVICE_NAME NVARCHAR(50)");
+                        conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ATT_LOG_TEMP' AND COLUMN_NAME = 'DEVICE_NAME') 
+                                         ALTER TABLE ATT_LOG_TEMP ADD DEVICE_NAME NVARCHAR(50)");
+                        conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'UserManagement' AND COLUMN_NAME = 'DEVICE_TIME_SYNC') 
+                                         ALTER TABLE UserManagement ADD DEVICE_TIME_SYNC BIT NOT NULL, CONSTRAINT DF_UM_TIME_SYNC DEFAULT (0) FOR DEVICE_TIME_SYNC");
+                        conn.Execute(@"IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'UserManagement' AND COLUMN_NAME = 'DEVICE_ENAME_SYNC') 
+                                         ALTER TABLE UserManagement ADD DEVICE_ENAME_SYNC BIT NOT NULL, CONSTRAINT DF_UM_ENAME_SYNC DEFAULT (0) FOR DEVICE_ENAME_SYNC");                        
+                    }
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show(ex.Message, "nuTimeX", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.MessageBox.Show(ex.Message, "TimeX", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 new UI.User.Login().Show();
                 this.Close();

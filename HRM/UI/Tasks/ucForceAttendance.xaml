@@ -32,7 +32,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Style = "{StaticResource Label}" Text="Transaction Id"/>
-                    <TextBox Grid.Column="1" Text="{Binding mAtt.TRANID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}">
+                    <TextBox Grid.Column="1" Text="{Binding mAtt.TRANID, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource HideZero}}" Width="100" HorizontalContentAlignment="Right" IsEnabled="{Binding EntryPanelEnabled,Converter={StaticResource InvertBool}}" Tag="KEY">
                         <TextBox.InputBindings>
                             <KeyBinding Key="Enter" Command="{Binding LoadData}" CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType=TextBox}}"/>
                         </TextBox.InputBindings>

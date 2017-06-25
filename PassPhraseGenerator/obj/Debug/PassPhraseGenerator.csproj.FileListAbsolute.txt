@@ -1,0 +1,14 @@
+D:\Projects\HRM\PassPhraseGenerator\bin\Debug\PassPhraseGenerator.exe.config
+D:\Projects\HRM\PassPhraseGenerator\bin\Debug\PassPhraseGenerator.exe
+D:\Projects\HRM\PassPhraseGenerator\bin\Debug\PassPhraseGenerator.pdb
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator.csprojResolveAssemblyReference.cache
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\MainWindow.g.cs
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\App.g.cs
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator_MarkupCompile.cache
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator_MarkupCompile.lref
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\MainWindow.baml
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator.g.resources
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator.Properties.Resources.resources
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator.csproj.GenerateResource.Cache
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator.exe
+D:\Projects\HRM\PassPhraseGenerator\obj\Debug\PassPhraseGenerator.pdb

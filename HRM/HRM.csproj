@@ -120,9 +120,6 @@
     <Reference Include="Xceed.Wpf.Toolkit">
       <HintPath>..\..\EMS\TicketBox\TicketBox\bin\x86\Debug\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="ZKEUEmKeeperNet">
-      <HintPath>C:\Users\harami baba\Desktop\ZKTechEU_SDKTools (Release) (30-01-17)\SDK\ProfessionalSDK\C# SDK Libs\ZKEUEmKeeperNet.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -263,6 +260,9 @@
     <Compile Include="UI\Reports\PdfViewer.xaml.cs">
       <DependentUpon>PdfViewer.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Reports\ucHolidayList.xaml.cs">
+      <DependentUpon>ucHolidayList.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Reports\ucEmployeeList.xaml.cs">
       <DependentUpon>ucEmployeeList.xaml</DependentUpon>
@@ -478,6 +478,10 @@
     <Page Include="UI\Reports\PdfViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Reports\ucHolidayList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Reports\ucEmployeeList.xaml">
       <Generator>MSBuild:Compile</Generator>

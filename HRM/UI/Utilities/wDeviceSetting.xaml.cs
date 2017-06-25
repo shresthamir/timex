@@ -25,5 +25,10 @@ namespace HRM.UI.Utilities
             InitializeComponent();
             this.DataContext = new DeviceSettingViewModel();
         }
+
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

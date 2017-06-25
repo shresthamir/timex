@@ -1,4 +1,4 @@
-﻿
+﻿D:\Projects\HRM\HRM\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
 
 FD:\Projects\HRM\HRM\Controls\wAbsentRemarks.xaml;;
 FD:\Projects\HRM\HRM\Controls\wWorkingHourDetail.xaml;;
@@ -17,6 +17,7 @@ FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucDailyAttendance.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\AttendanceReports\ucMonthlyAttendance.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\LeaveReports\ucLeaveLedger.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\LeaveReports\ucLeaveStatus.xaml;;
+FD:\Projects\HRM\HRM\UI\Reports\ucHolidayList.xaml;;
 FD:\Projects\HRM\HRM\UI\Reports\ucEmployeeList.xaml;;
 FD:\Projects\HRM\HRM\UI\Tasks\ucForceAttendance.xaml;;
 FD:\Projects\HRM\HRM\UI\Tasks\ucAddLeave.xaml;;
